@@ -25,7 +25,7 @@ enum
 //------------------------------------------------------------------
 PongScene::PongScene()
 {
-    PongLayer *pongLayer = new PongLayer();//PongLayer::create();
+    auto pongLayer = new PongLayer();//PongLayer::create();
     addChild(pongLayer);
     pongLayer->release();
 }
@@ -37,44 +37,37 @@ PongScene::PongScene()
 //------------------------------------------------------------------
 PongLayer::PongLayer()
 {
-    _ballStartingVelocity = ccp(20.0f, -100.0f);
+    _ballStartingVelocity = Point(20.0f, -100.0f);
     
-    _ball = Ball::ballWithTexture( TextureCache::sharedTextureCache()->addImage(s_Ball) );
+    _ball = Ball::ballWithTexture( Director::getInstance()->getTextureCache()->addImage(s_Ball) );
     _ball->setPosition( VisibleRect::center() );
     _ball->setVelocity( _ballStartingVelocity );
     addChild( _ball );
-    _ball->retain();
     
-    Texture2D* paddleTexture = TextureCache::sharedTextureCache()->addImage(s_Paddle);
+    auto paddleTexture = Director::getInstance()->getTextureCache()->addImage(s_Paddle);
     
-    Array *paddlesM = Array::createWithCapacity(4);
+    Vector<Paddle*> paddlesM(4);
     
-    Paddle* paddle = Paddle::paddleWithTexture(paddleTexture);
-    paddle->setPosition( ccp(VisibleRect::center().x, VisibleRect::bottom().y + 15) );
-    paddlesM->addObject( paddle );
+    Paddle* paddle = Paddle::createWithTexture(paddleTexture);
+    paddle->setPosition( Point(VisibleRect::center().x, VisibleRect::bottom().y + 15) );
+	paddlesM.pushBack( paddle );
     
-    paddle = Paddle::paddleWithTexture( paddleTexture );
-    paddle->setPosition( ccp(VisibleRect::center().x, VisibleRect::top().y - kStatusBarHeight - 15) );
-    paddlesM->addObject( paddle );
+    paddle = Paddle::createWithTexture( paddleTexture );
+    paddle->setPosition( Point(VisibleRect::center().x, VisibleRect::top().y - kStatusBarHeight - 15) );
+    paddlesM.pushBack( paddle );
     
-    paddle = Paddle::paddleWithTexture( paddleTexture );
-    paddle->setPosition( ccp(VisibleRect::center().x, VisibleRect::bottom().y + 100) );
-    paddlesM->addObject( paddle );
+    paddle = Paddle::createWithTexture( paddleTexture );
+    paddle->setPosition( Point(VisibleRect::center().x, VisibleRect::bottom().y + 100) );
+    paddlesM.pushBack( paddle );
     
-    paddle = Paddle::paddleWithTexture( paddleTexture );
-    paddle->setPosition( ccp(VisibleRect::center().x, VisibleRect::top().y - kStatusBarHeight - 100) );
-    paddlesM->addObject( paddle );
+    paddle = Paddle::createWithTexture( paddleTexture );
+    paddle->setPosition( Point(VisibleRect::center().x, VisibleRect::top().y - kStatusBarHeight - 100) );
+    paddlesM.pushBack( paddle );
     
-    _paddles = (Array*)paddlesM->copy();
+    _paddles = paddlesM;
     
-    Object* pObj = NULL;
-    CCARRAY_FOREACH(_paddles, pObj)
+    for (auto& paddle : _paddles)
     {
-        paddle = (Paddle*)(pObj);
-
-        if(!paddle)
-            break;
-
         addChild(paddle);
     }
 
@@ -83,13 +76,11 @@ PongLayer::PongLayer()
 
 PongLayer::~PongLayer()
 {
-    _ball->release();
-    _paddles->release();
 }
 
 void PongLayer::resetAndScoreBallForPlayer(int player)
 {
-    _ballStartingVelocity = ccpMult(_ballStartingVelocity, -1.1f);
+    _ballStartingVelocity = _ballStartingVelocity * -1.1f;
     _ball->setVelocity( _ballStartingVelocity );
     _ball->setPosition( VisibleRect::center() );
     
@@ -100,15 +91,8 @@ void PongLayer::doStep(float delta)
 {
     _ball->move(delta);
 
-    Paddle* paddle = NULL;
-    Object* pObj = NULL;
-    CCARRAY_FOREACH(_paddles, pObj)
+    for (auto& paddle : _paddles)
     {
-        paddle = (Paddle*)(pObj);
-
-        if(!paddle)
-            break;
-
         _ball->collideWithPaddle( paddle );
     }
 
@@ -116,10 +100,9 @@ void PongLayer::doStep(float delta)
         resetAndScoreBallForPlayer( kLowPlayer );
     else if (_ball->getPosition().y < VisibleRect::bottom().y-_ball->radius())
         resetAndScoreBallForPlayer( kHighPlayer );
-    _ball->draw();
 } 
 
 void PongScene::runThisTest()
 {
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }

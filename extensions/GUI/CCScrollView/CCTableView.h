@@ -35,12 +35,6 @@
 NS_CC_EXT_BEGIN
 
 class TableView;
-class ArrayForObjectSorting;
-
-typedef enum {
-    kTableViewFillTopDown,
-    kTableViewFillBottomUp
-} TableViewVerticalFillOrder;
 
 /**
  * Sole purpose of this delegate is to single touch event in this version.
@@ -53,6 +47,8 @@ public:
      *
      * @param table table contains the given cell
      * @param cell  cell that is touched
+     * @js NA
+     * @lua NA
      */
     virtual void tableCellTouched(TableView* table, TableViewCell* cell) = 0;
 
@@ -61,6 +57,8 @@ public:
      *
      * @param table table contains the given cell
      * @param cell  cell that is pressed
+     * @js NA
+     * @lua NA
      */
     virtual void tableCellHighlight(TableView* table, TableViewCell* cell){};
 
@@ -69,6 +67,8 @@ public:
      *
      * @param table table contains the given cell
      * @param cell  cell that is pressed
+     * @js NA
+     * @lua NA
      */
     virtual void tableCellUnhighlight(TableView* table, TableViewCell* cell){};
 
@@ -79,6 +79,8 @@ public:
      *
      * @param table table contains the given cell
      * @param cell  cell that is pressed
+     * @js NA
+     * @lua NA
      */
     virtual void tableCellWillRecycle(TableView* table, TableViewCell* cell){};
 
@@ -91,6 +93,10 @@ public:
 class TableViewDataSource
 {
 public:
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual ~TableViewDataSource() {}
 
     /**
@@ -99,7 +105,7 @@ public:
      * @param idx the index of a cell to get a size
      * @return size of a cell at given index
      */
-    virtual Size tableCellSizeForIndex(TableView *table, unsigned int idx) {
+    virtual Size tableCellSizeForIndex(TableView *table, ssize_t idx) {
         return cellSizeForTable(table);
     };
     /**
@@ -109,7 +115,7 @@ public:
      * @return cell size
      */
     virtual Size cellSizeForTable(TableView *table) {
-        return SizeZero;
+        return Size::ZERO;
     };
     /**
      * a cell instance at a given index
@@ -117,35 +123,47 @@ public:
      * @param idx index to search for a cell
      * @return cell found at idx
      */
-    virtual TableViewCell* tableCellAtIndex(TableView *table, unsigned int idx) = 0;
+    virtual TableViewCell* tableCellAtIndex(TableView *table, ssize_t idx) = 0;
     /**
      * Returns number of cells in a given table view.
      *
      * @return number of cells
      */
-    virtual unsigned int numberOfCellsInTableView(TableView *table) = 0;
+    virtual ssize_t numberOfCellsInTableView(TableView *table) = 0;
 
 };
 
 
 /**
- * UITableView counterpart for cocos2d for iphone.
+ * UITableView support for cocos2d-x.
  *
- * this is a very basic, minimal implementation to bring UITableView-like component into cocos2d world.
- *
+ * This is a very basic, minimal implementation to bring UITableView-like component into cocos2d world.
  */
 class TableView : public ScrollView, public ScrollViewDelegate
 {
 public:
-    TableView();
-    virtual ~TableView();
-
+    
+    enum class VerticalFillOrder
+    {
+        TOP_DOWN,
+        BOTTOM_UP
+    };
+    
+    /** Empty contructor of TableView */
+    static TableView* create();
+    
     /**
      * An intialized table view object
      *
      * @param dataSource data source
      * @param size view size
      * @return table view
+     * @code
+     * when this function bound to js or lua,the input params are changed
+     * in js:var create(var jsObject,var size)
+     * in lua:local create(var size)
+     * in lua:
+     * @endcode
      */
     static TableView* create(TableViewDataSource* dataSource, Size size);
     /**
@@ -155,46 +173,78 @@ public:
      * @param size view size
      * @param container parent object for cells
      * @return table view
+     * @code
+     * when this function bound to js or lua,the input params are changed
+     * in js:var create(var jsObject,var size,var container)
+     * in lua:local create(var size, var container)
+     * in lua:
+     * @endcode
      */
     static TableView* create(TableViewDataSource* dataSource, Size size, Node *container);
+    /**
+     * @js ctor
+     */
+    TableView();
+    /**
+     * @js NA
+     * @lua NA
+     */
+    virtual ~TableView();
+
+    bool initWithViewSize(Size size, Node* container = NULL);
 
     /**
      * data source
+     * @js NA
+     * @lua NA
      */
     TableViewDataSource* getDataSource() { return _dataSource; }
+    /**
+     * when this function bound to js or lua,the input params are changed
+     * in js:var setDataSource(var jsSource)
+     * in lua:local setDataSource()
+     * @endcode
+     */
     void setDataSource(TableViewDataSource* source) { _dataSource = source; }
     /**
      * delegate
+     * @js NA
+     * @lua NA
      */
     TableViewDelegate* getDelegate() { return _tableViewDelegate; }
+    /**
+     * @code
+     * when this function bound to js or lua,the input params are changed
+     * in js:var setDelegate(var jsDelegate)
+     * in lua:local setDelegate()
+     * @endcode
+     */
     void setDelegate(TableViewDelegate* pDelegate) { _tableViewDelegate = pDelegate; }
 
     /**
      * determines how cell is ordered and filled in the view.
      */
-    void setVerticalFillOrder(TableViewVerticalFillOrder order);
-    TableViewVerticalFillOrder getVerticalFillOrder();
+    void setVerticalFillOrder(VerticalFillOrder order);
+    VerticalFillOrder getVerticalFillOrder();
 
-
-    bool initWithViewSize(Size size, Node* container = NULL);
     /**
      * Updates the content of the cell at a given index.
      *
      * @param idx index to find a cell
      */
-    void updateCellAtIndex(unsigned int idx);
+    void updateCellAtIndex(ssize_t idx);
     /**
      * Inserts a new cell at a given index
      *
      * @param idx location to insert
      */
-    void insertCellAtIndex(unsigned int idx);
+    void insertCellAtIndex(ssize_t idx);
     /**
      * Removes a cell at a given index
      *
      * @param idx index to find a cell
      */
-    void removeCellAtIndex(unsigned int idx);
+    void removeCellAtIndex(ssize_t idx);
     /**
      * reloads data from data source.  the view will be refreshed.
      */
@@ -212,29 +262,39 @@ public:
      * @param idx index
      * @return a cell at a given index
      */
-    TableViewCell *cellAtIndex(unsigned int idx);
+    TableViewCell *cellAtIndex(ssize_t idx);
 
-
-    virtual void scrollViewDidScroll(ScrollView* view);
-    virtual void scrollViewDidZoom(ScrollView* view) {}
-
-    virtual bool ccTouchBegan(Touch *pTouch, Event *pEvent);
-    virtual void ccTouchMoved(Touch *pTouch, Event *pEvent);
-    virtual void ccTouchEnded(Touch *pTouch, Event *pEvent);
-    virtual void ccTouchCancelled(Touch *pTouch, Event *pEvent);
+    // Overrides
+    virtual void scrollViewDidScroll(ScrollView* view) override;
+    virtual void scrollViewDidZoom(ScrollView* view)  override {}
+    virtual bool onTouchBegan(Touch *pTouch, Event *pEvent) override;
+    virtual void onTouchMoved(Touch *pTouch, Event *pEvent) override;
+    virtual void onTouchEnded(Touch *pTouch, Event *pEvent) override;
+    virtual void onTouchCancelled(Touch *pTouch, Event *pEvent) override;
 
 protected:
+    long __indexFromOffset(Point offset);
+    long _indexFromOffset(Point offset);
+    Point __offsetFromIndex(ssize_t index);
+    Point _offsetFromIndex(ssize_t index);
+
+    void _moveCellOutOfSight(TableViewCell *cell);
+    void _setIndexForCell(ssize_t index, TableViewCell *cell);
+    void _addCellIfNecessary(TableViewCell * cell);
+
+    void _updateCellPositions();
+
 
     TableViewCell *_touchedCell;
     /**
      * vertical direction of cell filling
      */
-    TableViewVerticalFillOrder _vordering;
+    VerticalFillOrder _vordering;
 
     /**
      * index set to query the indexes of the cells used.
      */
-    std::set<unsigned int>* _indices;
+    std::set<ssize_t>* _indices;
 
     /**
      * vector with all cell positions
@@ -244,11 +304,11 @@ protected:
     /**
      * cells that are currently in the table
      */
-    ArrayForObjectSorting* _cellsUsed;
+    Vector<TableViewCell*> _cellsUsed;
     /**
      * free list of cells
      */
-    ArrayForObjectSorting* _cellsFreed;
+    Vector<TableViewCell*> _cellsFreed;
     /**
      * weak link to the data source object
      */
@@ -258,18 +318,10 @@ protected:
      */
     TableViewDelegate* _tableViewDelegate;
 
-	ScrollViewDirection _oldDirection;
+    Direction _oldDirection;
 
-    int __indexFromOffset(Point offset);
-    unsigned int _indexFromOffset(Point offset);
-    Point __offsetFromIndex(unsigned int index);
-    Point _offsetFromIndex(unsigned int index);
+    bool _isUsedCellsDirty;
 
-    void _moveCellOutOfSight(TableViewCell *cell);
-    void _setIndexForCell(unsigned int index, TableViewCell *cell);
-    void _addCellIfNecessary(TableViewCell * cell);
-
-    void _updateCellPositions();
 public:
     void _updateContentSize();
 

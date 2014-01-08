@@ -5,11 +5,13 @@
 
 CurlTest::CurlTest()
 {
-    LabelTTF* label = LabelTTF::create("Curl Test", "Arial", 28);
+    auto label = LabelTTF::create("Curl Test", "Arial", 28);
     addChild(label, 0);
-    label->setPosition( ccp(VisibleRect::center().x, VisibleRect::top().y-50) );
+    label->setPosition( Point(VisibleRect::center().x, VisibleRect::top().y-50) );
 
-    setTouchEnabled(true);
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesEnded = CC_CALLBACK_2(CurlTest::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     // create a label to display the tip string
     _label = LabelTTF::create("Touch the screen to connect", "Arial", 22);
@@ -22,7 +24,7 @@ CurlTest::CurlTest()
 
 // the test code is
 // http://curl.haxx.se/mail/lib-2009-12/0071.html
-void CurlTest::ccTouchesEnded(Set *pTouches, Event *pEvent)
+void CurlTest::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
 {
     CURL *curl;
     CURLcode res;
@@ -58,9 +60,9 @@ CurlTest::~CurlTest()
 
 void CurlTestScene::runThisTest()
 {
-    Layer* pLayer = new CurlTest();
-    addChild(pLayer);
+    auto layer = new CurlTest();
+    addChild(layer);
 
-    Director::sharedDirector()->replaceScene(this);
-    pLayer->release();
+    Director::getInstance()->replaceScene(this);
+    layer->release();
 }

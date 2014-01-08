@@ -4,14 +4,13 @@
 
 #include "cocos2d.h"
 #include "../testBasic.h"
-#include "platform/platform.h"
 
 class TextureCacheTest : public Layer
 {
 public:
     TextureCacheTest();
     void addSprite();
-    void loadingCallBack(cocos2d::Object *obj);
+    void loadingCallBack(cocos2d::Texture2D *texture);
 
 private:
     cocos2d::LabelTTF *_labelLoading;

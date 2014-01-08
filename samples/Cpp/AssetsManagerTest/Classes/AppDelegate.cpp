@@ -8,7 +8,7 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 #include "ScriptingCore.h"
-#include "generated/jsb_cocos2dx_auto.hpp"
+#include "jsb_cocos2dx_auto.hpp"
 #include "cocos2d_specifics.hpp"
 
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32)
@@ -18,6 +18,7 @@
 
 USING_NS_CC;
 USING_NS_CC_EXT;
+using namespace std;
 using namespace CocosDenshion;
 
 AppDelegate::AppDelegate()
@@ -32,27 +33,28 @@ AppDelegate::~AppDelegate()
 bool AppDelegate::applicationDidFinishLaunching()
 {
     // initialize director
-    Director *pDirector = Director::sharedDirector();
-    pDirector->setOpenGLView(EGLView::sharedOpenGLView());
+    auto director = Director::getInstance();
+    director->setOpenGLView(EGLView::getInstance());
 
     // turn on display FPS
-    //pDirector->setDisplayStats(true);
+    //director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
-    pDirector->setAnimationInterval(1.0 / 60);
+    director->setAnimationInterval(1.0 / 60);
 
     ScriptingCore* sc = ScriptingCore::getInstance();
     sc->addRegisterCallback(register_all_cocos2dx);
     sc->addRegisterCallback(register_cocos2dx_js_extensions);
     
+    
     sc->start();
     
-    Scene *scene = Scene::create();
-    UpdateLayer *updateLayer = new UpdateLayer();
+    auto scene = Scene::create();
+    auto updateLayer = new UpdateLayer();
     scene->addChild(updateLayer);
     updateLayer->release();
     
-    pDirector->runWithScene(scene);
+    director->runWithScene(scene);
     
     return true;
 }
@@ -60,17 +62,17 @@ bool AppDelegate::applicationDidFinishLaunching()
 // This function will be called when the app is inactive. When comes a phone call,it's be invoked too
 void AppDelegate::applicationDidEnterBackground()
 {
-    Director::sharedDirector()->stopAnimation();
-    SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-    SimpleAudioEngine::sharedEngine()->pauseAllEffects();
+    Director::getInstance()->stopAnimation();
+	SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+    SimpleAudioEngine::getInstance()->pauseAllEffects();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground()
 {
-    Director::sharedDirector()->startAnimation();
-    SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
-    SimpleAudioEngine::sharedEngine()->resumeAllEffects();
+    Director::getInstance()->startAnimation();
+    SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+    SimpleAudioEngine::getInstance()->resumeAllEffects();
 }
 
 UpdateLayer::UpdateLayer()
@@ -85,8 +87,6 @@ UpdateLayer::UpdateLayer()
 
 UpdateLayer::~UpdateLayer()
 {
-    AssetsManager *pAssetsManager = getAssetsManager();
-    CC_SAFE_DELETE(pAssetsManager);
 }
 
 void UpdateLayer::update(cocos2d::Object *pSender)
@@ -94,7 +94,7 @@ void UpdateLayer::update(cocos2d::Object *pSender)
     pProgressLabel->setString("");
     
     // update resources
-    getAssetsManager()->update();
+    pAssetsManager->update();
     
     isUpdateItemClicked = true;
 }
@@ -116,7 +116,7 @@ void UpdateLayer::reset(cocos2d::Object *pSender)
     system(command.c_str());
 #endif
     // Delete recorded version codes.
-    getAssetsManager()->deleteVersion();
+    pAssetsManager->deleteVersion();
     
     createDownloadedDir();
 }
@@ -127,13 +127,13 @@ void UpdateLayer::enter(cocos2d::Object *pSender)
     // Because AssetsManager will set 
     if (! isUpdateItemClicked)
     {
-        vector<string> searchPaths = FileUtils::sharedFileUtils()->getSearchPaths();
+        vector<string> searchPaths = FileUtils::getInstance()->getSearchPaths();
         searchPaths.insert(searchPaths.begin(), pathToSave);
-        FileUtils::sharedFileUtils()->setSearchPaths(searchPaths);
+        FileUtils::getInstance()->setSearchPaths(searchPaths);
     }
     
-    ScriptEngineProtocol *pEngine = ScriptingCore::getInstance();
-    ScriptEngineManager::sharedManager()->setScriptEngine(pEngine);
+    auto pEngine = ScriptingCore::getInstance();
+    ScriptEngineManager::getInstance()->setScriptEngine(pEngine);
     ScriptingCore::getInstance()->runScript("main.js");
 }
 
@@ -141,48 +141,41 @@ bool UpdateLayer::init()
 {
     Layer::init();
     
+    /** Creates assets manager */
+    pAssetsManager = new AssetsManager("https://raw.github.com/minggo/AssetsManagerTest/master/package.zip",
+                                       "https://raw.github.com/minggo/AssetsManagerTest/master/version",
+                                       pathToSave.c_str());
+    pAssetsManager->setDelegate(this);
+    pAssetsManager->setConnectionTimeout(3);
+    addChild(pAssetsManager);
+    pAssetsManager->release();
+    
     createDownloadedDir();
     
-    Size size = Director::sharedDirector()->getWinSize();
+    auto size = Director::getInstance()->getWinSize();
 
     pItemReset = MenuItemFont::create("reset", CC_CALLBACK_1(UpdateLayer::reset,this));
     pItemEnter = MenuItemFont::create("enter", CC_CALLBACK_1(UpdateLayer::enter, this));
     pItemUpdate = MenuItemFont::create("update", CC_CALLBACK_1(UpdateLayer::update, this));
     
-    pItemEnter->setPosition(ccp(size.width/2, size.height/2 + 50));
-    pItemReset->setPosition(ccp(size.width/2, size.height/2));
-    pItemUpdate->setPosition(ccp(size.width/2, size.height/2 - 50));
+    pItemEnter->setPosition(Point(size.width/2, size.height/2 + 50));
+    pItemReset->setPosition(Point(size.width/2, size.height/2));
+    pItemUpdate->setPosition(Point(size.width/2, size.height/2 - 50));
     
-    Menu *menu = Menu::create(pItemUpdate, pItemEnter, pItemReset, NULL);
-    menu->setPosition(ccp(0,0));
+    auto menu = Menu::create(pItemUpdate, pItemEnter, pItemReset, NULL);
+    menu->setPosition(Point(0,0));
     addChild(menu);
     
     pProgressLabel = LabelTTF::create("", "Arial", 20);
-    pProgressLabel->setPosition(ccp(100, 50));
+    pProgressLabel->setPosition(Point(100, 50));
     addChild(pProgressLabel);
     
     return true;
 }
 
-AssetsManager* UpdateLayer::getAssetsManager()
-{
-    static AssetsManager *pAssetsManager = NULL;
-    
-    if (! pAssetsManager)
-    {
-        pAssetsManager = new AssetsManager("https://raw.github.com/minggo/AssetsManagerTest/master/package.zip",
-                                           "https://raw.github.com/minggo/AssetsManagerTest/master/version",
-                                           pathToSave.c_str());
-        pAssetsManager->setDelegate(this);
-        pAssetsManager->setConnectionTimeout(3);
-    }
-    
-    return pAssetsManager;
-}
-
 void UpdateLayer::createDownloadedDir()
 {
-    pathToSave = FileUtils::sharedFileUtils()->getWritablePath();
+    pathToSave = FileUtils::getInstance()->getWritablePath();
     pathToSave += "tmpdir";
     
     // Create the folder if it doesn't exist
@@ -204,12 +197,12 @@ void UpdateLayer::createDownloadedDir()
 
 void UpdateLayer::onError(AssetsManager::ErrorCode errorCode)
 {
-    if (errorCode == AssetsManager::kNoNewVersion)
+    if (errorCode == AssetsManager::ErrorCode::NO_NEW_VERSION)
     {
         pProgressLabel->setString("no new version");
     }
     
-    if (errorCode == AssetsManager::kNetwork)
+    if (errorCode == AssetsManager::ErrorCode::NETWORK)
     {
         pProgressLabel->setString("network error");
     }

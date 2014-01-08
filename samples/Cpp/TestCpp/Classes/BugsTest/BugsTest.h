@@ -8,8 +8,8 @@ class BugsTestMainLayer : public Layer
 public:
     virtual void onEnter();
 
-    virtual void ccTouchesBegan(Set *pTouches, Event *pEvent);
-    virtual void ccTouchesMoved(Set *pTouches, Event *pEvent);
+    void onTouchesBegan(const std::vector<Touch*>& touches, Event  *event);
+    void onTouchesMoved(const std::vector<Touch*>&touches, Event  *event);
 
 protected:
     Point _beginPos;
@@ -20,7 +20,7 @@ class BugsTestBaseLayer : public Layer
 {
 public:
     virtual void onEnter();
-    void backCallback(Object* pSender);
+    void backCallback(Object* sender);
 };
 
 class BugsTestScene : public TestScene

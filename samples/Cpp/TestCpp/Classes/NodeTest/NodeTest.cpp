@@ -22,40 +22,33 @@ Layer* restartCocosNodeAction();
 
 static int sceneIdx = -1; 
 
-#define MAX_LAYER    14
 
-Layer* createCocosNodeLayer(int nIndex)
+static std::function<Layer*()> createFunctions[] =
 {
-    switch(nIndex)
-    {
-        case 0: return new CameraCenterTest();
-        case 1: return new Test2();
-        case 2: return new Test4();
-        case 3: return new Test5();
-        case 4: return new Test6();
-        case 5: return new StressTest1();
-        case 6: return new StressTest2();
-        case 7: return new NodeToWorld();
-        case 8: return new SchedulerTest1();
-        case 9: return new CameraOrbitTest();
-        case 10: return new CameraZoomTest();
-        case 11: return new ConvertToNode();
-        case 12: return new NodeOpaqueTest();
-        case 13: return new NodeNonOpaqueTest();
-    }
+    CL(CameraCenterTest),
+    CL(Test2),
+    CL(Test4),
+    CL(Test5),
+    CL(Test6),
+    CL(StressTest1),
+    CL(StressTest2),
+    CL(NodeToWorld),
+    CL(SchedulerTest1),
+    CL(CameraOrbitTest),
+    CL(CameraZoomTest),
+    CL(ConvertToNode),
+    CL(NodeOpaqueTest),
+    CL(NodeNonOpaqueTest),
+};
 
-    return NULL;
-}
+#define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
 
 Layer* nextCocosNodeAction()
 {
     sceneIdx++;
     sceneIdx = sceneIdx % MAX_LAYER;
 
-    Layer* pLayer = createCocosNodeLayer(sceneIdx);
-    pLayer->autorelease();
-
-    return pLayer;
+    return createFunctions[sceneIdx]();
 }
 
 Layer* backCocosNodeAction()
@@ -65,18 +58,12 @@ Layer* backCocosNodeAction()
     if( sceneIdx < 0 )
         sceneIdx += total;    
     
-    Layer* pLayer = createCocosNodeLayer(sceneIdx);
-    pLayer->autorelease();
-
-    return pLayer;
+    return createFunctions[sceneIdx]();
 }
 
 Layer* restartCocosNodeAction()
 {
-    Layer* pLayer = createCocosNodeLayer(sceneIdx);
-    pLayer->autorelease();
-
-    return pLayer;
+    return createFunctions[sceneIdx]();
 } 
 
 
@@ -88,12 +75,12 @@ TestCocosNodeDemo::~TestCocosNodeDemo(void)
 {
 }
 
-std::string TestCocosNodeDemo::title()
+std::string TestCocosNodeDemo::title() const
 {
     return "No title";
 }
 
-std::string TestCocosNodeDemo::subtitle()
+std::string TestCocosNodeDemo::subtitle() const
 {
     return "";
 }
@@ -103,28 +90,28 @@ void TestCocosNodeDemo::onEnter()
     BaseTest::onEnter();
 }
 
-void TestCocosNodeDemo::restartCallback(Object* pSender)
+void TestCocosNodeDemo::restartCallback(Object* sender)
 {
-    Scene* s = new CocosNodeTestScene();//CCScene::create();
+    auto s = new CocosNodeTestScene();//CCScene::create();
     s->addChild(restartCocosNodeAction()); 
 
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
-void TestCocosNodeDemo::nextCallback(Object* pSender)
+void TestCocosNodeDemo::nextCallback(Object* sender)
 {
-    Scene* s = new CocosNodeTestScene();//CCScene::create();
+    auto s = new CocosNodeTestScene();//CCScene::create();
     s->addChild( nextCocosNodeAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
-void TestCocosNodeDemo::backCallback(Object* pSender)
+void TestCocosNodeDemo::backCallback(Object* sender)
 {
-    Scene* s = new CocosNodeTestScene();//CCScene::create();
+    auto s = new CocosNodeTestScene();//CCScene::create();
     s->addChild( backCocosNodeAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 } 
 
@@ -138,15 +125,15 @@ void Test2::onEnter()
 {
     TestCocosNodeDemo::onEnter();
 
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
     
-    Sprite *sp1 = Sprite::create(s_pPathSister1);
-    Sprite *sp2 = Sprite::create(s_pPathSister2);
-    Sprite *sp3 = Sprite::create(s_pPathSister1);
-    Sprite *sp4 = Sprite::create(s_pPathSister2);
+    auto sp1 = Sprite::create(s_pathSister1);
+    auto sp2 = Sprite::create(s_pathSister2);
+    auto sp3 = Sprite::create(s_pathSister1);
+    auto sp4 = Sprite::create(s_pathSister2);
     
-    sp1->setPosition(ccp(100, s.height /2 ));
-    sp2->setPosition(ccp(380, s.height /2 ));
+    sp1->setPosition(Point(100, s.height /2 ));
+    sp2->setPosition(Point(380, s.height /2 ));
     addChild(sp1);
     addChild(sp2);
     
@@ -156,24 +143,24 @@ void Test2::onEnter()
     sp1->addChild(sp3);
     sp2->addChild(sp4);
     
-    ActionInterval* a1 = RotateBy::create(2, 360);
-    ActionInterval* a2 = ScaleBy::create(2, 2);
+    auto a1 = RotateBy::create(2, 360);
+    auto a2 = ScaleBy::create(2, 2);
     
-    Action* action1 = RepeatForever::create( Sequence::create(a1, a2, a2->reverse(), NULL) );
-    Action* action2 = RepeatForever::create( Sequence::create(
+    auto action1 = RepeatForever::create( Sequence::create(a1, a2, a2->reverse(), NULL) );
+    auto action2 = RepeatForever::create( Sequence::create(
 																	a1->clone(),
 																	a2->clone(),
 																	a2->reverse(),
 																	NULL)
 												);
     
-    sp2->setAnchorPoint(ccp(0,0));
+    sp2->setAnchorPoint(Point(0,0));
     
     sp1->runAction(action1);
     sp2->runAction(action2);
 }
 
-std::string Test2::title()
+std::string Test2::title() const
 {
     return "anchorPoint and children";
 }
@@ -189,11 +176,11 @@ std::string Test2::title()
 
 Test4::Test4()
 {
-    Sprite *sp1 = Sprite::create(s_pPathSister1);
-    Sprite *sp2 = Sprite::create(s_pPathSister2);
+    auto sp1 = Sprite::create(s_pathSister1);
+    auto sp2 = Sprite::create(s_pathSister2);
     
-    sp1->setPosition( ccp(100,160) );
-    sp2->setPosition( ccp(380,160) );
+    sp1->setPosition( Point(100,160) );
+    sp2->setPosition( Point(380,160) );
     
     addChild(sp1, 0, 2);
     addChild(sp2, 0, 3);
@@ -204,8 +191,8 @@ Test4::Test4()
 
 void Test4::delay2(float dt)
 {
-    Sprite* node = (Sprite*)(getChildByTag(2));
-    Action* action1 = RotateBy::create(1, 360);
+    auto node = static_cast<Sprite*>(getChildByTag(2));
+    auto action1 = RotateBy::create(1, 360);
     node->runAction(action1);
 }
 
@@ -215,7 +202,7 @@ void Test4::delay4(float dt)
     removeChildByTag(3, false);
 }
 
-std::string Test4::title()
+std::string Test4::title() const
 {
     return "tags";
 }
@@ -228,16 +215,16 @@ std::string Test4::title()
 //------------------------------------------------------------------
 Test5::Test5()
 {
-    Sprite* sp1 = Sprite::create(s_pPathSister1);
-    Sprite* sp2 = Sprite::create(s_pPathSister2);
+    auto sp1 = Sprite::create(s_pathSister1);
+    auto sp2 = Sprite::create(s_pathSister2);
     
-    sp1->setPosition(ccp(100,160));
-    sp2->setPosition(ccp(380,160));
+    sp1->setPosition(Point(100,160));
+    sp2->setPosition(Point(380,160));
 
-    RotateBy* rot = RotateBy::create(2, 360);
-    ActionInterval* rot_back = rot->reverse();
-    Action* forever = RepeatForever::create(Sequence::create(rot, rot_back, NULL));
-    Action* forever2 = forever->clone();
+    auto rot = RotateBy::create(2, 360);
+    auto rot_back = rot->reverse();
+    auto forever = RepeatForever::create(Sequence::create(rot, rot_back, NULL));
+    auto forever2 = forever->clone();
     forever->setTag(101);
     forever2->setTag(102);
                                                   
@@ -252,8 +239,8 @@ Test5::Test5()
 
 void Test5::addAndRemove(float dt)
 {
-    Node* sp1 = getChildByTag(kTagSprite1);
-    Node* sp2 = getChildByTag(kTagSprite2);
+    auto sp1 = getChildByTag(kTagSprite1);
+    auto sp2 = getChildByTag(kTagSprite2);
 
     sp1->retain();
     sp2->retain();
@@ -268,7 +255,7 @@ void Test5::addAndRemove(float dt)
     sp2->release();
 }
 
-std::string Test5::title()
+std::string Test5::title() const
 {
     return "remove and cleanup";
 }
@@ -280,22 +267,22 @@ std::string Test5::title()
 //------------------------------------------------------------------
 Test6::Test6()
 {
-    Sprite* sp1 = Sprite::create(s_pPathSister1);
-    Sprite* sp11 = Sprite::create(s_pPathSister1);
+    auto sp1 = Sprite::create(s_pathSister1);
+    auto sp11 = Sprite::create(s_pathSister1);
 
-    Sprite* sp2 = Sprite::create(s_pPathSister2);
-    Sprite* sp21 = Sprite::create(s_pPathSister2);
+    auto sp2 = Sprite::create(s_pathSister2);
+    auto sp21 = Sprite::create(s_pathSister2);
         
-    sp1->setPosition(ccp(100,160));
-    sp2->setPosition(ccp(380,160));
+    sp1->setPosition(Point(100,160));
+    sp2->setPosition(Point(380,160));
         
-    ActionInterval* rot = RotateBy::create(2, 360);
-    ActionInterval* rot_back = rot->reverse();
-    Action* forever1 = RepeatForever::create(Sequence::create(rot, rot_back, NULL));
-    Action* forever11 = forever1->clone();
+    auto rot = RotateBy::create(2, 360);
+    auto rot_back = rot->reverse();
+    auto forever1 = RepeatForever::create(Sequence::create(rot, rot_back, NULL));
+    auto forever11 = forever1->clone();
 
-    Action* forever2 = forever1->clone();
-    Action* forever21 = forever1->clone();
+    auto forever2 = forever1->clone();
+    auto forever21 = forever1->clone();
     
     addChild(sp1, 0, kTagSprite1);
     sp1->addChild(sp11);
@@ -312,8 +299,8 @@ Test6::Test6()
 
 void Test6::addAndRemove(float dt)
 {
-    Node* sp1 = getChildByTag(kTagSprite1);
-    Node* sp2 = getChildByTag(kTagSprite2);
+    auto sp1 = getChildByTag(kTagSprite1);
+    auto sp2 = getChildByTag(kTagSprite2);
 
     sp1->retain();
     sp2->retain();
@@ -329,7 +316,7 @@ void Test6::addAndRemove(float dt)
 
 }
 
-std::string Test6::title()
+std::string Test6::title() const
 {
     return "remove/cleanup with children";
 }
@@ -341,12 +328,12 @@ std::string Test6::title()
 //------------------------------------------------------------------
 StressTest1::StressTest1()
 {
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
 
-    Sprite *sp1 = Sprite::create(s_pPathSister1);
+    auto sp1 = Sprite::create(s_pathSister1);
     addChild(sp1, 0, kTagSprite1);
     
-    sp1->setPosition( ccp(s.width/2, s.height/2) );        
+    sp1->setPosition( Point(s.width/2, s.height/2) );        
 
     schedule( schedule_selector(StressTest1::shouldNotCrash), 1.0f);
 }
@@ -355,20 +342,20 @@ void StressTest1::shouldNotCrash(float dt)
 {
     unschedule(schedule_selector(StressTest1::shouldNotCrash));
 
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
 
     // if the node has timers, it crashes
-    Node* explosion = ParticleSun::create();
-    ((ParticleSun*)explosion)->setTexture(TextureCache::sharedTextureCache()->addImage("Images/fire.png"));
+    auto explosion = ParticleSun::create();
+    explosion->setTexture(Director::getInstance()->getTextureCache()->addImage("Images/fire.png"));
     
     // if it doesn't, it works Ok.
-//    CocosNode *explosion = [Sprite create:@"grossinis_sister2.png");
+//    auto explosion = [Sprite create:@"grossinis_sister2.png");
 
-    explosion->setPosition( ccp(s.width/2, s.height/2) );
+    explosion->setPosition( Point(s.width/2, s.height/2) );
     
     runAction( Sequence::create(
                             RotateBy::create(2, 360),
-                            CallFuncN::create(this, callfuncN_selector(StressTest1::removeMe)), 
+                            CallFuncN::create(CC_CALLBACK_1(StressTest1::removeMe, this)),
                             NULL) );
     
     addChild(explosion);
@@ -382,7 +369,7 @@ void StressTest1::removeMe(Node* node)
 }
 
 
-std::string StressTest1::title()
+std::string StressTest1::title() const
 {
     return "stress test #1: no crashes";
 }
@@ -394,25 +381,25 @@ std::string StressTest1::title()
 //------------------------------------------------------------------
 StressTest2::StressTest2()
 {
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
     
-    Layer* sublayer = Layer::create();
+    auto sublayer = Layer::create();
     
-    Sprite *sp1 = Sprite::create(s_pPathSister1);
-    sp1->setPosition( ccp(80, s.height/2) );
+    auto sp1 = Sprite::create(s_pathSister1);
+    sp1->setPosition( Point(80, s.height/2) );
     
-    ActionInterval* move = MoveBy::create(3, ccp(350,0));
-    ActionInterval* move_ease_inout3 = EaseInOut::create(move->clone(), 2.0f);
-    ActionInterval* move_ease_inout_back3 = move_ease_inout3->reverse();
-    Sequence* seq3 = Sequence::create( move_ease_inout3, move_ease_inout_back3, NULL);
+    auto move = MoveBy::create(3, Point(350,0));
+    auto move_ease_inout3 = EaseInOut::create(move->clone(), 2.0f);
+    auto move_ease_inout_back3 = move_ease_inout3->reverse();
+    auto seq3 = Sequence::create( move_ease_inout3, move_ease_inout_back3, NULL);
     sp1->runAction( RepeatForever::create(seq3) );
     sublayer->addChild(sp1, 1);
 
-    ParticleFire* fire = ParticleFire::create();
-    fire->setTexture(TextureCache::sharedTextureCache()->addImage("Images/fire.png"));
-    fire->setPosition( ccp(80, s.height/2-50) );
+    auto fire = ParticleFire::create();
+    fire->setTexture(Director::getInstance()->getTextureCache()->addImage("Images/fire.png"));
+    fire->setPosition( Point(80, s.height/2-50) );
     
-    ActionInterval* copy_seq3 = seq3->clone();
+    auto copy_seq3 = seq3->clone();
     
     fire->runAction( RepeatForever::create(copy_seq3) );
     sublayer->addChild(fire, 2);
@@ -425,11 +412,11 @@ StressTest2::StressTest2()
 void StressTest2::shouldNotLeak(float dt)
 {
     unschedule( schedule_selector(StressTest2::shouldNotLeak) );
-    Layer* sublayer = (Layer*)getChildByTag(kTagSprite1);
+    auto sublayer = static_cast<Layer*>( getChildByTag(kTagSprite1) );
     sublayer->removeAllChildrenWithCleanup(true); 
 }
 
-std::string StressTest2::title()
+std::string StressTest2::title() const
 {
     return "stress test #2: no leaks";
 }
@@ -442,7 +429,7 @@ std::string StressTest2::title()
 //------------------------------------------------------------------
 SchedulerTest1::SchedulerTest1()
 {
-    Layer*layer = Layer::create();
+    auto layer = Layer::create();
     //CCLOG("retain count after init is %d", layer->retainCount());                // 1
     
     addChild(layer, 0);
@@ -460,7 +447,7 @@ void SchedulerTest1::doSomething(float dt)
 
 }
 
-std::string SchedulerTest1::title()
+std::string SchedulerTest1::title() const
 {
     return "cocosnode scheduler test #1";
 }
@@ -477,29 +464,29 @@ NodeToWorld::NodeToWorld()
     //  - It tests different anchor Points
     //  - It tests different children anchor points
 
-    Sprite *back = Sprite::create(s_back3);
+    auto back = Sprite::create(s_back3);
     addChild( back, -10);
-    back->setAnchorPoint( ccp(0,0) );
-    Size backSize = back->getContentSize();
+    back->setAnchorPoint( Point(0,0) );
+    auto backSize = back->getContentSize();
     
-    MenuItem *item = MenuItemImage::create(s_PlayNormal, s_PlaySelect);
-    Menu *menu = Menu::create(item, NULL);
+    auto item = MenuItemImage::create(s_PlayNormal, s_PlaySelect);
+    auto menu = Menu::create(item, NULL);
     menu->alignItemsVertically();
-    menu->setPosition( ccp(backSize.width/2, backSize.height/2));
+    menu->setPosition( Point(backSize.width/2, backSize.height/2));
     back->addChild(menu);
     
-    ActionInterval* rot = RotateBy::create(5, 360);
-    Action* fe = RepeatForever::create( rot);
+    auto rot = RotateBy::create(5, 360);
+    auto fe = RepeatForever::create( rot);
     item->runAction( fe );
     
-    ActionInterval* move = MoveBy::create(3, ccp(200,0));
-    ActionInterval* move_back = move->reverse();
-    Sequence* seq = Sequence::create( move, move_back, NULL);
-    Action* fe2 = RepeatForever::create(seq);
+    auto move = MoveBy::create(3, Point(200,0));
+    auto move_back = move->reverse();
+    auto seq = Sequence::create( move, move_back, NULL);
+    auto fe2 = RepeatForever::create(seq);
     back->runAction(fe2);
 }
 
-std::string NodeToWorld::title()
+std::string NodeToWorld::title() const
 {
     return "nodeToParent transform";
 }
@@ -512,22 +499,22 @@ std::string NodeToWorld::title()
 void CameraOrbitTest::onEnter()
 {
     TestCocosNodeDemo::onEnter();
-    Director::sharedDirector()->setProjection(kDirectorProjection3D);
+    Director::getInstance()->setProjection(Director::Projection::_3D);
 }
 
 void CameraOrbitTest::onExit()
 {
-    Director::sharedDirector()->setProjection(kDirectorProjection2D);
+    Director::getInstance()->setProjection(Director::Projection::_2D);
     TestCocosNodeDemo::onExit();
 }
 
 CameraOrbitTest::CameraOrbitTest()
 {
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
 
-    Sprite *p = Sprite::create(s_back3);
+    auto p = Sprite::create(s_back3);
     addChild( p, 0);
-    p->setPosition( ccp(s.width/2, s.height/2) );
+    p->setPosition( Point(s.width/2, s.height/2) );
     p->setOpacity( 128 );
     
     Sprite* sprite;
@@ -536,27 +523,27 @@ CameraOrbitTest::CameraOrbitTest()
 
     // LEFT
     s = p->getContentSize();
-    sprite = Sprite::create(s_pPathGrossini);
+    sprite = Sprite::create(s_pathGrossini);
     sprite->setScale(0.5f);
     p->addChild(sprite, 0);        
-    sprite->setPosition( ccp(s.width/4*1, s.height/2) );
+    sprite->setPosition( Point(s.width/4*1, s.height/2) );
     orbit = OrbitCamera::create(2, 1, 0, 0, 360, 0, 0);
     sprite->runAction( RepeatForever::create( orbit ) );
     
     // CENTER
-    sprite = Sprite::create(s_pPathGrossini);
+    sprite = Sprite::create(s_pathGrossini);
     sprite->setScale( 1.0f );
     p->addChild(sprite, 0);        
-    sprite->setPosition( ccp(s.width/4*2, s.height/2) );
+    sprite->setPosition( Point(s.width/4*2, s.height/2) );
     orbit = OrbitCamera::create(2, 1, 0, 0, 360, 45, 0);
     sprite->runAction( RepeatForever::create( orbit ) );
     
     
     // RIGHT
-    sprite = Sprite::create(s_pPathGrossini);
+    sprite = Sprite::create(s_pathGrossini);
     sprite->setScale( 2.0f );
     p->addChild(sprite, 0);        
-    sprite->setPosition( ccp(s.width/4*3, s.height/2) );
+    sprite->setPosition( Point(s.width/4*3, s.height/2) );
     ss = sprite->getContentSize();        
     orbit = OrbitCamera::create(2, 1, 0, 0, 360, 90, -45),
     sprite->runAction( RepeatForever::create(orbit) );
@@ -569,7 +556,7 @@ CameraOrbitTest::CameraOrbitTest()
     setScale( 1 );
 }
 
-std::string CameraOrbitTest::title()
+std::string CameraOrbitTest::title() const
 {
     return "Camera Orbit test";
 }
@@ -584,39 +571,39 @@ void CameraZoomTest::onEnter()
 {
     TestCocosNodeDemo::onEnter();
     
-    Director::sharedDirector()->setProjection(kDirectorProjection3D);
+    Director::getInstance()->setProjection(Director::Projection::_3D);
 }
 
 void CameraZoomTest::onExit()
 {
-    Director::sharedDirector()->setProjection(kDirectorProjection2D);
+    Director::getInstance()->setProjection(Director::Projection::_2D);
     TestCocosNodeDemo::onExit();
 }
 
 CameraZoomTest::CameraZoomTest()
 {
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
     
     Sprite *sprite;
-    Camera *cam;
+//    Camera *cam;
     
     // LEFT
-    sprite = Sprite::create(s_pPathGrossini);
+    sprite = Sprite::create(s_pathGrossini);
     addChild( sprite, 0);        
-    sprite->setPosition( ccp(s.width/4*1, s.height/2) );
-    cam = sprite->getCamera();
-    cam->setEyeXYZ(0, 0, 415/2);
-    cam->setCenterXYZ(0, 0, 0);
-    
+    sprite->setPosition( Point(s.width/4*1, s.height/2) );
+//    cam = sprite->getCamera();
+//    cam->setEye(0, 0, 415/2);
+//    cam->setCenter(0, 0, 0);
+
     // CENTER
-    sprite = Sprite::create(s_pPathGrossini);
+    sprite = Sprite::create(s_pathGrossini);
     addChild( sprite, 0, 40);
-    sprite->setPosition(ccp(s.width/4*2, s.height/2));
+    sprite->setPosition(Point(s.width/4*2, s.height/2));
     
     // RIGHT
-    sprite = Sprite::create(s_pPathGrossini);
+    sprite = Sprite::create(s_pathGrossini);
     addChild( sprite, 0, 20);
-    sprite->setPosition(ccp(s.width/4*3, s.height/2));
+    sprite->setPosition(Point(s.width/4*3, s.height/2));
 
     _z = 0;
     scheduleUpdate();
@@ -625,20 +612,20 @@ CameraZoomTest::CameraZoomTest()
 void CameraZoomTest::update(float dt)
 {
     Node *sprite;
-    Camera *cam;
-    
+//    Camera *cam;
+
     _z += dt * 100;
     
     sprite = getChildByTag(20);
-    cam = sprite->getCamera();
-    cam->setEyeXYZ(0, 0, _z);
-    
+//    cam = sprite->getCamera();
+//    cam->setEye(0, 0, _z);
+
     sprite = getChildByTag(40);
-    cam = sprite->getCamera();
-    cam->setEyeXYZ(0, 0, -_z);    
+//    cam = sprite->getCamera();
+//    cam->setEye(0, 0, -_z);    
 }
 
-std::string CameraZoomTest::title()
+std::string CameraZoomTest::title() const
 {
     return "Camera Zoom test";
 }
@@ -650,7 +637,7 @@ std::string CameraZoomTest::title()
 //------------------------------------------------------------------
 CameraCenterTest::CameraCenterTest()
 {
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
             
     Sprite *sprite;
     OrbitCamera *orbit;
@@ -658,21 +645,21 @@ CameraCenterTest::CameraCenterTest()
     // LEFT-TOP
     sprite = Sprite::create("Images/white-512x512.png");
     addChild( sprite, 0);
-    sprite->setPosition(ccp(s.width/5*1, s.height/5*1));
-    sprite->setColor(ccRED);
-    sprite->setTextureRect(CCRectMake(0, 0, 120, 50));
+    sprite->setPosition(Point(s.width/5*1, s.height/5*1));
+    sprite->setColor(Color3B::RED);
+    sprite->setTextureRect(Rect(0, 0, 120, 50));
     orbit = OrbitCamera::create(10, 1, 0, 0, 360, 0, 0);
     sprite->runAction(RepeatForever::create( orbit ));
-//        [sprite setAnchorPoint: ccp(0,1));
+//        [sprite setAnchorPoint: Point(0,1));
 
     
     
     // LEFT-BOTTOM
     sprite = Sprite::create("Images/white-512x512.png");
     addChild( sprite, 0, 40);
-    sprite->setPosition(ccp(s.width/5*1, s.height/5*4));
-    sprite->setColor(ccBLUE);
-    sprite->setTextureRect(CCRectMake(0, 0, 120, 50));
+    sprite->setPosition(Point(s.width/5*1, s.height/5*4));
+    sprite->setColor(Color3B::BLUE);
+    sprite->setTextureRect(Rect(0, 0, 120, 50));
     orbit = OrbitCamera::create(10, 1, 0, 0, 360, 0, 0);
     sprite->runAction(RepeatForever::create( orbit ));
 
@@ -680,9 +667,9 @@ CameraCenterTest::CameraCenterTest()
     // RIGHT-TOP
     sprite = Sprite::create("Images/white-512x512.png");
     addChild( sprite, 0);    
-    sprite->setPosition(ccp(s.width/5*4, s.height/5*1));
-    sprite->setColor(ccYELLOW);
-    sprite->setTextureRect(CCRectMake(0, 0, 120, 50));
+    sprite->setPosition(Point(s.width/5*4, s.height/5*1));
+    sprite->setColor(Color3B::YELLOW);
+    sprite->setTextureRect(Rect(0, 0, 120, 50));
     orbit = OrbitCamera::create(10, 1, 0, 0, 360, 0, 0);
     sprite->runAction(RepeatForever::create( orbit) );
 
@@ -690,28 +677,28 @@ CameraCenterTest::CameraCenterTest()
     // RIGHT-BOTTOM
     sprite = Sprite::create("Images/white-512x512.png");
     addChild( sprite, 0, 40);
-    sprite->setPosition(ccp(s.width/5*4, s.height/5*4));
-    sprite->setColor(ccGREEN);
-    sprite->setTextureRect(CCRectMake(0, 0, 120, 50));
+    sprite->setPosition(Point(s.width/5*4, s.height/5*4));
+    sprite->setColor(Color3B::GREEN);
+    sprite->setTextureRect(Rect(0, 0, 120, 50));
     orbit = OrbitCamera::create(10, 1, 0, 0, 360, 0, 0);
     sprite->runAction( RepeatForever::create( orbit ) );
 
     // CENTER
     sprite = Sprite::create("Images/white-512x512.png");
     addChild( sprite, 0, 40);
-    sprite->setPosition(ccp(s.width/2, s.height/2));
-    sprite->setColor(ccWHITE);
-    sprite->setTextureRect(CCRectMake(0, 0, 120, 50));
+    sprite->setPosition(Point(s.width/2, s.height/2));
+    sprite->setColor(Color3B::WHITE);
+    sprite->setTextureRect(Rect(0, 0, 120, 50));
     orbit = OrbitCamera::create(10, 1, 0, 0, 360, 0, 0);
     sprite->runAction(RepeatForever::create( orbit ) );
 }
 
-std::string CameraCenterTest::title()
+std::string CameraCenterTest::title() const
 {
     return "Camera Center test";
 }
 
-std::string CameraCenterTest::subtitle()
+std::string CameraCenterTest::subtitle() const
 {
     return "Sprites should rotate at the same speed";
 }
@@ -723,17 +710,20 @@ std::string CameraCenterTest::subtitle()
 //------------------------------------------------------------------
 ConvertToNode::ConvertToNode()
 {
-    setTouchEnabled(true);
-    Size s = Director::sharedDirector()->getWinSize();
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesEnded = CC_CALLBACK_2(ConvertToNode::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    
+    auto s = Director::getInstance()->getWinSize();
 
-    RotateBy* rotate = RotateBy::create(10, 360);
-    RepeatForever* action = RepeatForever::create(rotate);
+    auto rotate = RotateBy::create(10, 360);
+    auto action = RepeatForever::create(rotate);
     for(int i = 0; i < 3; i++)
     {
-        Sprite *sprite = Sprite::create("Images/grossini.png");
-        sprite->setPosition(ccp( s.width/4*(i+1), s.height/2));
+        auto sprite = Sprite::create("Images/grossini.png");
+        sprite->setPosition(Point( s.width/4*(i+1), s.height/2));
 
-        Sprite *point = Sprite::create("Images/r1.png");
+        auto point = Sprite::create("Images/r1.png");
         point->setScale(0.25f);
         point->setPosition(sprite->getPosition());
         addChild(point, 10, 100 + i);
@@ -741,35 +731,32 @@ ConvertToNode::ConvertToNode()
         switch(i)
         {
         case 0:
-            sprite->setAnchorPoint(PointZero);
+            sprite->setAnchorPoint(Point::ZERO);
             break;
         case 1:
-            sprite->setAnchorPoint(ccp(0.5f, 0.5f));
+            sprite->setAnchorPoint(Point(0.5f, 0.5f));
             break;
         case 2:
-            sprite->setAnchorPoint(ccp(1,1));
+            sprite->setAnchorPoint(Point(1,1));
             break;
         }
 
         point->setPosition(sprite->getPosition());
 
-        RepeatForever* copy = (RepeatForever*) action->copy();
-        copy->autorelease();
-        sprite->runAction(copy);
+        sprite->runAction( action->clone() );
         addChild(sprite, i);
     }
 }
 
-void ConvertToNode::ccTouchesEnded(Set* touches, Event *event)
+void ConvertToNode::onTouchesEnded(const std::vector<Touch*>& touches, Event *event)
 {
-    for( SetIterator it = touches->begin(); it != touches->end(); ++it)
+    for( auto& touch : touches)
     {
-        Touch* touch = (Touch*)(*it);
-        Point location = touch->getLocation();
+        auto location = touch->getLocation();
 
         for( int i = 0; i < 3; i++)
         {
-            Node *node = getChildByTag(100+i);
+            auto node = getChildByTag(100+i);
             Point p1, p2;
 
             p1 = node->convertToNodeSpaceAR(location);
@@ -780,12 +767,12 @@ void ConvertToNode::ccTouchesEnded(Set* touches, Event *event)
     }    
 }
 
-std::string ConvertToNode::title()
+std::string ConvertToNode::title() const
 {
     return "Convert To Node Space";
 }
 
-std::string ConvertToNode::subtitle()
+std::string ConvertToNode::subtitle() const
 {
     return "testing convertToNodeSpace / AR. Touch and see console";
 }
@@ -799,19 +786,18 @@ NodeOpaqueTest::NodeOpaqueTest()
     for (int i = 0; i < 50; i++)
     {
         background = Sprite::create("Images/background1.png");
-        ccBlendFunc blendFunc = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
-        background->setBlendFunc(blendFunc);
-        background->setAnchorPoint(PointZero);
+        background->setBlendFunc( BlendFunc::ALPHA_PREMULTIPLIED );
+        background->setAnchorPoint(Point::ZERO);
         addChild(background);
     }
 }
 
-std::string NodeOpaqueTest::title()
+std::string NodeOpaqueTest::title() const
 {
     return "Node Opaque Test";
 }
 
-std::string NodeOpaqueTest::subtitle()
+std::string NodeOpaqueTest::subtitle() const
 {
     return "Node rendered with GL_BLEND disabled";
 }
@@ -825,26 +811,26 @@ NodeNonOpaqueTest::NodeNonOpaqueTest()
     for (int i = 0; i < 50; i++)
     {
         background = Sprite::create("Images/background1.jpg");
-        background->setBlendFunc(kBlendFuncDisable);
-        background->setAnchorPoint(PointZero);
+        background->setBlendFunc(BlendFunc::DISABLE);
+        background->setAnchorPoint(Point::ZERO);
         addChild(background);
     }
 }
 
-std::string NodeNonOpaqueTest::title()
+std::string NodeNonOpaqueTest::title() const
 {
     return "Node Non Opaque Test";
 }
 
-std::string NodeNonOpaqueTest::subtitle()
+std::string NodeNonOpaqueTest::subtitle() const
 {
     return "Node rendered with GL_BLEND enabled";
 }
 
 void CocosNodeTestScene::runThisTest()
 {
-    Layer* pLayer = nextCocosNodeAction();
-    addChild(pLayer);
+    auto layer = nextCocosNodeAction();
+    addChild(layer);
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }

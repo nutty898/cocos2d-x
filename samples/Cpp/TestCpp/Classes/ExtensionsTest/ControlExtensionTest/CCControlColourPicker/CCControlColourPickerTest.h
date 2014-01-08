@@ -24,7 +24,7 @@
  */
 
 #include "../CCControlScene.h"
-#include "cocos-ext.h"
+#include "extensions/cocos-ext.h"
 
 USING_NS_CC_EXT;
 
@@ -35,7 +35,7 @@ public:
     virtual ~ControlColourPickerTest();
     bool init();
     /** Callback for the change value. */
-    void colourValueChanged(Object *sender, ControlEvent controlEvent);
+    void colourValueChanged(Object *sender, Control::EventType controlEvent);
 
     CC_SYNTHESIZE_RETAIN(LabelTTF*, _colorLabel, ColorLabel)
 

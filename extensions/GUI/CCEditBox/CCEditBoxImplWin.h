@@ -30,7 +30,7 @@
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 
-#include "ExtensionMacros.h"
+#include "extensions/ExtensionMacros.h"
 #include "CCEditBoxImpl.h"
 
 NS_CC_EXT_BEGIN
@@ -40,19 +40,26 @@ class EditBox;
 class EditBoxImplWin : public EditBoxImpl
 {
 public:
+    /**
+     * @js NA
+     */
     EditBoxImplWin(EditBox* pEditText);
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual ~EditBoxImplWin();
     
     virtual bool initWithSize(const Size& size);
 	virtual void setFont(const char* pFontName, int fontSize);
-    virtual void setFontColor(const ccColor3B& color);
+    virtual void setFontColor(const Color3B& color);
     virtual void setPlaceholderFont(const char* pFontName, int fontSize);
-    virtual void setPlaceholderFontColor(const ccColor3B& color);
-    virtual void setInputMode(EditBoxInputMode inputMode);
-    virtual void setInputFlag(EditBoxInputFlag inputFlag);
+    virtual void setPlaceholderFontColor(const Color3B& color);
+    virtual void setInputMode(EditBox::InputMode inputMode);
+    virtual void setInputFlag(EditBox::InputFlag inputFlag);
     virtual void setMaxLength(int maxLength);
     virtual int  getMaxLength();
-    virtual void setReturnType(KeyboardReturnType returnType);
+    virtual void setReturnType(EditBox::KeyboardReturnType returnType);
     virtual bool isEditing();
     
     virtual void setText(const char* pText);
@@ -62,24 +69,32 @@ public:
 	virtual void setVisible(bool visible);
     virtual void setContentSize(const Size& size);
     virtual void setAnchorPoint(const Point& anchorPoint);
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual void visit(void);
     virtual void doAnimationWhenKeyboardMove(float duration, float distance);
     virtual void openKeyboard();
     virtual void closeKeyboard();
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual void onEnter(void);
 private:
 
     LabelTTF* _label;
     LabelTTF* _labelPlaceHolder;
-    EditBoxInputMode    _editBoxInputMode;
-    EditBoxInputFlag    _editBoxInputFlag;
-    KeyboardReturnType  _keyboardReturnType;
+    EditBox::InputMode    _editBoxInputMode;
+    EditBox::InputFlag    _editBoxInputFlag;
+    EditBox::KeyboardReturnType  _keyboardReturnType;
     
     std::string _text;
     std::string _placeHolder;
     
-    ccColor3B _colText;
-    ccColor3B _colPlaceHolder;
+    Color3B _colText;
+    Color3B _colPlaceHolder;
 
     int   _maxLength;
     Size _editSize;

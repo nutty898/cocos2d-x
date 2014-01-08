@@ -17,10 +17,10 @@ public:
     FontTest();
     void showFont(const char *pFont);
 
-    void restartCallback(Object* pSender);
-    void nextCallback(Object* pSender);
-    void backCallback(Object* pSender);
-    virtual std::string title();
+    void restartCallback(Object* sender);
+    void nextCallback(Object* sender);
+    void backCallback(Object* sender);
+    virtual std::string title() const override;
 
     CREATE_FUNC(FontTest);
 };

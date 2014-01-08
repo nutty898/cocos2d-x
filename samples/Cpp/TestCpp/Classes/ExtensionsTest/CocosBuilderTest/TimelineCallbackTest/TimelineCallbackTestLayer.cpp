@@ -3,6 +3,7 @@
 
 USING_NS_CC;
 USING_NS_CC_EXT;
+using namespace cocosbuilder;
 
 TimelineCallbackTestLayer::TimelineCallbackTestLayer()
 : _helloLabel(NULL)
@@ -14,15 +15,15 @@ TimelineCallbackTestLayer::~TimelineCallbackTestLayer()
     CocosDenshion::SimpleAudioEngine::end();
 }
 
-SEL_MenuHandler TimelineCallbackTestLayer::onResolveCCBMenuItemSelector(Object * pTarget, const char * pSelectorName) {
+SEL_MenuHandler TimelineCallbackTestLayer::onResolveCCBCCMenuItemSelector(Object * pTarget, const char * pSelectorName) {
     return NULL;
 }
 
-SEL_CCControlHandler TimelineCallbackTestLayer::onResolveCCBControlSelector(Object * pTarget, const char * pSelectorName) {
+Control::Handler TimelineCallbackTestLayer::onResolveCCBCCControlSelector(Object * pTarget, const char * pSelectorName) {
     return NULL;
 }
 
-SEL_CallFuncN TimelineCallbackTestLayer::onResolveCCBCallFuncSelector(Object * pTarget, const char* pSelectorName)
+SEL_CallFuncN TimelineCallbackTestLayer::onResolveCCBCCCallFuncSelector(Object * pTarget, const char* pSelectorName)
 {
     CCB_SELECTORRESOLVER_CALLFUNC_GLUE(this, "onCallback1", TimelineCallbackTestLayer::onCallback1);
     CCB_SELECTORRESOLVER_CALLFUNC_GLUE(this, "onCallback2", TimelineCallbackTestLayer::onCallback2);

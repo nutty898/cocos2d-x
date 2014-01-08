@@ -1,12 +1,12 @@
 #include "MutiTouchTest.h"
 
 
-static ccColor3B s_TouchColors[CC_MAX_TOUCHES] = {
-    ccYELLOW,
-    ccBLUE,
-    ccGREEN,
-    ccRED,
-    ccMAGENTA
+static const Color3B* s_TouchColors[EventTouch::MAX_TOUCHES] = {
+    &Color3B::YELLOW,
+    &Color3B::BLUE,
+    &Color3B::GREEN,
+    &Color3B::RED,
+    &Color3B::MAGENTA
 };
 
 class TouchPoint : public Node
@@ -14,18 +14,18 @@ class TouchPoint : public Node
 public:
     TouchPoint()
     {
-        setShaderProgram(ShaderCache::sharedShaderCache()->programForKey(kShader_PositionTextureColor));
+        setShaderProgram(ShaderCache::getInstance()->getProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR));
     }
 
     virtual void draw()
     {
-        ccDrawColor4B(_touchColor.r, _touchColor.g, _touchColor.b, 255);
+        DrawPrimitives::setDrawColor4B(_touchColor.r, _touchColor.g, _touchColor.b, 255);
         glLineWidth(10);
-        ccDrawLine( ccp(0, _touchPoint.y), ccp(getContentSize().width, _touchPoint.y) );
-        ccDrawLine( ccp(_touchPoint.x, 0), ccp(_touchPoint.x, getContentSize().height) );
+        DrawPrimitives::drawLine( Point(0, _touchPoint.y), Point(getContentSize().width, _touchPoint.y) );
+        DrawPrimitives::drawLine( Point(_touchPoint.x, 0), Point(_touchPoint.x, getContentSize().height) );
         glLineWidth(1);
-        ccPointSize(30);
-        ccDrawPoint(_touchPoint);
+        DrawPrimitives::setPointSize(30);
+        DrawPrimitives::drawPoint(_touchPoint);
     }
 
     void setTouchPos(const Point& pt)
@@ -33,93 +33,94 @@ public:
         _touchPoint = pt;
     }
 
-    void setTouchColor(ccColor3B color)
+    void setTouchColor(Color3B color)
     {
         _touchColor = color;
     }
 
     static TouchPoint* touchPointWithParent(Node* pParent)
     {
-        TouchPoint* pRet = new TouchPoint();
+        auto pRet = new TouchPoint();
         pRet->setContentSize(pParent->getContentSize());
-        pRet->setAnchorPoint(ccp(0.0f, 0.0f));
+        pRet->setAnchorPoint(Point(0.0f, 0.0f));
         pRet->autorelease();
         return pRet;
     }
 
 private:
     Point _touchPoint;
-    ccColor3B _touchColor;
+    Color3B _touchColor;
 };
 
 bool MutiTouchTestLayer::init()
 {
     if (Layer::init())
     {
-        setTouchEnabled(true);
+        auto listener = EventListenerTouchAllAtOnce::create();
+        listener->onTouchesBegan = CC_CALLBACK_2(MutiTouchTestLayer::onTouchesBegan, this);
+        listener->onTouchesMoved = CC_CALLBACK_2(MutiTouchTestLayer::onTouchesMoved, this);
+        listener->onTouchesEnded = CC_CALLBACK_2(MutiTouchTestLayer::onTouchesEnded, this);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+        
+        auto title = LabelTTF::create("Please touch the screen!", "", 24);
+        title->setPosition(VisibleRect::top()+Point(0, -40));
+        addChild(title);
+        
         return true;
     }
     return false;
 }
 
-static Dictionary s_dic;
+static Map<int, TouchPoint*> s_map;
 
-void MutiTouchTestLayer::registerWithTouchDispatcher(void)
+void MutiTouchTestLayer::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
 {
-    Director::sharedDirector()->getTouchDispatcher()->addStandardDelegate(this, 0);
-}
-
-void MutiTouchTestLayer::ccTouchesBegan(Set *touches, Event *pEvent)
-{
-
-    for ( auto &item: *touches )
+    for ( auto &item: touches )
     {
-        Touch* pTouch = (Touch*)item;
-        TouchPoint* pTouchPoint = TouchPoint::touchPointWithParent(this);
-        Point location = pTouch->getLocation();
+        auto touch = item;
+        auto touchPoint = TouchPoint::touchPointWithParent(this);
+        auto location = touch->getLocation();
 
-        pTouchPoint->setTouchPos(location);
-        pTouchPoint->setTouchColor(s_TouchColors[pTouch->getID()]);
+        touchPoint->setTouchPos(location);
+        touchPoint->setTouchColor(*s_TouchColors[touch->getID()]);
 
-        addChild(pTouchPoint);
-        s_dic.setObject(pTouchPoint, pTouch->getID());
+        addChild(touchPoint);
+        s_map.insert(touch->getID(), touchPoint);
     }
-    
-
 }
 
-void MutiTouchTestLayer::ccTouchesMoved(Set *touches, Event *pEvent)
+void MutiTouchTestLayer::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
 {
-    for( auto &item: *touches)
+    for( auto &item: touches)
     {
-        Touch* pTouch = (Touch*)item;
-        TouchPoint* pTP = (TouchPoint*)s_dic.objectForKey(pTouch->getID());
-        Point location = pTouch->getLocation();
+        auto touch = item;
+        auto pTP = s_map.at(touch->getID());
+        auto location = touch->getLocation();
         pTP->setTouchPos(location);
     }
 }
 
-void MutiTouchTestLayer::ccTouchesEnded(Set *touches, Event *pEvent)
+void MutiTouchTestLayer::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
 {
-    for ( auto &item: *touches )
+    for ( auto &item: touches )
     {
-        Touch* pTouch = (Touch*)item;
-        TouchPoint* pTP = (TouchPoint*)s_dic.objectForKey(pTouch->getID());
+        auto touch = item;
+        auto pTP = s_map.at(touch->getID());
         removeChild(pTP, true);
-        s_dic.removeObjectForKey(pTouch->getID());
+        s_map.erase(touch->getID());
     }
 }
 
-void MutiTouchTestLayer::ccTouchesCancelled(Set *pTouches, Event *pEvent)
+void MutiTouchTestLayer::onTouchesCancelled(const std::vector<Touch*>& touches, Event  *event)
 {
-    ccTouchesEnded(pTouches, pEvent);
+    onTouchesEnded(touches, event);
 }
 
 void MutiTouchTestScene::runThisTest()
 {
-    MutiTouchTestLayer* pLayer = MutiTouchTestLayer::create();
+    auto layer = MutiTouchTestLayer::create();
 
-    addChild(pLayer, 0);
+    addChild(layer, 0);
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }

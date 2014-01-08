@@ -11,43 +11,43 @@
 
 Scene* Bug1159Layer::scene()
 {
-    Scene *pScene = Scene::create();
-    Bug1159Layer* layer = Bug1159Layer::create();
-    pScene->addChild(layer);
+    auto scene = Scene::create();
+    auto layer = Bug1159Layer::create();
+    scene->addChild(layer);
 
-    return pScene;
+    return scene;
 }
 
 bool Bug1159Layer::init()
 {
     if (BugsTestBaseLayer::init())
     {
-        Director::sharedDirector()->setDepthTest(true);
-        Size s = Director::sharedDirector()->getWinSize();
+        Director::getInstance()->setDepthTest(true);
+        auto s = Director::getInstance()->getWinSize();
 
-        LayerColor *background = LayerColor::create(ccc4(255, 0, 255, 255));
+        auto background = LayerColor::create(Color4B(255, 0, 255, 255));
         addChild(background);
 
-        LayerColor *sprite_a = LayerColor::create(ccc4(255, 0, 0, 255), 700, 700);
-        sprite_a->setAnchorPoint(ccp(0.5f, 0.5f));
+        auto sprite_a = LayerColor::create(Color4B(255, 0, 0, 255), 700, 700);
+        sprite_a->setAnchorPoint(Point(0.5f, 0.5f));
         sprite_a->ignoreAnchorPointForPosition(false);
-        sprite_a->setPosition(ccp(0.0f, s.height/2));
+        sprite_a->setPosition(Point(0.0f, s.height/2));
         addChild(sprite_a);
 
         sprite_a->runAction(RepeatForever::create(Sequence::create(
-                                                        MoveTo::create(1.0f, ccp(1024.0f, 384.0f)),
-                                                        MoveTo::create(1.0f, ccp(0.0f, 384.0f)),
+                                                        MoveTo::create(1.0f, Point(1024.0f, 384.0f)),
+                                                        MoveTo::create(1.0f, Point(0.0f, 384.0f)),
                                                         NULL)));
 
-        LayerColor *sprite_b = LayerColor::create(ccc4(0, 0, 255, 255), 400, 400);
-        sprite_b->setAnchorPoint(ccp(0.5f, 0.5f));
+        auto sprite_b = LayerColor::create(Color4B(0, 0, 255, 255), 400, 400);
+        sprite_b->setAnchorPoint(Point(0.5f, 0.5f));
         sprite_b->ignoreAnchorPointForPosition(false);
-        sprite_b->setPosition(ccp(s.width/2, s.height/2));
+        sprite_b->setPosition(Point(s.width/2, s.height/2));
         addChild(sprite_b);
 
-        MenuItemLabel *label = MenuItemLabel::create(LabelTTF::create("Flip Me", "Helvetica", 24), CC_CALLBACK_1(Bug1159Layer::callBack, this) );
-        Menu *menu = Menu::create(label, NULL);
-        menu->setPosition(ccp(s.width - 200.0f, 50.0f));
+        auto label = MenuItemLabel::create(LabelTTF::create("Flip Me", "Helvetica", 24), CC_CALLBACK_1(Bug1159Layer::callBack, this) );
+        auto menu = Menu::create(label, NULL);
+        menu->setPosition(Point(s.width - 200.0f, 50.0f));
         addChild(menu);
 
         return true;
@@ -56,13 +56,13 @@ bool Bug1159Layer::init()
     return false;
 }
 
-void Bug1159Layer::callBack(Object* pSender)
+void Bug1159Layer::callBack(Object* sender)
 {
-    Director::sharedDirector()->replaceScene(TransitionPageTurn::create(1.0f, Bug1159Layer::scene(), false));
+    Director::getInstance()->replaceScene(TransitionPageTurn::create(1.0f, Bug1159Layer::scene(), false));
 }
 
 void Bug1159Layer::onExit()
 {
-    Director::sharedDirector()->setDepthTest(false);
+    Director::getInstance()->setDepthTest(false);
     BugsTestBaseLayer::onExit();
 }

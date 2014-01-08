@@ -40,11 +40,11 @@ EditBoxImplWin::EditBoxImplWin(EditBox* pEditText)
 : EditBoxImpl(pEditText)
 , _label(NULL)
 , _labelPlaceHolder(NULL)
-, _editBoxInputMode(kEditBoxInputModeSingleLine)
-, _editBoxInputFlag(kEditBoxInputFlagInitialCapsAllCharacters)
-, _keyboardReturnType(kKeyboardReturnTypeDefault)
-, _colText(ccWHITE)
-, _colPlaceHolder(ccGRAY)
+, _editBoxInputMode(EditBox::InputMode::SINGLE_LINE)
+, _editBoxInputFlag(EditBox::InputFlag::INTIAL_CAPS_ALL_CHARACTERS)
+, _keyboardReturnType(EditBox::KeyboardReturnType::DEFAULT)
+, _colText(Color3B::WHITE)
+, _colPlaceHolder(Color3B::GRAY)
 , _maxLength(-1)
 {
     
@@ -63,15 +63,15 @@ bool EditBoxImplWin::initWithSize(const Size& size)
     //! int fontSize = getFontSizeAccordingHeightJni(size.height-12);
     _label = LabelTTF::create("", "", size.height-12);
 	// align the text vertically center
-    _label->setAnchorPoint(ccp(0, 0.5f));
-    _label->setPosition(ccp(5, size.height / 2.0f));
+    _label->setAnchorPoint(Point(0, 0.5f));
+    _label->setPosition(Point(5, size.height / 2.0f));
     _label->setColor(_colText);
     _editBox->addChild(_label);
 
     _labelPlaceHolder = LabelTTF::create("", "", size.height-12);
 	// align the text vertically center
-    _labelPlaceHolder->setAnchorPoint(ccp(0, 0.5f));
-    _labelPlaceHolder->setPosition(ccp(5, size.height / 2.0f));
+    _labelPlaceHolder->setAnchorPoint(Point(0, 0.5f));
+    _labelPlaceHolder->setPosition(Point(5, size.height / 2.0f));
     _labelPlaceHolder->setVisible(false);
     _labelPlaceHolder->setColor(_colPlaceHolder);
     _editBox->addChild(_labelPlaceHolder);
@@ -93,7 +93,7 @@ void EditBoxImplWin::setFont(const char* pFontName, int fontSize)
 	}
 }
 
-void EditBoxImplWin::setFontColor(const ccColor3B& color)
+void EditBoxImplWin::setFontColor(const Color3B& color)
 {
     _colText = color;
     _label->setColor(color);
@@ -107,13 +107,13 @@ void EditBoxImplWin::setPlaceholderFont(const char* pFontName, int fontSize)
 	}
 }
 
-void EditBoxImplWin::setPlaceholderFontColor(const ccColor3B& color)
+void EditBoxImplWin::setPlaceholderFontColor(const Color3B& color)
 {
     _colPlaceHolder = color;
     _labelPlaceHolder->setColor(color);
 }
 
-void EditBoxImplWin::setInputMode(EditBoxInputMode inputMode)
+void EditBoxImplWin::setInputMode(EditBox::InputMode inputMode)
 {
     _editBoxInputMode = inputMode;
 }
@@ -128,12 +128,12 @@ int EditBoxImplWin::getMaxLength()
     return _maxLength;
 }
 
-void EditBoxImplWin::setInputFlag(EditBoxInputFlag inputFlag)
+void EditBoxImplWin::setInputFlag(EditBox::InputFlag inputFlag)
 {
     _editBoxInputFlag = inputFlag;
 }
 
-void EditBoxImplWin::setReturnType(KeyboardReturnType returnType)
+void EditBoxImplWin::setReturnType(EditBox::KeyboardReturnType returnType)
 {
     _keyboardReturnType = returnType;
 }
@@ -155,7 +155,7 @@ void EditBoxImplWin::setText(const char* pText)
 
             std::string strToShow;
 
-            if (kEditBoxInputFlagPassword == _editBoxInputFlag)
+			if (EditBox::InputFlag::PASSWORD == _editBoxInputFlag)
             {
                 long length = cc_utf8_strlen(_text.c_str(), -1);
                 for (long i = 0; i < length; i++)
@@ -240,15 +240,15 @@ static void editBoxCallbackFunc(const char* pText, void* ctx)
     {
         CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "changed",pEditBox);
         ScriptEvent event(kCommonEvent,(void*)&data);
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"ended",64);
         event.data = (void*)&data;
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"return",64);
         event.data = (void*)&data;
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
 }
 
@@ -264,7 +264,7 @@ void EditBoxImplWin::openKeyboard()
     {
         CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "began",pEditBox);
         ScriptEvent event(kCommonEvent,(void*)&data);
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
     
 	std::string placeHolder = _labelPlaceHolder->getString();

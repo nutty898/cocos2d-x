@@ -11,12 +11,12 @@
 
 #define TEST_BUG(__bug__)									\
 {															\
-	Scene* pScene = Scene::create();					\
-	Bug##__bug__##Layer* pLayer = new Bug##__bug__##Layer();	\
-	pLayer->init();                                         \
-	pScene->addChild(pLayer);                               \
-	Director::sharedDirector()->replaceScene(pScene);     \
-	pLayer->autorelease();                                  \
+	Scene* scene = Scene::create();					\
+	Bug##__bug__##Layer* layer = new Bug##__bug__##Layer();	\
+	layer->init();                                         \
+	scene->addChild(layer);                               \
+	Director::getInstance()->replaceScene(scene);     \
+	layer->autorelease();                                  \
 }
 
 enum
@@ -25,7 +25,7 @@ enum
     kItemTagBasic = 5432,
 };
 
-static Point s_tCurPos = PointZero;
+static Point s_tCurPos = Point::ZERO;
 
 struct {
 	const char *test_name;
@@ -54,48 +54,49 @@ void BugsTestMainLayer::onEnter()
 {
     Layer::onEnter();
 
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
     _itmeMenu = Menu::create();
     MenuItemFont::setFontName("Arial");
     MenuItemFont::setFontSize(24);
     for (int i = 0; i < g_maxitems; ++i)
     {
-        MenuItemFont* pItem = MenuItemFont::create(g_bugs[i].test_name, g_bugs[i].callback);
-        pItem->setPosition(ccp(s.width / 2, s.height - (i + 1) * LINE_SPACE));
+        auto pItem = MenuItemFont::create(g_bugs[i].test_name, g_bugs[i].callback);
+        pItem->setPosition(Point(s.width / 2, s.height - (i + 1) * LINE_SPACE));
         _itmeMenu->addChild(pItem, kItemTagBasic + i);
     }
 
     _itmeMenu->setPosition(s_tCurPos);
     addChild(_itmeMenu);
-    setTouchEnabled(true);
+
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesBegan = CC_CALLBACK_2(BugsTestMainLayer::onTouchesBegan, this);
+    listener->onTouchesMoved = CC_CALLBACK_2(BugsTestMainLayer::onTouchesMoved, this);
+    
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void BugsTestMainLayer::ccTouchesBegan(Set *pTouches, Event *pEvent)
+void BugsTestMainLayer::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
 {
-    Touch* touch = (Touch*) pTouches->anyObject();
-
-    _beginPos = touch->getLocation();    
+    _beginPos = touches[0]->getLocation();
 }
 
-void BugsTestMainLayer::ccTouchesMoved(Set *pTouches, Event *pEvent)
+void BugsTestMainLayer::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
 {
-    Touch* touch = (Touch*) pTouches->anyObject();
-
-    Point touchLocation = touch->getLocation();    
+    auto touchLocation = touches[0]->getLocation();
     float nMoveY = touchLocation.y - _beginPos.y;
 
-    Point curPos  = _itmeMenu->getPosition();
-    Point nextPos = ccp(curPos.x, curPos.y + nMoveY);
-    Size winSize = Director::sharedDirector()->getWinSize();
+    auto curPos  = _itmeMenu->getPosition();
+    auto nextPos = Point(curPos.x, curPos.y + nMoveY);
+    auto winSize = Director::getInstance()->getWinSize();
     if (nextPos.y < 0.0f)
     {
-        _itmeMenu->setPosition(PointZero);
+        _itmeMenu->setPosition(Point::ZERO);
         return;
     }
 
     if (nextPos.y > ((g_maxitems + 1)* LINE_SPACE - winSize.height))
     {
-        _itmeMenu->setPosition(ccp(0, ((g_maxitems + 1)* LINE_SPACE - winSize.height)));
+        _itmeMenu->setPosition(Point(0, ((g_maxitems + 1)* LINE_SPACE - winSize.height)));
         return;
     }
 
@@ -115,19 +116,19 @@ void BugsTestBaseLayer::onEnter()
 
     MenuItemFont::setFontName("Arial");
     MenuItemFont::setFontSize(24);
-    MenuItemFont* pMainItem = MenuItemFont::create("Back", CC_CALLBACK_1(BugsTestBaseLayer::backCallback, this));
-    pMainItem->setPosition(ccp(VisibleRect::rightBottom().x - 50, VisibleRect::rightBottom().y + 25));
-    Menu* pMenu = Menu::create(pMainItem, NULL);
-    pMenu->setPosition( PointZero );
-    addChild(pMenu);
+    auto pMainItem = MenuItemFont::create("Back", CC_CALLBACK_1(BugsTestBaseLayer::backCallback, this));
+    pMainItem->setPosition(Point(VisibleRect::rightBottom().x - 50, VisibleRect::rightBottom().y + 25));
+    auto menu = Menu::create(pMainItem, NULL);
+    menu->setPosition( Point::ZERO );
+    addChild(menu);
 }
 
-void BugsTestBaseLayer::backCallback(Object* pSender)
+void BugsTestBaseLayer::backCallback(Object* sender)
 {
-//    Director::sharedDirector()->enableRetinaDisplay(false);
-    BugsTestScene* pScene = new BugsTestScene();
-    pScene->runThisTest();
-    pScene->autorelease();
+//    Director::getInstance()->enableRetinaDisplay(false);
+    auto scene = new BugsTestScene();
+    scene->runThisTest();
+    scene->autorelease();
 }
 
 ////////////////////////////////////////////////////////
@@ -137,9 +138,9 @@ void BugsTestBaseLayer::backCallback(Object* pSender)
 ////////////////////////////////////////////////////////
 void BugsTestScene::runThisTest()
 {
-    Layer* pLayer = new BugsTestMainLayer();
-    addChild(pLayer);
-    pLayer->release();
+    auto layer = new BugsTestMainLayer();
+    addChild(layer);
+    layer->release();
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }

@@ -24,6 +24,7 @@
  ****************************************************************************/
 
 #include "CCTableViewCell.h"
+#include "ccCArray.h"
 
 NS_CC_EXT_BEGIN
 
@@ -32,24 +33,14 @@ void TableViewCell::reset()
     _idx = CC_INVALID_INDEX;
 }
 
-void TableViewCell::setObjectID(unsigned int uIdx)
-{
-    _idx = uIdx;
-}
-
-unsigned int TableViewCell::getObjectID()
+ssize_t TableViewCell::getIdx()
 {
     return _idx;
 }
 
-unsigned int TableViewCell::getIdx()
+void TableViewCell::setIdx(ssize_t idx)
 {
-    return _idx;
-}
-
-void TableViewCell::setIdx(unsigned int uIdx)
-{
-    _idx = uIdx;
+    _idx = idx;
 }
 
 NS_CC_EXT_END

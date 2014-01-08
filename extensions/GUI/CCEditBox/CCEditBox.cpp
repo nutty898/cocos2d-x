@@ -31,13 +31,13 @@ NS_CC_EXT_BEGIN
 EditBox::EditBox(void)
 : _editBoxImpl(NULL)
 , _delegate(NULL)
-, _editBoxInputMode(kEditBoxInputModeSingleLine)
-, _editBoxInputFlag(kEditBoxInputFlagInitialCapsAllCharacters)
-, _keyboardReturnType(kKeyboardReturnTypeDefault)
+, _editBoxInputMode(EditBox::InputMode::SINGLE_LINE)
+, _editBoxInputFlag(EditBox::InputFlag::INTIAL_CAPS_ALL_CHARACTERS)
+, _keyboardReturnType(KeyboardReturnType::DEFAULT)
 , _fontSize(-1)
 , _placeholderFontSize(-1)
-, _colText(ccWHITE)
-, _colPlaceHolder(ccGRAY)
+, _colText(Color3B::WHITE)
+, _colPlaceHolder(Color3B::GRAY)
 , _maxLength(0)
 , _adjustHeight(0.0f)
 , _scriptEditBoxHandler(0)
@@ -51,7 +51,7 @@ EditBox::~EditBox(void)
 }
 
 
-void EditBox::touchDownAction(Object *sender, ControlEvent controlEvent)
+void EditBox::touchDownAction(Object *sender, Control::EventType controlEvent)
 {
     _editBoxImpl->openKeyboard();
 }
@@ -64,12 +64,12 @@ EditBox* EditBox::create(const Size& size, Scale9Sprite* pNormal9SpriteBg, Scale
     {
         if (pPressed9SpriteBg != NULL)
         {
-            pRet->setBackgroundSpriteForState(pPressed9SpriteBg, ControlStateHighlighted);
+            pRet->setBackgroundSpriteForState(pPressed9SpriteBg, Control::State::HIGH_LIGHTED);
         }
         
         if (pDisabled9SpriteBg != NULL)
         {
-            pRet->setBackgroundSpriteForState(pDisabled9SpriteBg, ControlStateDisabled);
+            pRet->setBackgroundSpriteForState(pDisabled9SpriteBg, Control::State::DISABLED);
         }
         pRet->autorelease();
     }
@@ -87,11 +87,12 @@ bool EditBox::initWithSizeAndBackgroundSprite(const Size& size, Scale9Sprite* pP
     {
         _editBoxImpl = __createSystemEditBox(this);
         _editBoxImpl->initWithSize(size);
+        _editBoxImpl->setInputMode(EditBox::InputMode::ANY);
         
         this->setZoomOnTouchDown(false);
         this->setPreferredSize(size);
-        this->setPosition(ccp(0, 0));
-        this->addTargetWithActionForControlEvent(this, cccontrol_selector(EditBox::touchDownAction), ControlEventTouchUpInside);
+        this->setPosition(Point(0, 0));
+        this->addTargetWithActionForControlEvent(this, cccontrol_selector(EditBox::touchDownAction), Control::EventType::TOUCH_UP_INSIDE);
         
         return true;
     }
@@ -167,7 +168,7 @@ void EditBox::setFontSize(int fontSize)
     }
 }
 
-void EditBox::setFontColor(const ccColor3B& color)
+void EditBox::setFontColor(const Color3B& color)
 {
     _colText = color;
     if (_editBoxImpl != NULL)
@@ -207,7 +208,7 @@ void EditBox::setPlaceholderFontSize(int fontSize)
     }
 }
 
-void EditBox::setPlaceholderFontColor(const ccColor3B& color)
+void EditBox::setPlaceholderFontColor(const Color3B& color)
 {
     _colText = color;
     if (_editBoxImpl != NULL)
@@ -233,7 +234,7 @@ const char* EditBox::getPlaceHolder(void)
     return _placeHolder.c_str();
 }
 
-void EditBox::setInputMode(EditBoxInputMode inputMode)
+void EditBox::setInputMode(EditBox::InputMode inputMode)
 {
     _editBoxInputMode = inputMode;
     if (_editBoxImpl != NULL)
@@ -257,7 +258,7 @@ int EditBox::getMaxLength()
     return _maxLength;
 }
 
-void EditBox::setInputFlag(EditBoxInputFlag inputFlag)
+void EditBox::setInputFlag(EditBox::InputFlag inputFlag)
 {
     _editBoxInputFlag = inputFlag;
     if (_editBoxImpl != NULL)
@@ -266,7 +267,7 @@ void EditBox::setInputFlag(EditBoxInputFlag inputFlag)
     }
 }
 
-void EditBox::setReturnType(KeyboardReturnType returnType)
+void EditBox::setReturnType(EditBox::KeyboardReturnType returnType)
 {
     if (_editBoxImpl != NULL)
     {
@@ -342,8 +343,8 @@ void EditBox::onExit(void)
 static Rect getRect(Node * pNode)
 {
 	Size contentSize = pNode->getContentSize();
-	Rect rect = CCRectMake(0, 0, contentSize.width, contentSize.height);
-	return RectApplyAffineTransform(rect, pNode->nodeToWorldTransform());
+	Rect rect = Rect(0, 0, contentSize.width, contentSize.height);
+	return RectApplyTransform(rect, pNode->getNodeToWorldTransform());
 }
 
 void EditBox::keyboardWillShow(IMEKeyboardNotificationInfo& info)
@@ -399,7 +400,7 @@ void EditBox::unregisterScriptEditBoxHandler(void)
 {
     if (0 != _scriptEditBoxHandler)
     {
-        ScriptEngineManager::sharedManager()->getScriptEngine()->removeScriptHandler(_scriptEditBoxHandler);
+        ScriptEngineManager::getInstance()->getScriptEngine()->removeScriptHandler(_scriptEditBoxHandler);
         _scriptEditBoxHandler = 0;
     }
 }

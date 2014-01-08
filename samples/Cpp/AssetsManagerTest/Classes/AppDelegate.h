@@ -11,7 +11,7 @@
 
 #include "CCApplication.h"
 #include "cocos2d.h"
-#include "AssetsManager/AssetsManager.h"
+#include "extensions/assets-manager/AssetsManager.h"
 
 /**
 @brief    The cocos2d Application.
@@ -60,7 +60,7 @@ public:
     virtual void onSuccess();
     
 private:
-    cocos2d::extension::AssetsManager* getAssetsManager();
+    cocos2d::extension::AssetsManager* pAssetsManager;
     void createDownloadedDir();
     
     cocos2d::MenuItemFont *pItemEnter;

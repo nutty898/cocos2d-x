@@ -1,12 +1,12 @@
 #include "DataVisitorTest.h"
 #include "../testResource.h"
 
-std::string PrettyPrinterDemo::title()
+std::string PrettyPrinterDemo::title() const
 {
     return "PrettyPrinter Test";
 }
 
-std::string PrettyPrinterDemo::subtitle()
+std::string PrettyPrinterDemo::subtitle() const
 {
     return "Please see log!";
 }
@@ -15,17 +15,17 @@ void PrettyPrinterDemo::addSprite()
 {
     // create sprites
     
-    Sprite *s1 = Sprite::create("Images/grossini.png");
-    Sprite *s2 = Sprite::create("Images/grossini_dance_01.png");
-    Sprite *s3 = Sprite::create("Images/grossini_dance_02.png");
-    Sprite *s4 = Sprite::create("Images/grossini_dance_03.png");
-    Sprite *s5 = Sprite::create("Images/grossini_dance_04.png");
+    auto s1 = Sprite::create("Images/grossini.png");
+    auto s2 = Sprite::create("Images/grossini_dance_01.png");
+    auto s3 = Sprite::create("Images/grossini_dance_02.png");
+    auto s4 = Sprite::create("Images/grossini_dance_03.png");
+    auto s5 = Sprite::create("Images/grossini_dance_04.png");
     
-    s1->setPosition(ccp(50, 50));
-    s2->setPosition(ccp(60, 50));
-    s3->setPosition(ccp(70, 50));
-    s4->setPosition(ccp(80, 50));
-    s5->setPosition(ccp(90, 50));
+    s1->setPosition(Point(50, 50));
+    s2->setPosition(Point(60, 50));
+    s3->setPosition(Point(70, 50));
+    s4->setPosition(Point(80, 50));
+    s5->setPosition(Point(90, 50));
     
     this->addChild(s1);
     this->addChild(s2);
@@ -37,17 +37,17 @@ void PrettyPrinterDemo::addSprite()
 void PrettyPrinterDemo::onEnter()
 {
     Layer::onEnter();
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
     
-    LabelTTF* label = LabelTTF::create(title().c_str(), "Arial", 28);
-    label->setPosition( ccp(s.width/2, s.height * 4/5) );
+    auto label = LabelTTF::create(title().c_str(), "Arial", 28);
+    label->setPosition( Point(s.width/2, s.height * 4/5) );
     this->addChild(label, 1);
     
     std::string strSubtitle = subtitle();
     if(strSubtitle.empty() == false)
     {
-        LabelTTF* subLabel = LabelTTF::create(strSubtitle.c_str(), "Thonburi", 16);
-        subLabel->setPosition( ccp(s.width/2, s.height * 3/5) );
+        auto subLabel = LabelTTF::create(strSubtitle.c_str(), "Thonburi", 16);
+        subLabel->setPosition( Point(s.width/2, s.height * 3/5) );
         this->addChild(subLabel, 1);
     }
     
@@ -55,10 +55,10 @@ void PrettyPrinterDemo::onEnter()
     PrettyPrinter vistor;
     
     // print dictionary
-    Dictionary* pDict = Dictionary::createWithContentsOfFile("animations/animations.plist");
-    pDict->acceptVisitor(vistor);
-    CCLog("%s", vistor.getResult().c_str());
-    CCLog("-------------------------------");
+    auto dict = Dictionary::createWithContentsOfFile("animations/animations.plist");
+    dict->acceptVisitor(vistor);
+    log("%s", vistor.getResult().c_str());
+    log("-------------------------------");
     
     Set myset;
     for (int i = 0; i < 30; ++i) {
@@ -66,21 +66,21 @@ void PrettyPrinterDemo::onEnter()
     }
     vistor.clear();
     myset.acceptVisitor(vistor);
-    CCLog("%s", vistor.getResult().c_str());
-    CCLog("-------------------------------");
+    log("%s", vistor.getResult().c_str());
+    log("-------------------------------");
     
     vistor.clear();
     addSprite();
-    pDict = TextureCache::sharedTextureCache()->snapshotTextures();
-    pDict->acceptVisitor(vistor);
-    CCLog("%s", vistor.getResult().c_str());
+//    dict = Director::getInstance()->getTextureCache()->snapshotTextures();
+//    dict->acceptVisitor(vistor);
+//    log("%s", vistor.getResult().c_str());
 }
 
 void DataVisitorTestScene::runThisTest()
 {
-    Layer *layer = new PrettyPrinterDemo();
+    auto layer = new PrettyPrinterDemo();
     layer->autorelease();
     addChild(layer);
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }

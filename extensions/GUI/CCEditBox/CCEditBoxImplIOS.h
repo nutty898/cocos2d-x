@@ -30,7 +30,7 @@
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 
-#include "ExtensionMacros.h"
+#include "extensions/ExtensionMacros.h"
 #include "CCEditBoxImpl.h"
 
 #import <Foundation/Foundation.h>
@@ -71,19 +71,26 @@ class EditBox;
 class EditBoxImplIOS : public EditBoxImpl
 {
 public:
+    /**
+     * @js NA
+     */
     EditBoxImplIOS(EditBox* pEditText);
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual ~EditBoxImplIOS();
     
     virtual bool initWithSize(const Size& size);
     virtual void setFont(const char* pFontName, int fontSize);
-    virtual void setFontColor(const ccColor3B& color);
+    virtual void setFontColor(const Color3B& color);
     virtual void setPlaceholderFont(const char* pFontName, int fontSize);
-    virtual void setPlaceholderFontColor(const ccColor3B& color);
-    virtual void setInputMode(EditBoxInputMode inputMode);
-    virtual void setInputFlag(EditBoxInputFlag inputFlag);
+    virtual void setPlaceholderFontColor(const Color3B& color);
+    virtual void setInputMode(EditBox::InputMode inputMode);
+    virtual void setInputFlag(EditBox::InputFlag inputFlag);
     virtual void setMaxLength(int maxLength);
     virtual int  getMaxLength();
-    virtual void setReturnType(KeyboardReturnType returnType);
+    virtual void setReturnType(EditBox::KeyboardReturnType returnType);
     virtual bool isEditing();
     
     virtual void setText(const char* pText);
@@ -93,7 +100,15 @@ public:
     virtual void setVisible(bool visible);
     virtual void setContentSize(const Size& size);
 	virtual void setAnchorPoint(const Point& anchorPoint);
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual void visit(void);
+    /**
+     * @js NA
+     * @lua NA
+     */
 	virtual void onEnter(void);
     virtual void doAnimationWhenKeyboardMove(float duration, float distance);
     virtual void openKeyboard();

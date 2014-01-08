@@ -30,7 +30,6 @@
  */
 
 #include "CCControlHuePicker.h"
-#include "support/CCPointExtension.h"
 
 NS_CC_EXT_BEGIN
 
@@ -63,12 +62,11 @@ bool ControlHuePicker::initWithTargetAndPos(Node* target, Point pos)
 {
     if (Control::init())
     {
-        setTouchEnabled(true);
         // Add background and slider sprites
-        this->setBackground(ControlUtils::addSpriteToTargetWithPosAndAnchor("huePickerBackground.png", target, pos, ccp(0.0f, 0.0f)));
-        this->setSlider(ControlUtils::addSpriteToTargetWithPosAndAnchor("colourPicker.png", target, pos, ccp(0.5f, 0.5f)));
+        this->setBackground(ControlUtils::addSpriteToTargetWithPosAndAnchor("huePickerBackground.png", target, pos, Point(0.0f, 0.0f)));
+        this->setSlider(ControlUtils::addSpriteToTargetWithPosAndAnchor("colourPicker.png", target, pos, Point(0.5f, 0.5f)));
         
-        _slider->setPosition(ccp(pos.x, pos.y + _background->boundingBox().size.height * 0.5f));
+        _slider->setPosition(Point(pos.x, pos.y + _background->getBoundingBox().size.height * 0.5f));
         _startPos=pos;
 
         // Sets the default value
@@ -97,7 +95,7 @@ void ControlHuePicker::setHuePercentage(float hueValueInPercent)
     _hue=_huePercentage*360.0f;
 
     // Clamp the position of the icon within the circle
-    Rect backgroundBox=_background->boundingBox();
+    Rect backgroundBox=_background->getBoundingBox();
 
     // Get the center point of the background image
     float centerX           = _startPos.x + backgroundBox.size.width * 0.5f;
@@ -113,7 +111,7 @@ void ControlHuePicker::setHuePercentage(float hueValueInPercent)
     // Set new position of the slider
     float x                 = centerX + limit * cosf(angle);
     float y                 = centerY + limit * sinf(angle);
-    _slider->setPosition(ccp(x, y));
+    _slider->setPosition(Point(x, y));
 
 }
 
@@ -130,7 +128,7 @@ void ControlHuePicker::updateSliderPosition(Point location)
 {
 
     // Clamp the position of the icon within the circle
-    Rect backgroundBox=_background->boundingBox();
+    Rect backgroundBox=_background->getBoundingBox();
     
     // Get the center point of the background image
     float centerX           = _startPos.x + backgroundBox.size.width * 0.5f;
@@ -148,7 +146,7 @@ void ControlHuePicker::updateSliderPosition(Point location)
     setHue(angleDeg);
     
     // send Control callback
-    sendActionsForControlEvents(ControlEventValueChanged);
+    sendActionsForControlEvents(Control::EventType::VALUE_CHANGED);
 }
 
 bool ControlHuePicker::checkSliderPosition(Point location)
@@ -165,7 +163,7 @@ bool ControlHuePicker::checkSliderPosition(Point location)
     return false;
 }
 
-bool ControlHuePicker::ccTouchBegan(Touch* touch, Event* event)
+bool ControlHuePicker::onTouchBegan(Touch* touch, Event* event)
 {
     if (!isEnabled() || !isVisible())
     {
@@ -180,14 +178,14 @@ bool ControlHuePicker::ccTouchBegan(Touch* touch, Event* event)
 }
 
 
-void ControlHuePicker::ccTouchMoved(Touch* touch, Event* event)
+void ControlHuePicker::onTouchMoved(Touch* touch, Event* event)
 {
     // Get the touch location
     Point touchLocation=getTouchLocation(touch);
 
     //small modification: this allows changing of the colour, even if the touch leaves the bounding area
 //     updateSliderPosition(touchLocation);
-//     sendActionsForControlEvents(ControlEventValueChanged);
+//     sendActionsForControlEvents(Control::EventType::VALUE_CHANGED);
     // Check the touch position on the slider
     checkSliderPosition(touchLocation);
 }

@@ -39,48 +39,48 @@ NS_CC_EXT_BEGIN
  * @{
  */
 
-typedef enum
-{
-    kControlStepperPartMinus,
-    kControlStepperPartPlus,
-    kControlStepperPartNone,
-} ControlStepperPart;
-
 class ControlStepper : public Control
 {
 public:
+    enum class Part
+    {
+        MINUS,
+        PLUS,
+        NONE
+    };
+    
+    static ControlStepper* create(Sprite *minusSprite, Sprite *plusSprite);
+    /**
+     * @js ctor
+     */
     ControlStepper();
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual ~ControlStepper();
 
     bool initWithMinusSpriteAndPlusSprite(Sprite *minusSprite, Sprite *plusSprite);
-    static ControlStepper* create(Sprite *minusSprite, Sprite *plusSprite);
+
     virtual void setWraps(bool wraps);
     virtual void setMinimumValue(double minimumValue);
     virtual void setMaximumValue(double maximumValue);
     virtual void setValue(double value);
-    virtual double getValue();
+
+    virtual double getValue() const;
     virtual void setStepValue(double stepValue);
+    /** Set the numeric value of the stepper. If send is true, the Control::EventType::VALUE_CHANGED is sent. */
     virtual void setValueWithSendingEvent(double value, bool send);
-    virtual bool isContinuous();
+    virtual bool isContinuous() const;
+
+    // Overrides
+    virtual bool onTouchBegan(Touch *pTouch, Event *pEvent) override;
+    virtual void onTouchMoved(Touch *pTouch, Event *pEvent) override;
+    virtual void onTouchEnded(Touch *pTouch, Event *pEvent) override;
     void update(float dt);
 
-    //events
-    virtual bool ccTouchBegan(Touch *pTouch, Event *pEvent);
-    virtual void ccTouchMoved(Touch *pTouch, Event *pEvent);
-    virtual void ccTouchEnded(Touch *pTouch, Event *pEvent);
-
-protected:
-    // Weak links to children
-	CC_SYNTHESIZE_RETAIN(Sprite*, _minusSprite, MinusSprite)
-    CC_SYNTHESIZE_RETAIN(Sprite*, _plusSprite, PlusSprite)
-    CC_SYNTHESIZE_RETAIN(LabelTTF*, _minusLabel, MinusLabel)
-    CC_SYNTHESIZE_RETAIN(LabelTTF*, _plusLabel, PlusLabel)
-    
     /** Update the layout of the stepper with the given touch location. */
     void updateLayoutUsingTouchLocation(Point location);
-
-    /** Set the numeric value of the stepper. If send is true, the ControlEventValueChanged is sent. */
-    void setValue(double value, bool send);
 
     /** Start the autorepeat increment/decrement. */
     void startAutorepeat();
@@ -88,6 +88,7 @@ protected:
     /** Stop the autorepeat. */
     void stopAutorepeat();
 
+protected:
     /** The numeric value of the stepper. */
     double                  _value;
     /** The continuous vs. noncontinuous state of the stepper. */
@@ -103,8 +104,14 @@ protected:
     /** The step, or increment, value for the stepper. */
     double                  _stepValue;
     bool                    _touchInsideFlag;
-    ControlStepperPart    _touchedPart;
+    Part                    _touchedPart;
     int                     _autorepeatCount;
+
+    // Weak links to children
+	CC_SYNTHESIZE_RETAIN(Sprite*, _minusSprite, MinusSprite)
+    CC_SYNTHESIZE_RETAIN(Sprite*, _plusSprite, PlusSprite)
+    CC_SYNTHESIZE_RETAIN(LabelTTF*, _minusLabel, MinusLabel)
+    CC_SYNTHESIZE_RETAIN(LabelTTF*, _plusLabel, PlusLabel)
 };
 
 // end of GUI group

@@ -15,17 +15,17 @@ public:
     ActionManagerTest(void);
     ~ActionManagerTest(void);
 
-    virtual std::string title();
+    virtual std::string title() const override;
 
-    void restartCallback(Object* pSender);
-    void nextCallback(Object* pSender);
-    void backCallback(Object* pSender);
+    void restartCallback(Object* sender);
+    void nextCallback(Object* sender);
+    void backCallback(Object* sender);
 };
 
 class CrashTest : public ActionManagerTest
 {
 public:
-    virtual std::string title();
+    virtual std::string title() const override;
     virtual void onEnter();
     void removeThis();
 };
@@ -33,7 +33,7 @@ public:
 class LogicTest : public ActionManagerTest
 {
 public:
-    virtual std::string title();
+    virtual std::string title() const override;
     virtual void onEnter();
     void bugMe(Node* node);
 };
@@ -41,7 +41,7 @@ public:
 class PauseTest : public ActionManagerTest
 {
 public:
-    virtual std::string title();
+    virtual std::string title() const override;
     virtual void onEnter();
     void unpause(float dt);
 };
@@ -49,7 +49,7 @@ public:
 class RemoveTest : public ActionManagerTest
 {
 public:
-    virtual std::string title();
+    virtual std::string title() const override;
     virtual void onEnter();
     void stopAction();
 };
@@ -57,7 +57,7 @@ public:
 class ResumeTest : public ActionManagerTest
 {
 public:
-    virtual std::string title();
+    virtual std::string title() const override;
     virtual void onEnter();
     void resumeGrossini(float time);
 };

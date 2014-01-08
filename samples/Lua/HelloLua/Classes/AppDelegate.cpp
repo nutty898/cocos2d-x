@@ -1,7 +1,7 @@
 #include "cocos2d.h"
 #include "AppDelegate.h"
 #include "SimpleAudioEngine.h"
-#include "script_support/CCScriptSupport.h"
+#include "CCScriptSupport.h"
 #include "CCLuaEngine.h"
 
 USING_NS_CC;
@@ -16,17 +16,17 @@ AppDelegate::AppDelegate()
 AppDelegate::~AppDelegate()
 {
     // end simple audio engine here, or it may crashed on win32
-    SimpleAudioEngine::sharedEngine()->end();
-    //CCScriptEngineManager::purgeSharedManager();
+    SimpleAudioEngine::getInstance()->end();
+    //CCScriptEngineManager::destroyInstance();
 }
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
     // initialize director
-    Director *pDirector = Director::sharedDirector();
-    pDirector->setOpenGLView(EGLView::sharedOpenGLView());
+    auto pDirector = Director::getInstance();
+    pDirector->setOpenGLView(EGLView::getInstance());
     
-    EGLView::sharedOpenGLView()->setDesignResolutionSize(480, 320, kResolutionNoBorder);
+    EGLView::getInstance()->setDesignResolutionSize(480, 320, ResolutionPolicy::NO_BORDER);
 
     // turn on display FPS
     pDirector->setDisplayStats(true);
@@ -35,10 +35,10 @@ bool AppDelegate::applicationDidFinishLaunching()
     pDirector->setAnimationInterval(1.0 / 60);
 
     // register lua engine
-    LuaEngine* pEngine = LuaEngine::defaultEngine();
-    ScriptEngineManager::sharedManager()->setScriptEngine(pEngine);
+    LuaEngine* pEngine = LuaEngine::getInstance();
+    ScriptEngineManager::getInstance()->setScriptEngine(pEngine);
 
-    std::string path = FileUtils::sharedFileUtils()->fullPathForFilename("hello.lua");
+    std::string path = FileUtils::getInstance()->fullPathForFilename("hello.lua");
     pEngine->executeScriptFile(path.c_str());
 
     return true;
@@ -47,13 +47,13 @@ bool AppDelegate::applicationDidFinishLaunching()
 // This function will be called when the app is inactive. When comes a phone call,it's be invoked too
 void AppDelegate::applicationDidEnterBackground()
 {
-    Director::sharedDirector()->stopAnimation();
-    SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+    Director::getInstance()->stopAnimation();
+    SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground()
 {
-    Director::sharedDirector()->startAnimation();
-    SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    Director::getInstance()->startAnimation();
+    SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }

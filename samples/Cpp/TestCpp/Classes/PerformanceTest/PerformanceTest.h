@@ -14,14 +14,14 @@ class PerformBasicLayer : public Layer
 public:
     PerformBasicLayer(bool bControlMenuVisible, int nMaxCases = 0, int nCurCase = 0);
 
-    virtual void onEnter();
+    virtual void onEnter() override;
 
-    virtual void restartCallback(Object* pSender);
-    virtual void nextCallback(Object* pSender);
-    virtual void backCallback(Object* pSender);
+    virtual void restartCallback(Object* sender);
+    virtual void nextCallback(Object* sender);
+    virtual void backCallback(Object* sender);
     virtual void showCurrentTest() = 0;
 
-    virtual void toMainLayer(Object* pSender);
+    virtual void toMainLayer(Object* sender);
 
 protected:
     bool _controlMenuVisible;

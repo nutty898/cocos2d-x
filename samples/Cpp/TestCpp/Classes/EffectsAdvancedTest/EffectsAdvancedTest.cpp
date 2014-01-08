@@ -1,4 +1,5 @@
 #include "EffectsAdvancedTest.h"
+#include "CCNodeGrid.h"
 
 enum 
 {
@@ -20,28 +21,28 @@ void Effect1::onEnter()
 {
     EffectAdvanceTextLayer::onEnter();
 
-    Node* target = getChildByTag(kTagBackground);
+    //auto target = getChildByTag(kTagBackground);
     
     // To reuse a grid the grid size and the grid type must be the same.
     // in this case:
     //     Lens3D is Grid3D and it's size is (15,10)
     //     Waves3D is Grid3D and it's size is (15,10)
     
-    Size size = Director::sharedDirector()->getWinSize();
-    ActionInterval* lens = Lens3D::create(0.0f, CCSizeMake(15,10), ccp(size.width/2,size.height/2), 240);
-    ActionInterval* waves = Waves3D::create(10, CCSizeMake(15,10), 18, 15);
+    auto size = Director::getInstance()->getWinSize();
+    auto lens = Lens3D::create(0.0f, Size(15,10), Point(size.width/2,size.height/2), 240);
+    auto waves = Waves3D::create(10, Size(15,10), 18, 15);
 
-    FiniteTimeAction* reuse = ReuseGrid::create(1);
-    ActionInterval* delay = DelayTime::create(8);
+    auto reuse = ReuseGrid::create(1);
+    auto delay = DelayTime::create(8);
 
-    ActionInterval* orbit = OrbitCamera::create(5, 1, 2, 0, 180, 0, -90);
-    ActionInterval* orbit_back = orbit->reverse();
+//    auto orbit = OrbitCamera::create(5, 1, 2, 0, 180, 0, -90);
+//    auto orbit_back = orbit->reverse();
 
-    target->runAction( RepeatForever::create( Sequence::create( orbit, orbit_back, NULL)  ) );
-    target->runAction( Sequence::create(lens, delay, reuse, waves, NULL) );
+    //_bgNode->runAction( RepeatForever::create( Sequence::create( orbit, orbit_back, NULL)  ) );
+    _bgNode->runAction( Sequence::create(lens, delay, reuse, waves, NULL) );
 }
 
-std::string Effect1::title()
+std::string Effect1::title() const
 {
     return "Lens + Waves3d and OrbitCamera";
 }
@@ -55,34 +56,34 @@ void Effect2::onEnter()
 {
     EffectAdvanceTextLayer::onEnter();
 
-    Node* target = getChildByTag(kTagBackground);
+    //auto target = getChildByTag(kTagBackground);
     
     // To reuse a grid the grid size and the grid type must be the same.
     // in this case:
     //     ShakyTiles is TiledGrid3D and it's size is (15,10)
     //     Shuffletiles is TiledGrid3D and it's size is (15,10)
     //       TurnOfftiles is TiledGrid3D and it's size is (15,10)
-    ActionInterval* shaky = ShakyTiles3D::create(5, CCSizeMake(15,10), 4, false);
-    ActionInterval* shuffle = ShuffleTiles::create(0, CCSizeMake(15,10), 3);
-    ActionInterval* turnoff = TurnOffTiles::create(0, CCSizeMake(15,10), 3);
-    ActionInterval* turnon = turnoff->reverse();
+    auto shaky = ShakyTiles3D::create(5, Size(15,10), 4, false);
+    auto shuffle = ShuffleTiles::create(0, Size(15,10), 3);
+    auto turnoff = TurnOffTiles::create(0, Size(15,10), 3);
+    auto turnon = turnoff->reverse();
     
     // reuse 2 times:
     //   1 for shuffle
     //   2 for turn off
     //   turnon tiles will use a new grid
-    FiniteTimeAction* reuse = ReuseGrid::create(2);
+    auto reuse = ReuseGrid::create(2);
 
-    ActionInterval* delay = DelayTime::create(1);
+    auto delay = DelayTime::create(1);
     
 //    id orbit = [OrbitCamera::create:5 radius:1 deltaRadius:2 angleZ:0 deltaAngleZ:180 angleX:0 deltaAngleX:-90];
 //    id orbit_back = [orbit reverse];
 //
-//    [target runAction: [RepeatForever::create: [Sequence actions: orbit, orbit_back, nil]]];
-    target->runAction(Sequence::create( shaky, delay, reuse, shuffle, delay->clone(), turnoff, turnon, NULL) );
+//    [target runAction: [RepeatForever::create: [Sequence actions: orbit, orbit_back, nil]]];    
+    _bgNode->runAction(Sequence::create( shaky, delay, reuse, shuffle, delay->clone(), turnoff, turnon, NULL) );
 }
 
-std::string Effect2::title()
+std::string Effect2::title() const
 {
     return "ShakyTiles + ShuffleTiles + TurnOffTiles";
 }
@@ -96,23 +97,21 @@ std::string Effect2::title()
 void Effect3::onEnter()
 {
     EffectAdvanceTextLayer::onEnter();
-
-    Node* bg = getChildByTag(kTagBackground);
-    Node* target1 = bg->getChildByTag(kTagSprite1);
-    Node* target2 = bg->getChildByTag(kTagSprite2);    
+    //auto bg = getChildByTag(kTagBackground);
+    //auto target1 = bg->getChildByTag(kTagSprite1);
+    //auto target2 = bg->getChildByTag(kTagSprite2);    
+    auto waves = Waves::create(5, Size(15,10), 5, 20, true, false);
+    auto shaky = Shaky3D::create(5, Size(15,10), 4, false);
     
-    ActionInterval* waves = Waves::create(5, CCSizeMake(15,10), 5, 20, true, false);
-    ActionInterval* shaky = Shaky3D::create(5, CCSizeMake(15,10), 4, false);
-    
-    target1->runAction( RepeatForever::create( waves ) );
-    target2->runAction( RepeatForever::create( shaky ) );
+    _target1->runAction( RepeatForever::create( waves ) );
+    _target2->runAction( RepeatForever::create( shaky ) );
     
     // moving background. Testing issue #244
-    ActionInterval* move = MoveBy::create(3, ccp(200,0) );
-    bg->runAction(RepeatForever::create( Sequence::create(move, move->reverse(), NULL) ));    
+    auto move = MoveBy::create(3, Point(200,0) );
+    _bgNode->runAction(RepeatForever::create( Sequence::create(move, move->reverse(), NULL) ));    
 }
 
-std::string Effect3::title()
+std::string Effect3::title() const
 {
     return "Effects on 2 sprites";
 }
@@ -132,7 +131,7 @@ public:
         _lens3D->setPosition(var);
     }
     
-    virtual const Point& getPosition()
+    virtual const Point& getPosition() const
     {
         return _lens3D->getPosition();
     }
@@ -156,27 +155,30 @@ private:
 void Effect4::onEnter()
 {
     EffectAdvanceTextLayer::onEnter();
-
-    Lens3D* lens = Lens3D::create(10, CCSizeMake(32,24), ccp(100,180), 150);
-    ActionInterval* move = JumpBy::create(5, ccp(380,0), 100, 4);
-    ActionInterval* move_back = move->reverse();
-    ActionInterval* seq = Sequence::create( move, move_back, NULL);
+    //Node* gridNode = NodeGrid::create();
+    
+    auto lens = Lens3D::create(10, Size(32,24), Point(100,180), 150);
+    auto move = JumpBy::create(5, Point(380,0), 100, 4);
+    auto move_back = move->reverse();
+    auto seq = Sequence::create( move, move_back, NULL);
 
     /* In cocos2d-iphone, the type of action's target is 'id', so it supports using the instance of 'Lens3D' as its target.
         While in cocos2d-x, the target of action only supports Node or its subclass,
         so we make an encapsulation for Lens3D to achieve that.
     */
 
-    Director* director = Director::sharedDirector();
-    Node* pTarget = Lens3DTarget::create(lens);
+    auto director = Director::getInstance();
+    auto pTarget = Lens3DTarget::create(lens);
     // Please make sure the target been added to its parent.
     this->addChild(pTarget);
+    //gridNode->addChild(pTarget);
 
     director->getActionManager()->addAction(seq, pTarget, false);
-    this->runAction( lens );
+    
+    _bgNode->runAction( lens );
 }
 
-std::string Effect4::title()
+std::string Effect4::title() const
 {
     return "Jumpy Lens3D";
 }
@@ -190,11 +192,11 @@ void Effect5::onEnter()
 {
     EffectAdvanceTextLayer::onEnter();
 
-    //CCDirector::sharedDirector()->setProjection(DirectorProjection2D);
+    //CCDirector::getInstance()->setProjection(DirectorProjection2D);
     
-    ActionInterval* effect = Liquid::create(2, CCSizeMake(32,24), 1, 20);    
+    auto effect = Liquid::create(2, Size(32,24), 1, 20);    
 
-    ActionInterval* stopEffect = Sequence::create(
+    auto stopEffect = Sequence::create(
                                          effect,
                                          DelayTime::create(2),
                                          StopGrid::create(),
@@ -202,11 +204,11 @@ void Effect5::onEnter()
                     //                     [[effect copy] autorelease],
                                          NULL);
     
-    Node* bg = getChildByTag(kTagBackground);
-    bg->runAction(stopEffect);
+    //auto bg = getChildByTag(kTagBackground);
+    _bgNode->runAction(stopEffect);
 }
 
-std::string Effect5::title()
+std::string Effect5::title() const
 {
     return "Test Stop-Copy-Restar";
 }
@@ -215,7 +217,7 @@ void Effect5::onExit()
 {
     EffectAdvanceTextLayer::onExit();
 
-    Director::sharedDirector()->setProjection(kDirectorProjection3D);
+    Director::getInstance()->setProjection(Director::Projection::_3D);
 }
 
 //------------------------------------------------------------------
@@ -227,37 +229,39 @@ void Issue631::onEnter()
 {
     EffectAdvanceTextLayer::onEnter();
         
-    ActionInterval* effect = Sequence::create( DelayTime::create(2.0f), Shaky3D::create(5.0f, CCSizeMake(5, 5), 16, false), NULL);
+    auto effect = Sequence::create( DelayTime::create(2.0f), Shaky3D::create(5.0f, Size(5, 5), 16, false), NULL);
 
     // cleanup
-    Node* bg = getChildByTag(kTagBackground);
-    removeChild(bg, true);
+    //auto bg = getChildByTag(kTagBackground);
+    removeChild(_bgNode, true);
 
     // background
-    LayerColor* layer = LayerColor::create( ccc4(255,0,0,255) );
+    auto layer = LayerColor::create( Color4B(255,0,0,255) );
     addChild(layer, -10);
-    Sprite* sprite = Sprite::create("Images/grossini.png");
-    sprite->setPosition( ccp(50,80) );
+    auto sprite = Sprite::create("Images/grossini.png");
+    sprite->setPosition( Point(50,80) );
     layer->addChild(sprite, 10);
     
     // foreground
-    LayerColor* layer2 = LayerColor::create(ccc4( 0, 255,0,255 ) );
-    Sprite* fog = Sprite::create("Images/Fog.png");
+    auto layer2BaseGrid = NodeGrid::create();
+    auto layer2 = LayerColor::create(Color4B( 0, 255,0,255 ) );
+    auto fog = Sprite::create("Images/Fog.png");
 
-    ccBlendFunc bf = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
+    BlendFunc bf = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
     fog->setBlendFunc(bf);
     layer2->addChild(fog, 1);
-    addChild(layer2, 1);
+    addChild(layer2BaseGrid, 1);
+    layer2BaseGrid->addChild(layer2);
     
-    layer2->runAction( RepeatForever::create(effect) );
+    layer2BaseGrid->runAction( RepeatForever::create(effect) );
 }
 
-std::string Issue631::title()
+std::string Issue631::title() const
 {
     return "Testing Opacity";
 }
 
-std::string Issue631::subtitle()
+std::string Issue631::subtitle() const
 {
     return "Effect image should be 100% opaque. Testing issue #631";
 }
@@ -303,10 +307,10 @@ Layer* nextEffectAdvanceAction()
     sceneIdx++;
     sceneIdx = sceneIdx % MAX_LAYER;
 
-    Layer* pLayer = createEffectAdvanceLayer(sceneIdx);
-    pLayer->autorelease();
+    auto layer = createEffectAdvanceLayer(sceneIdx);
+    layer->autorelease();
 
-    return pLayer;
+    return layer;
 }
 
 Layer* backEffectAdvanceAction()
@@ -316,18 +320,18 @@ Layer* backEffectAdvanceAction()
     if( sceneIdx < 0 )
         sceneIdx += total;    
     
-    Layer* pLayer = createEffectAdvanceLayer(sceneIdx);
-    pLayer->autorelease();
+    auto layer = createEffectAdvanceLayer(sceneIdx);
+    layer->autorelease();
 
-    return pLayer;
+    return layer;
 }
 
 Layer* restartEffectAdvanceAction()
 {
-    Layer* pLayer = createEffectAdvanceLayer(sceneIdx);
-    pLayer->autorelease();
+    auto layer = createEffectAdvanceLayer(sceneIdx);
+    layer->autorelease();
 
-    return pLayer;
+    return layer;
 } 
 
 
@@ -335,69 +339,83 @@ void EffectAdvanceTextLayer::onEnter(void)
 {
     BaseTest::onEnter();
     
-    Sprite *bg = Sprite::create("Images/background3.png");
-    addChild(bg, 0, kTagBackground);
+    _bgNode = NodeGrid::create();
+    _bgNode->setAnchorPoint(Point(0.5,0.5));
+    addChild(_bgNode);
+    //_bgNode->setPosition( VisibleRect::center() );
+    auto bg = Sprite::create("Images/background3.png");
     bg->setPosition( VisibleRect::center() );
-    
-    Sprite* grossini = Sprite::create("Images/grossinis_sister2.png");
-    bg->addChild(grossini, 1, kTagSprite1);
-    grossini->setPosition( ccp(VisibleRect::left().x+VisibleRect::getVisibleRect().size.width/3.0f, VisibleRect::bottom().y+ 200) );
-    ActionInterval* sc = ScaleBy::create(2, 5);
-    ActionInterval* sc_back = sc->reverse();
-    grossini->runAction( RepeatForever::create(Sequence::create(sc, sc_back, NULL) ) );
+    //addChild(bg, 0, kTagBackground);
+    //bg->setPosition( VisibleRect::center() );
+    _bgNode->addChild(bg);
 
-    Sprite* tamara = Sprite::create("Images/grossinis_sister1.png");
-    bg->addChild(tamara, 1, kTagSprite2);
-    tamara->setPosition( ccp(VisibleRect::left().x+2*VisibleRect::getVisibleRect().size.width/3.0f,VisibleRect::bottom().y+200) );
-    ActionInterval* sc2 = ScaleBy::create(2, 5);
-    ActionInterval* sc2_back = sc2->reverse();
-    tamara->runAction( RepeatForever::create(Sequence::create(sc2, sc2_back, NULL) ) );    
+    _target1 = NodeGrid::create();
+    _target1->setAnchorPoint(Point(0.5,0.5));
+    auto grossini = Sprite::create("Images/grossinis_sister2.png");
+    _target1->addChild(grossini);
+    _bgNode->addChild(_target1);
+    _target1->setPosition( Point(VisibleRect::left().x+VisibleRect::getVisibleRect().size.width/3.0f, VisibleRect::bottom().y+ 200) );
+    auto sc = ScaleBy::create(2, 5);
+    auto sc_back = sc->reverse();
+    _target1->runAction( RepeatForever::create(Sequence::create(sc, sc_back, NULL) ) );
+
+
+    _target2 = NodeGrid::create();
+    _target2->setAnchorPoint(Point(0.5,0.5));
+    auto tamara = Sprite::create("Images/grossinis_sister1.png");
+    _target2->addChild(tamara);
+    _bgNode->addChild(_target2);
+    _target2->setPosition( Point(VisibleRect::left().x+2*VisibleRect::getVisibleRect().size.width/3.0f,VisibleRect::bottom().y+200) );
+    auto sc2 = ScaleBy::create(2, 5);
+    auto sc2_back = sc2->reverse();
+    _target2->runAction( RepeatForever::create(Sequence::create(sc2, sc2_back, NULL) ) );    
+
 }
 
 EffectAdvanceTextLayer::~EffectAdvanceTextLayer(void)
 {
 }
 
-std::string EffectAdvanceTextLayer::title()
+std::string EffectAdvanceTextLayer::title() const
 {
     return "No title";
 }
 
-std::string EffectAdvanceTextLayer::subtitle()
+std::string EffectAdvanceTextLayer::subtitle() const
 {
     return "";
 }
 
-void EffectAdvanceTextLayer::restartCallback(Object* pSender)
+void EffectAdvanceTextLayer::restartCallback(Object* sender)
 {
-    Scene* s = new EffectAdvanceScene();
+    auto s = new EffectAdvanceScene();
     s->addChild(restartEffectAdvanceAction()); 
 
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
-void EffectAdvanceTextLayer::nextCallback(Object* pSender)
+void EffectAdvanceTextLayer::nextCallback(Object* sender)
 {
-    Scene* s = new EffectAdvanceScene();
+    auto s = new EffectAdvanceScene();
     s->addChild( nextEffectAdvanceAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
 
     s->release();
 }
 
-void EffectAdvanceTextLayer::backCallback(Object* pSender)
+void EffectAdvanceTextLayer::backCallback(Object* sender)
 {
-    Scene* s = new EffectAdvanceScene();
+    auto s = new EffectAdvanceScene();
     s->addChild( backEffectAdvanceAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 } 
 
 void EffectAdvanceScene::runThisTest()
 {
-    Layer* pLayer = nextEffectAdvanceAction();
+    auto layer = nextEffectAdvanceAction();
 
-    addChild(pLayer);
-    Director::sharedDirector()->replaceScene(this);
+    addChild(layer);
+    Director::getInstance()->replaceScene(this);
 }

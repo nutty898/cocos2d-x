@@ -8,16 +8,16 @@ Paddle::~Paddle(void)
 {
 }
 
-Rect Paddle::rect()
+Rect Paddle::getRect()
 {
-    Size s = getTexture()->getContentSize();
-    return CCRectMake(-s.width / 2, -s.height / 2, s.width, s.height);
+    auto s = getTexture()->getContentSize();
+    return Rect(-s.width / 2, -s.height / 2, s.width, s.height);
 }
 
-Paddle* Paddle::paddleWithTexture(Texture2D* aTexture)
+Paddle* Paddle::createWithTexture(Texture2D* aTexture)
 {
     Paddle* pPaddle = new Paddle();
-    pPaddle->initWithTexture( aTexture );
+    pPaddle->initWithTexture(aTexture);
     pPaddle->autorelease();
 
     return pPaddle;
@@ -25,7 +25,7 @@ Paddle* Paddle::paddleWithTexture(Texture2D* aTexture)
 
 bool Paddle::initWithTexture(Texture2D* aTexture)
 {
-    if( Sprite::initWithTexture(aTexture) ) 
+    if( Sprite::initWithTexture(aTexture) )
     {
         _state = kPaddleStateUngrabbed;
     }
@@ -35,33 +35,44 @@ bool Paddle::initWithTexture(Texture2D* aTexture)
 
 void Paddle::onEnter()
 {
-    Director* pDirector = Director::sharedDirector();
-    pDirector->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
     Sprite::onEnter();
+    
+    // Register Touch Event
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->setSwallowTouches(true);
+    
+    listener->onTouchBegan = CC_CALLBACK_2(Paddle::onTouchBegan, this);
+    listener->onTouchMoved = CC_CALLBACK_2(Paddle::onTouchMoved, this);
+    listener->onTouchEnded = CC_CALLBACK_2(Paddle::onTouchEnded, this);
+    
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
 void Paddle::onExit()
 {
-    Director* pDirector = Director::sharedDirector();
-    pDirector->getTouchDispatcher()->removeDelegate(this);
+//    auto director = Director::getInstance();
+//    director->getTouchDispatcher()->removeDelegate(this);
     Sprite::onExit();
 }    
 
 bool Paddle::containsTouchLocation(Touch* touch)
 {
-    return rect().containsPoint(convertTouchToNodeSpaceAR(touch));
+    return getRect().containsPoint(convertTouchToNodeSpaceAR(touch));
 }
 
-bool Paddle::ccTouchBegan(Touch* touch, Event* event)
+bool Paddle::onTouchBegan(Touch* touch, Event* event)
 {
+    CCLOG("Paddle::onTouchBegan id = %d, x = %f, y = %f", touch->getID(), touch->getLocation().x, touch->getLocation().y);
+    
     if (_state != kPaddleStateUngrabbed) return false;
     if ( !containsTouchLocation(touch) ) return false;
     
     _state = kPaddleStateGrabbed;
+    CCLOG("return true");
     return true;
 }
 
-void Paddle::ccTouchMoved(Touch* touch, Event* event)
+void Paddle::onTouchMoved(Touch* touch, Event* event)
 {
     // If it weren't for the TouchDispatcher, you would need to keep a reference
     // to the touch from touchBegan and check that the current touch is the same
@@ -70,32 +81,27 @@ void Paddle::ccTouchMoved(Touch* touch, Event* event)
     // you get Sets instead of 1 UITouch, so you'd need to loop through the set
     // in each touchXXX method.
     
-    CCAssert(_state == kPaddleStateGrabbed, "Paddle - Unexpected state!");    
+    CCLOG("Paddle::onTouchMoved id = %d, x = %f, y = %f", touch->getID(), touch->getLocation().x, touch->getLocation().y);
     
-    Point touchPoint = touch->getLocation();
+    CCASSERT(_state == kPaddleStateGrabbed, "Paddle - Unexpected state!");    
     
-    setPosition( ccp(touchPoint.x, getPosition().y) );
+    auto touchPoint = touch->getLocation();
+    
+    setPosition( Point(touchPoint.x, getPosition().y) );
 }
 
-Object* Paddle::copyWithZone(Zone *pZone)
+Paddle* Paddle::clone() const
 {
-    this->retain();
-    return this;
+    Paddle* ret = Paddle::createWithTexture(_texture);
+    ret->_state = _state;
+    ret->setPosition(getPosition());
+    ret->setAnchorPoint(getAnchorPoint());
+    return ret;
 }
 
-void Paddle::ccTouchEnded(Touch* touch, Event* event)
+void Paddle::onTouchEnded(Touch* touch, Event* event)
 {
-    CCAssert(_state == kPaddleStateGrabbed, "Paddle - Unexpected state!");    
+    CCASSERT(_state == kPaddleStateGrabbed, "Paddle - Unexpected state!");    
     
     _state = kPaddleStateUngrabbed;
 } 
-
-void Paddle::touchDelegateRetain()
-{
-    this->retain();
-}
-
-void Paddle::touchDelegateRelease()
-{
-    this->release();
-}

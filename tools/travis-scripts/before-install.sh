@@ -21,12 +21,12 @@ install_android_ndk()
     else
         HOST_NAME="linux"
     fi
-    echo "Download android-ndk-r8e-${HOST_NAME}-x86_64.tar.bz2 ..."
-    curl -O http://dl.google.com/android/ndk/android-ndk-r8e-${HOST_NAME}-x86_64.tar.bz2
-    echo "Decompress android-ndk-r8e-${HOST_NAME}-x86_64.tar.bz2 ..."
-    tar xjf android-ndk-r8e-${HOST_NAME}-x86_64.tar.bz2
+    echo "Download android-ndk-r9b-${HOST_NAME}-x86_64.tar.bz2 ..."
+    curl -O http://dl.google.com/android/ndk/android-ndk-r9b-${HOST_NAME}-x86_64.tar.bz2
+    echo "Decompress android-ndk-r9b-${HOST_NAME}-x86_64.tar.bz2 ..."
+    tar xjf android-ndk-r9b-${HOST_NAME}-x86_64.tar.bz2
     # Rename ndk
-    mv android-ndk-r8e android-ndk
+    mv android-ndk-r9b android-ndk
 }
 
 install_llvm()
@@ -94,8 +94,17 @@ if [ "$GEN_JSB"x = "YES"x ]; then
     install_android_ndk
     install_llvm
 elif [ "$PLATFORM"x = "linux"x ]; then
+    sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    # OpenMW team provides SDL2 package.
+    sudo apt-add-repository -y ppa:openmw/build
     sudo apt-get update
-    bash $COCOS2DX_ROOT/install-deps-linux.sh
+    sudo apt-get install gcc-4.7 g++-4.7
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.6
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 90 --slave /usr/bin/g++ g++ /usr/bin/g++-4.7
+    g++ --version
+    bash $COCOS2DX_ROOT/build/install-deps-linux.sh
+    install_android_ndk
+    install_llvm
 elif [ "$PLATFORM"x = "nacl"x ]; then
     install_nacl_sdk
 elif [ "$PLATFORM"x = "android"x ]; then
@@ -103,6 +112,7 @@ elif [ "$PLATFORM"x = "android"x ]; then
     install_llvm
 elif [ "$PLATFORM"x = "emscripten"x ]; then
     sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
+    install_android_ndk
     install_llvm_3_2
 elif [ "$PLATFORM"x = "ios"x ]; then
     install_android_ndk

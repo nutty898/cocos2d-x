@@ -11,11 +11,13 @@ public:
     TestController();
     ~TestController();
 
-    void menuCallback(Object * pSender);
-    void closeCallback(Object * pSender);
+    void menuCallback(Object * sender);
+    void closeCallback(Object * sender);
 
-    virtual void ccTouchesBegan(Set *pTouches, Event *pEvent);
-    virtual void ccTouchesMoved(Set *pTouches, Event *pEvent);
+    bool onTouchBegan(Touch* touches, Event  *event);
+    void onTouchMoved(Touch* touches, Event  *event);
+
+    void onMouseScroll(Event *event);
 
 private:
     Point _beginPos;

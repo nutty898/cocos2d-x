@@ -28,8 +28,7 @@
  */
 
 #include "CCControlSlider.h"
-#include "support/CCPointExtension.h"
-#include "touch_dispatcher/CCTouch.h"
+#include "CCTouch.h"
 #include "CCDirector.h"
 
 NS_CC_EXT_BEGIN
@@ -80,34 +79,33 @@ ControlSlider* ControlSlider::create(Sprite * backgroundSprite, Sprite* pogressS
  {
      if (Control::init())
      {
-        CCAssert(backgroundSprite,  "Background sprite must be not nil");
-        CCAssert(progressSprite,    "Progress sprite must be not nil");
-        CCAssert(thumbSprite,       "Thumb sprite must be not nil");
+        CCASSERT(backgroundSprite,  "Background sprite must be not nil");
+        CCASSERT(progressSprite,    "Progress sprite must be not nil");
+        CCASSERT(thumbSprite,       "Thumb sprite must be not nil");
 
         ignoreAnchorPointForPosition(false);
-        setTouchEnabled(true);
 
         this->setBackgroundSprite(backgroundSprite);
         this->setProgressSprite(progressSprite);
         this->setThumbSprite(thumbSprite);
 
         // Defines the content size
-        Rect maxRect   = ControlUtils::RectUnion(backgroundSprite->boundingBox(), thumbSprite->boundingBox());
+        Rect maxRect   = ControlUtils::RectUnion(backgroundSprite->getBoundingBox(), thumbSprite->getBoundingBox());
 
-        setContentSize(CCSizeMake(maxRect.size.width, maxRect.size.height));
+        setContentSize(Size(maxRect.size.width, maxRect.size.height));
         
         // Add the slider background
-        _backgroundSprite->setAnchorPoint(ccp(0.5f, 0.5f));
-        _backgroundSprite->setPosition(ccp(this->getContentSize().width / 2, this->getContentSize().height / 2));
+        _backgroundSprite->setAnchorPoint(Point(0.5f, 0.5f));
+        _backgroundSprite->setPosition(Point(this->getContentSize().width / 2, this->getContentSize().height / 2));
         addChild(_backgroundSprite);
 
         // Add the progress bar
-        _progressSprite->setAnchorPoint(ccp(0.0f, 0.5f));
-        _progressSprite->setPosition(ccp(0.0f, this->getContentSize().height / 2));
+        _progressSprite->setAnchorPoint(Point(0.0f, 0.5f));
+        _progressSprite->setPosition(Point(0.0f, this->getContentSize().height / 2));
         addChild(_progressSprite);
 
         // Add the slider thumb  
-        _thumbSprite->setPosition(ccp(0.0f, this->getContentSize().height / 2));
+        _thumbSprite->setPosition(Point(0.0f, this->getContentSize().height / 2));
         addChild(_thumbSprite);
         
         // Init default values
@@ -150,7 +148,7 @@ void ControlSlider::setEnabled(bool enabled)
 
      this->needsLayout();
 
-     this->sendActionsForControlEvents(ControlEventValueChanged);
+     this->sendActionsForControlEvents(Control::EventType::VALUE_CHANGED);
  }
 
  void ControlSlider::setMinimumValue(float minimumValue)
@@ -180,7 +178,7 @@ bool ControlSlider::isTouchInside(Touch * touch)
   Point touchLocation   = touch->getLocation();
   touchLocation           = this->getParent()->convertToNodeSpace(touchLocation);
 
-  Rect rect             = this->boundingBox();
+  Rect rect             = this->getBoundingBox();
   rect.size.width         += _thumbSprite->getContentSize().width;
   rect.origin.x           -= _thumbSprite->getContentSize().width / 2;
 
@@ -204,7 +202,7 @@ Point ControlSlider::locationFromTouch(Touch* touch)
 }
 
 
-bool ControlSlider::ccTouchBegan(Touch* touch, Event* pEvent)
+bool ControlSlider::onTouchBegan(Touch* touch, Event* pEvent)
 {
     if (!isTouchInside(touch) || !isEnabled() || !isVisible())
     {
@@ -216,15 +214,15 @@ bool ControlSlider::ccTouchBegan(Touch* touch, Event* pEvent)
     return true;
 }
 
-void ControlSlider::ccTouchMoved(Touch *pTouch, Event *pEvent)
+void ControlSlider::onTouchMoved(Touch *pTouch, Event *pEvent)
 {
     Point location = locationFromTouch(pTouch);
     sliderMoved(location);
 }
 
-void ControlSlider::ccTouchEnded(Touch *pTouch, Event *pEvent)
+void ControlSlider::onTouchEnded(Touch *pTouch, Event *pEvent)
 {
-    sliderEnded(PointZero);
+    sliderEnded(Point::ZERO);
 }
 
 void ControlSlider::needsLayout()
@@ -242,14 +240,14 @@ void ControlSlider::needsLayout()
 
     // Stretches content proportional to newLevel
     Rect textureRect          = _progressSprite->getTextureRect();
-    textureRect                 = CCRectMake(textureRect.origin.x, textureRect.origin.y, pos.x, textureRect.size.height);
+    textureRect                 = Rect(textureRect.origin.x, textureRect.origin.y, pos.x, textureRect.size.height);
     _progressSprite->setTextureRect(textureRect, _progressSprite->isTextureRectRotated(), textureRect.size);
 }
 
 void ControlSlider::sliderBegan(Point location)
 {
     this->setSelected(true);
-    this->getThumbSprite()->setColor(ccGRAY);
+    this->getThumbSprite()->setColor(Color3B::GRAY);
     setValue(valueForLocation(location));
 }
 
@@ -264,7 +262,7 @@ void ControlSlider::sliderEnded(Point location)
     {
         setValue(valueForLocation(_thumbSprite->getPosition()));
     }
-    this->getThumbSprite()->setColor(ccWHITE);
+    this->getThumbSprite()->setColor(Color3B::WHITE);
     this->setSelected(false);
 }
 

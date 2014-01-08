@@ -24,47 +24,57 @@ public:
     virtual void onEnter();
     virtual void onExit();
 
-    virtual std::string title();
-    virtual std::string subtitle();
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
 
-    void restartCallback(Object* pSender);
-    void nextCallback(Object* pSender);
-    void backCallback(Object* pSender);
+    void restartCallback(Object* sender);
+    void nextCallback(Object* sender);
+    void backCallback(Object* sender);
 };
 
 class ConfigurationLoadConfig : public ConfigurationBase
 {
 public:
+    CREATE_FUNC(ConfigurationLoadConfig);
+
     virtual void onEnter();
-    virtual std::string subtitle();
+    virtual std::string subtitle() const override;
 };
 
 class ConfigurationQuery : public ConfigurationBase
 {
 public:
+    CREATE_FUNC(ConfigurationQuery);
+
     virtual void onEnter();
-    virtual std::string subtitle();
+    virtual std::string subtitle() const override;
 };
 
 class ConfigurationInvalid : public ConfigurationBase
 {
 public:
+    CREATE_FUNC(ConfigurationInvalid);
+
     virtual void onEnter();
-    virtual std::string subtitle();
+    virtual std::string subtitle() const override;
 };
 
 class ConfigurationDefault : public ConfigurationBase
 {
 public:
+    CREATE_FUNC(ConfigurationDefault);
+
     virtual void onEnter();
-    virtual std::string subtitle();
+    virtual std::string subtitle() const override;
 };
 
 class ConfigurationSet : public ConfigurationBase
 {
 public:
+    CREATE_FUNC(ConfigurationSet);
+
     virtual void onEnter();
-    virtual std::string subtitle();
+    virtual std::string subtitle() const override;
 };
 
 

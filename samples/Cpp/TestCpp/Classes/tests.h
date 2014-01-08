@@ -1,6 +1,10 @@
 #ifndef _TESTS_H_
 #define _TESTS_H_
 
+#include "UnitTest/UnitTest.h"
+#include "NewRendererTest/NewRendererTest.h"
+#include "ConsoleTest/ConsoleTest.h"
+#include "NewEventDispatcherTest/NewEventDispatcherTest.h"
 #include "ActionsTest/ActionsTest.h"
 #include "TransitionsTest/TransitionsTest.h"
 #include "ActionsProgressTest/ActionsProgressTest.h"
@@ -20,6 +24,7 @@
 #include "TileMapTest/TileMapTest.h"
 #include "IntervalTest/IntervalTest.h"
 #include "LabelTest/LabelTest.h"
+#include "LabelTest/LabelTestNew.h"
 #include "TextInputTest/TextInputTest.h"
 #include "SpriteTest/SpriteTest.h"
 #include "SchedulerTest/SchedulerTest.h"
@@ -29,9 +34,8 @@
 #include "EffectsAdvancedTest/EffectsAdvancedTest.h"
 #include "AccelerometerTest/AccelerometerTest.h"
 #include "KeypadTest/KeypadTest.h"
-#ifdef CC_KEYBOARD_SUPPORT
 #include "KeyboardTest/KeyboardTest.h"
-#endif
+#include "InputTest/MouseTest.h"
 #include "PerformanceTest/PerformanceTest.h"
 #include "ZwoptexTest/ZwoptexTest.h"
 #include "CocosDenshionTest/CocosDenshionTest.h"
@@ -51,6 +55,7 @@
 #include "TextureCacheTest/TextureCacheTest.h"
 #include "NodeTest/NodeTest.h"
 #include "ShaderTest/ShaderTest.h"
+#include "ShaderTest/ShaderTest2.h"
 #include "ExtensionsTest/ExtensionsTest.h"
 #include "MutiTouchTest/MutiTouchTest.h"
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
@@ -62,5 +67,6 @@
 #include "TexturePackerEncryptionTest/TextureAtlasEncryptionTest.h"
 #include "DataVisitorTest/DataVisitorTest.h"
 #include "ConfigurationTest/ConfigurationTest.h"
+#include "PhysicsTest/PhysicsTest.h"
 
 #endif

@@ -21,12 +21,18 @@ ChipmunkTestLayer::ChipmunkTestLayer()
 {
 #if CC_ENABLE_CHIPMUNK_INTEGRATION      
     // enable events
-    setTouchEnabled(true);
-    setAccelerometerEnabled(true);
 
+    auto touchListener = EventListenerTouchAllAtOnce::create();
+    touchListener->onTouchesEnded = CC_CALLBACK_2(ChipmunkTestLayer::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    
+    Device::setAccelerometerEnabled(true);
+    auto accListener = EventListenerAcceleration::create(CC_CALLBACK_2(ChipmunkTestLayer::onAcceleration, this));
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(accListener, this);
+    
     // title
-    LabelTTF *label = LabelTTF::create("Multi touch the screen", "Marker Felt", 36);
-    label->setPosition(ccp( VisibleRect::center().x, VisibleRect::top().y - 30));
+    auto label = LabelTTF::create("Multi touch the screen", "Marker Felt", 36);
+    label->setPosition(Point( VisibleRect::center().x, VisibleRect::top().y - 30));
     this->addChild(label, -1);
 
     // reset button
@@ -37,40 +43,40 @@ ChipmunkTestLayer::ChipmunkTestLayer()
 
 #if 1
     // Use batch node. Faster
-    SpriteBatchNode *parent = SpriteBatchNode::create("Images/grossini_dance_atlas.png", 100);
+    auto parent = SpriteBatchNode::create("Images/grossini_dance_atlas.png", 100);
     _spriteTexture = parent->getTexture();
 #else
     // doesn't use batch node. Slower
-    _spriteTexture = TextureCache::sharedTextureCache()->addImage("Images/grossini_dance_atlas.png");
-    Node *parent = Node::create();
+    _spriteTexture = Director::getInstance()->getTextureCache()->addImage("Images/grossini_dance_atlas.png");
+    auto parent = Node::create();
 #endif
     addChild(parent, 0, kTagParentNode);
 
-    addNewSpriteAtPosition(ccp(200,200));
+    addNewSpriteAtPosition(Point(200,200));
 
     // menu for debug layer
     MenuItemFont::setFontSize(18);
-    MenuItemFont *item = MenuItemFont::create("Toggle debug", CC_CALLBACK_1(ChipmunkTestLayer::toggleDebugCallback, this));
+    auto item = MenuItemFont::create("Toggle debug", CC_CALLBACK_1(ChipmunkTestLayer::toggleDebugCallback, this));
 
-    Menu *menu = Menu::create(item, NULL);
+    auto menu = Menu::create(item, NULL);
     this->addChild(menu);
-    menu->setPosition(ccp(VisibleRect::right().x-100, VisibleRect::top().y-60));
+    menu->setPosition(Point(VisibleRect::right().x-100, VisibleRect::top().y-60));
 
     scheduleUpdate();
 #else
-    LabelTTF *pLabel = LabelTTF::create("Should define CC_ENABLE_CHIPMUNK_INTEGRATION=1\n to run this test case",
+    auto label = LabelTTF::create("Should define CC_ENABLE_CHIPMUNK_INTEGRATION=1\n to run this test case",
                                             "Arial",
                                             18);
-    Size size = Director::sharedDirector()->getWinSize();
-    pLabel->setPosition(ccp(size.width/2, size.height/2));
+    auto size = Director::getInstance()->getWinSize();
+    label->setPosition(Point(size.width/2, size.height/2));
     
-    addChild(pLabel);
+    addChild(label);
     
 #endif
     
 }
 
-void ChipmunkTestLayer::toggleDebugCallback(Object* pSender)
+void ChipmunkTestLayer::toggleDebugCallback(Object* sender)
 {
 #if CC_ENABLE_CHIPMUNK_INTEGRATION
     _debugLayer->setVisible(! _debugLayer->isVisible());
@@ -85,6 +91,8 @@ ChipmunkTestLayer::~ChipmunkTestLayer()
     }
 
     cpSpaceFree( _space );
+    
+    Device::setAccelerometerEnabled(false);
 
 }
 
@@ -138,7 +146,7 @@ void ChipmunkTestLayer::update(float delta)
 {
     // Should use a fixed size step based on the animation interval.
     int steps = 2;
-    float dt = Director::sharedDirector()->getAnimationInterval()/(float)steps;
+    float dt = Director::getInstance()->getAnimationInterval()/(float)steps;
 
     for(int i=0; i<steps; i++){
         cpSpaceStep(_space, dt);
@@ -147,21 +155,21 @@ void ChipmunkTestLayer::update(float delta)
 
 void ChipmunkTestLayer::createResetButton()
 {
-    MenuItemImage *reset = MenuItemImage::create("Images/r1.png", "Images/r2.png", CC_CALLBACK_1(ChipmunkTestLayer::reset, this));
+    auto reset = MenuItemImage::create("Images/r1.png", "Images/r2.png", CC_CALLBACK_1(ChipmunkTestLayer::reset, this));
 
-    Menu *menu = Menu::create(reset, NULL);
+    auto menu = Menu::create(reset, NULL);
 
-    menu->setPosition(ccp(VisibleRect::center().x, VisibleRect::bottom().y + 30));
+    menu->setPosition(Point(VisibleRect::center().x, VisibleRect::bottom().y + 30));
     this->addChild(menu, -1);
 }
 
 void ChipmunkTestLayer::reset(Object* sender)
 {
-    Scene* s = new ChipmunkAccelTouchTestScene();
-    ChipmunkTestLayer* child = new ChipmunkTestLayer();
+    auto s = new ChipmunkAccelTouchTestScene();
+    auto child = new ChipmunkTestLayer();
     s->addChild(child);
     child->release();
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
@@ -170,7 +178,7 @@ void ChipmunkTestLayer::addNewSpriteAtPosition(Point pos)
 #if CC_ENABLE_CHIPMUNK_INTEGRATION    
     int posx, posy;
 
-    Node *parent = getChildByTag(kTagParentNode);
+    auto parent = getChildByTag(kTagParentNode);
 
     posx = CCRANDOM_0_1() * 200.0f;
     posy = CCRANDOM_0_1() * 200.0f;
@@ -196,7 +204,7 @@ void ChipmunkTestLayer::addNewSpriteAtPosition(Point pos)
     shape->e = 0.5f; shape->u = 0.5f;
     cpSpaceAddShape(_space, shape);
 
-    PhysicsSprite *sprite = PhysicsSprite::createWithTexture(_spriteTexture, CCRectMake(posx, posy, 85, 121));
+    auto sprite = PhysicsSprite::createWithTexture(_spriteTexture, Rect(posx, posy, 85, 121));
     parent->addChild(sprite);
 
     sprite->setCPBody(body);
@@ -209,43 +217,41 @@ void ChipmunkTestLayer::onEnter()
     Layer::onEnter();
 }
 
-void ChipmunkTestLayer::ccTouchesEnded(Set* touches, Event* event)
+void ChipmunkTestLayer::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
 {
     //Add a new body/atlas sprite at the touched location
 
-    for( auto &item: *touches)
+    for( auto &touch: touches)
     {
-        Touch* touch = static_cast<Touch*>(item);
-
-        Point location = touch->getLocation();
+        auto location = touch->getLocation();
 
         addNewSpriteAtPosition( location );
     }
 }
 
-void ChipmunkTestLayer::didAccelerate(Acceleration* pAccelerationValue)
+void ChipmunkTestLayer::onAcceleration(Acceleration* acc, Event* event)
 {
     static float prevX=0, prevY=0;
 
 #define kFilterFactor 0.05f
 
-    float accelX = (float) pAccelerationValue->x * kFilterFactor + (1- kFilterFactor)*prevX;
-    float accelY = (float) pAccelerationValue->y * kFilterFactor + (1- kFilterFactor)*prevY;
+    float accelX = (float) acc->x * kFilterFactor + (1- kFilterFactor)*prevX;
+    float accelY = (float) acc->y * kFilterFactor + (1- kFilterFactor)*prevY;
 
     prevX = accelX;
     prevY = accelY;
 
-    Point v = ccp( accelX, accelY);
-    v = ccpMult(v, 200);
+    auto v = Point( accelX, accelY);
+    v = v * 200;
     _space->gravity = cpv(v.x, v.y);
 }
 
 void ChipmunkAccelTouchTestScene::runThisTest()
 {
-    Layer* pLayer = new ChipmunkTestLayer();
-    addChild(pLayer);
-    pLayer->release();
+    auto layer = new ChipmunkTestLayer();
+    addChild(layer);
+    layer->release();
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }
 

@@ -152,7 +152,7 @@
     {
         cocos2d::CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "began",pEditBox);
         cocos2d::ScriptEvent event(cocos2d::kCommonEvent,(void*)&data);
-        cocos2d::ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        cocos2d::ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
     return YES;
 }
@@ -172,11 +172,11 @@
     {
         cocos2d::CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "ended",pEditBox);
         cocos2d::ScriptEvent event(cocos2d::kCommonEvent,(void*)&data);
-        cocos2d::ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        cocos2d::ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"return",64);
         event.data = (void*)&data;
-        cocos2d::ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        cocos2d::ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
     return YES;
 }
@@ -220,7 +220,7 @@
     {
         cocos2d::CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "changed",pEditBox);
         cocos2d::ScriptEvent event(cocos2d::kCommonEvent,(void*)&data);
-        cocos2d::ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        cocos2d::ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
 }
 
@@ -234,8 +234,10 @@ EditBoxImpl* __createSystemEditBox(EditBox* pEditBox)
 }
 
 EditBoxImplMac::EditBoxImplMac(EditBox* pEditText)
-: EditBoxImpl(pEditText), _sysEdit(NULL), _maxTextLength(-1)
-, _anchorPoint(ccp(0.5f, 0.5f))
+: EditBoxImpl(pEditText)
+, _anchorPoint(Point(0.5f, 0.5f))
+, _maxTextLength(-1)
+, _sysEdit(NULL)
 {
     //! TODO: Retina on Mac
     //! _inRetinaMode = [[CCEAGLView sharedEGLView] contentScaleFactor] == 2.0f ? true : false;
@@ -255,7 +257,7 @@ void EditBoxImplMac::doAnimationWhenKeyboardMove(float duration, float distance)
 
 bool EditBoxImplMac::initWithSize(const Size& size)
 {
-    EGLViewProtocol* eglView = EGLView::sharedOpenGLView();
+    EGLViewProtocol* eglView = EGLView::getInstance();
 
     NSRect rect = NSMakeRect(0, 0, size.width * eglView->getScaleX(),size.height * eglView->getScaleY());
 
@@ -288,17 +290,17 @@ void EditBoxImplMac::setPlaceholderFont(const char* pFontName, int fontSize)
 	// TODO need to be implemented.
 }
 
-void EditBoxImplMac::setFontColor(const ccColor3B& color)
+void EditBoxImplMac::setFontColor(const Color3B& color)
 {
     _sysEdit.textField.textColor = [NSColor colorWithCalibratedRed:color.r / 255.0f green:color.g / 255.0f blue:color.b / 255.0f alpha:1.0f];
 }
 
-void EditBoxImplMac::setPlaceholderFontColor(const ccColor3B& color)
+void EditBoxImplMac::setPlaceholderFontColor(const Color3B& color)
 {
     // TODO need to be implemented.
 }
 
-void EditBoxImplMac::setInputMode(EditBoxInputMode inputMode)
+void EditBoxImplMac::setInputMode(EditBox::InputMode inputMode)
 {
 }
 
@@ -312,12 +314,12 @@ int EditBoxImplMac::getMaxLength()
     return _maxTextLength;
 }
 
-void EditBoxImplMac::setInputFlag(EditBoxInputFlag inputFlag)
+void EditBoxImplMac::setInputFlag(EditBox::InputFlag inputFlag)
 {
     // TODO: NSSecureTextField
 }
 
-void EditBoxImplMac::setReturnType(KeyboardReturnType returnType)
+void EditBoxImplMac::setReturnType(EditBox::KeyboardReturnType returnType)
 {
 }
 
@@ -346,10 +348,10 @@ NSPoint EditBoxImplMac::convertDesignCoordToScreenCoord(const Point& designCoord
     NSRect frame = [_sysEdit.textField frame];
     CGFloat height = frame.size.height;
     
-    EGLViewProtocol* eglView = EGLView::sharedOpenGLView();
+    EGLViewProtocol* eglView = EGLView::getInstance();
 
-    Point visiblePos = ccp(designCoord.x * eglView->getScaleX(), designCoord.y * eglView->getScaleY());
-    Point screenGLPos = ccpAdd(visiblePos, eglView->getViewPortRect().origin);
+    Point visiblePos = Point(designCoord.x * eglView->getScaleX(), designCoord.y * eglView->getScaleY());
+    Point screenGLPos = visiblePos + eglView->getViewPortRect().origin;
     
     //TODO: I don't know why here needs to substract `height`.
     NSPoint screenPos = NSMakePoint(screenGLPos.x, screenGLPos.y-height);
@@ -366,11 +368,11 @@ NSPoint EditBoxImplMac::convertDesignCoordToScreenCoord(const Point& designCoord
 void EditBoxImplMac::adjustTextFieldPosition()
 {
 	Size contentSize = _editBox->getContentSize();
-	Rect rect = CCRectMake(0, 0, contentSize.width, contentSize.height);
+	Rect rect = Rect(0, 0, contentSize.width, contentSize.height);
 
     rect = RectApplyAffineTransform(rect, _editBox->nodeToWorldTransform());
 	
-	Point designCoord = ccp(rect.origin.x, rect.origin.y + rect.size.height);
+	Point designCoord = Point(rect.origin.x, rect.origin.y + rect.size.height);
     [_sysEdit setPosition:convertDesignCoordToScreenCoord(designCoord, _inRetinaMode)];
 }
 

@@ -5,6 +5,8 @@
 #include "PerformanceSpriteTest.h"
 #include "PerformanceTextureTest.h"
 #include "PerformanceTouchesTest.h"
+#include "PerformanceAllocTest.h"
+#include "PerformanceLabelTest.h"
 
 enum
 {
@@ -17,11 +19,13 @@ struct {
 	std::function<void(Object*)> callback;
 } g_testsName[] =
 {
-    { "PerformanceNodeChildrenTest", [](Object*sender){runNodeChildrenTest();} },
-	{ "PerformanceParticleTest",[](Object*sender){runParticleTest();} },
-	{ "PerformanceSpriteTest",[](Object*sender){runSpriteTest();} },
-	{ "PerformanceTextureTest",[](Object*sender){runTextureTest();} },
-	{ "PerformanceTouchesTest",[](Object*sender){runTouchesTest();} },
+    { "Alloc Test", [](Object*sender){runAllocPerformanceTest(); } },
+    { "NodeChildren Test", [](Object*sender){runNodeChildrenTest();} },
+	{ "Particle Test",[](Object*sender){runParticleTest();} },
+	{ "Sprite Perf Test",[](Object*sender){runSpriteTest();} },
+	{ "Texture Perf Test",[](Object*sender){runTextureTest();} },
+	{ "Touches Perf Test",[](Object*sender){runTouchesTest();} },
+    { "Label Perf Test",[](Object*sender){runLabelTest();} },
 };
 
 static const int g_testMax = sizeof(g_testsName)/sizeof(g_testsName[0]);
@@ -35,20 +39,20 @@ void PerformanceMainLayer::onEnter()
 {
     Layer::onEnter();
 
-    Size s = Director::sharedDirector()->getWinSize();
+    auto s = Director::getInstance()->getWinSize();
 
-    Menu* pMenu = Menu::create();
-    pMenu->setPosition( PointZero );
+    auto menu = Menu::create();
+    menu->setPosition( Point::ZERO );
     MenuItemFont::setFontName("Arial");
     MenuItemFont::setFontSize(24);
     for (int i = 0; i < g_testMax; ++i)
     {
-        MenuItemFont* pItem = MenuItemFont::create(g_testsName[i].name, g_testsName[i].callback);
-        pItem->setPosition(ccp(s.width / 2, s.height - (i + 1) * LINE_SPACE));
-        pMenu->addChild(pItem, kItemTagBasic + i);
+        auto pItem = MenuItemFont::create(g_testsName[i].name, g_testsName[i].callback);
+        pItem->setPosition(Point(s.width / 2, s.height - (i + 1) * LINE_SPACE));
+        menu->addChild(pItem, kItemTagBasic + i);
     }
 
-    addChild(pMenu);
+    addChild(menu);
 }
 
 ////////////////////////////////////////////////////////
@@ -70,41 +74,41 @@ void PerformBasicLayer::onEnter()
 
     MenuItemFont::setFontName("Arial");
     MenuItemFont::setFontSize(24);
-    MenuItemFont* pMainItem = MenuItemFont::create("Back", CC_CALLBACK_1(PerformBasicLayer::toMainLayer, this));
-    pMainItem->setPosition(ccp(VisibleRect::rightBottom().x - 50, VisibleRect::rightBottom().y + 25));
-    Menu* pMenu = Menu::create(pMainItem, NULL);
-    pMenu->setPosition( PointZero );
+    auto pMainItem = MenuItemFont::create("Back", CC_CALLBACK_1(PerformBasicLayer::toMainLayer, this));
+    pMainItem->setPosition(Point(VisibleRect::rightBottom().x - 50, VisibleRect::rightBottom().y + 25));
+    auto menu = Menu::create(pMainItem, NULL);
+    menu->setPosition( Point::ZERO );
 
     if (_controlMenuVisible)
     {
-        MenuItemImage *item1 = MenuItemImage::create(s_pPathB1, s_pPathB2, CC_CALLBACK_1(PerformBasicLayer::backCallback, this));
-        MenuItemImage *item2 = MenuItemImage::create(s_pPathR1, s_pPathR2, CC_CALLBACK_1(PerformBasicLayer::restartCallback, this));
-        MenuItemImage *item3 = MenuItemImage::create(s_pPathF1, s_pPathF2, CC_CALLBACK_1(PerformBasicLayer::nextCallback, this));
-        item1->setPosition(ccp(VisibleRect::center().x - item2->getContentSize().width*2, VisibleRect::bottom().y+item2->getContentSize().height/2));
-        item2->setPosition(ccp(VisibleRect::center().x, VisibleRect::bottom().y+item2->getContentSize().height/2));
-        item3->setPosition(ccp(VisibleRect::center().x + item2->getContentSize().width*2, VisibleRect::bottom().y+item2->getContentSize().height/2));
+        auto item1 = MenuItemImage::create(s_pathB1, s_pathB2, CC_CALLBACK_1(PerformBasicLayer::backCallback, this));
+        auto item2 = MenuItemImage::create(s_pathR1, s_pathR2, CC_CALLBACK_1(PerformBasicLayer::restartCallback, this));
+        auto item3 = MenuItemImage::create(s_pathF1, s_pathF2, CC_CALLBACK_1(PerformBasicLayer::nextCallback, this));
+        item1->setPosition(Point(VisibleRect::center().x - item2->getContentSize().width*2, VisibleRect::bottom().y+item2->getContentSize().height/2));
+        item2->setPosition(Point(VisibleRect::center().x, VisibleRect::bottom().y+item2->getContentSize().height/2));
+        item3->setPosition(Point(VisibleRect::center().x + item2->getContentSize().width*2, VisibleRect::bottom().y+item2->getContentSize().height/2));
 
-        pMenu->addChild(item1, kItemTagBasic);
-        pMenu->addChild(item2, kItemTagBasic);
-        pMenu->addChild(item3, kItemTagBasic);
+        menu->addChild(item1, kItemTagBasic);
+        menu->addChild(item2, kItemTagBasic);
+        menu->addChild(item3, kItemTagBasic);
     }
-    addChild(pMenu);
+    addChild(menu);
 }
 
-void PerformBasicLayer::toMainLayer(Object* pSender)
+void PerformBasicLayer::toMainLayer(Object* sender)
 {
-    PerformanceTestScene* pScene = new PerformanceTestScene();
-    pScene->runThisTest();
+    auto scene = new PerformanceTestScene();
+    scene->runThisTest();
 
-    pScene->release();
+    scene->release();
 }
 
-void PerformBasicLayer::restartCallback(Object* pSender)
+void PerformBasicLayer::restartCallback(Object* sender)
 {
     showCurrentTest();
 }
 
-void PerformBasicLayer::nextCallback(Object* pSender)
+void PerformBasicLayer::nextCallback(Object* sender)
 {
     _curCase++;
     _curCase = _curCase % _maxCases;
@@ -112,7 +116,7 @@ void PerformBasicLayer::nextCallback(Object* pSender)
     showCurrentTest();
 }
 
-void PerformBasicLayer::backCallback(Object* pSender)
+void PerformBasicLayer::backCallback(Object* sender)
 {
     _curCase--;
     if( _curCase < 0 )
@@ -129,9 +133,9 @@ void PerformBasicLayer::backCallback(Object* pSender)
 
 void PerformanceTestScene::runThisTest()
 {
-    Layer* pLayer = new PerformanceMainLayer();
-    addChild(pLayer);
-    pLayer->release();
+    auto layer = new PerformanceMainLayer();
+    addChild(layer);
+    layer->release();
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }

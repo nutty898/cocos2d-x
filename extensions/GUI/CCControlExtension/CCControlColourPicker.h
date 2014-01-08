@@ -50,30 +50,35 @@ NS_CC_EXT_BEGIN
 class ControlColourPicker: public Control
 {
 public:
+    static ControlColourPicker* create();
+    /**
+     * @js ctor
+     */
     ControlColourPicker();
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual ~ControlColourPicker();
-    virtual void setColor(const ccColor3B& colorValue);
+
+    virtual bool init();
+
+    virtual void setColor(const Color3B& colorValue);
     virtual void setEnabled(bool bEnabled);
+
+    //virtual ~ControlColourPicker();
+    void hueSliderValueChanged(Object * sender, Control::EventType controlEvent);
+    void colourSliderValueChanged(Object * sender, Control::EventType controlEvent);
+
 protected:
+    void updateControlPicker();
+    void updateHueAndControlPicker();
+    virtual bool onTouchBegan(Touch* touch, Event* pEvent);
+
     HSV _hsv;
     CC_SYNTHESIZE_RETAIN(ControlSaturationBrightnessPicker*, _colourPicker, colourPicker)
     CC_SYNTHESIZE_RETAIN(ControlHuePicker*, _huePicker, HuePicker)
     CC_SYNTHESIZE_RETAIN(Sprite*, _background, Background)
-    
-public:
-
-    static ControlColourPicker* create();
-
-    virtual bool init();
-    //virtual ~ControlColourPicker();
-    void hueSliderValueChanged(Object * sender, ControlEvent controlEvent);
-    void colourSliderValueChanged(Object * sender, ControlEvent controlEvent);
-
-protected:    
-    void updateControlPicker();
-    void updateHueAndControlPicker();
-    virtual bool ccTouchBegan(Touch* touch, Event* pEvent);
-    
 };
 
 // end of GUI group

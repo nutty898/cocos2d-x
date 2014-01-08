@@ -28,6 +28,7 @@
 
 USING_NS_CC;
 USING_NS_CC_EXT;
+using namespace cocosbuilder;
 
 void CocosBuilderTestScene::runThisTest() {
     /* Create an autorelease NodeLoaderLibrary. */
@@ -36,10 +37,10 @@ void CocosBuilderTestScene::runThisTest() {
     ccNodeLoaderLibrary->registerNodeLoader("HelloCocosBuilderLayer", HelloCocosBuilderLayerLoader::loader());
 
     /* Create an autorelease CCBReader. */
-    cocos2d::extension::CCBReader * ccbReader = new cocos2d::extension::CCBReader(ccNodeLoaderLibrary);
+    cocosbuilder::CCBReader * ccbReader = new cocosbuilder::CCBReader(ccNodeLoaderLibrary);
     
     /* Read a ccbi file. */
-    Node * node = ccbReader->readNodeGraphFromFile("ccb/HelloCocosBuilder.ccbi", this);
+    auto node = ccbReader->readNodeGraphFromFile("ccb/HelloCocosBuilder.ccbi", this);
     
     ccbReader->release();
 
@@ -47,12 +48,12 @@ void CocosBuilderTestScene::runThisTest() {
         this->addChild(node);
     }
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }
 
 
 //void CocosBuilderTestScene::runThisTest() {
-//    CCBIReaderLayer * ccbiReaderLayer = CCBIReaderLayer::node();
+//    auto ccbiReaderLayer = CCBIReaderLayer::node();
 //    
 //    /* Create an autorelease NodeLoaderLibrary. */
 //    NodeLoaderLibrary * ccNodeLoaderLibrary = NodeLoaderLibrary::newDefaultNodeLoaderLibrary();
@@ -62,7 +63,7 @@ void CocosBuilderTestScene::runThisTest() {
 //    ccbReader->autorelease();
 //    
 //    /* Read a ccbi file. */
-//    Node * node = ccbReader->readNodeGraphFromFile("ccb/simple/pub/", "ccb/test.ccbi", ccbiReaderLayer);
+//    auto node = ccbReader->readNodeGraphFromFile("ccb/simple/pub/", "ccb/test.ccbi", ccbiReaderLayer);
 //    
 //    if(node != NULL) {
 //        ccbiReaderLayer->addChild(node);
@@ -70,5 +71,5 @@ void CocosBuilderTestScene::runThisTest() {
 //    
 //    this->addChild(ccbiReaderLayer);
 //    
-//    Director::sharedDirector()->replaceScene(this);
+//    Director::getInstance()->replaceScene(this);
 //}

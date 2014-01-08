@@ -43,11 +43,11 @@ EditBoxImplAndroid::EditBoxImplAndroid(EditBox* pEditText)
 : EditBoxImpl(pEditText)
 , _label(NULL)
 , _labelPlaceHolder(NULL)
-, _editBoxInputMode(kEditBoxInputModeSingleLine)
-, _editBoxInputFlag(kEditBoxInputFlagInitialCapsAllCharacters)
-, _keyboardReturnType(kKeyboardReturnTypeDefault)
-, _colText(ccWHITE)
-, _colPlaceHolder(ccGRAY)
+, _editBoxInputMode(EditBox::InputMode::SINGLE_LINE)
+, _editBoxInputFlag(EditBox::InputFlag::INTIAL_CAPS_ALL_CHARACTERS)
+, _keyboardReturnType(EditBox::KeyboardReturnType::DEFAULT)
+, _colText(Color3B::WHITE)
+, _colPlaceHolder(Color3B::GRAY)
 , _maxLength(-1)
 {
     
@@ -70,15 +70,15 @@ bool EditBoxImplAndroid::initWithSize(const Size& size)
     int fontSize = getFontSizeAccordingHeightJni(size.height-12);
     _label = LabelTTF::create("", "", size.height-12);
 	// align the text vertically center
-    _label->setAnchorPoint(ccp(0, 0.5f));
-    _label->setPosition(ccp(CC_EDIT_BOX_PADDING, size.height / 2.0f));
+    _label->setAnchorPoint(Point(0, 0.5f));
+    _label->setPosition(Point(CC_EDIT_BOX_PADDING, size.height / 2.0f));
     _label->setColor(_colText);
     _editBox->addChild(_label);
 	
     _labelPlaceHolder = LabelTTF::create("", "", size.height-12);
 	// align the text vertically center
-    _labelPlaceHolder->setAnchorPoint(ccp(0, 0.5f));
-    _labelPlaceHolder->setPosition(ccp(CC_EDIT_BOX_PADDING, size.height / 2.0f));
+    _labelPlaceHolder->setAnchorPoint(Point(0, 0.5f));
+    _labelPlaceHolder->setPosition(Point(CC_EDIT_BOX_PADDING, size.height / 2.0f));
     _labelPlaceHolder->setVisible(false);
     _labelPlaceHolder->setColor(_colPlaceHolder);
     _editBox->addChild(_labelPlaceHolder);
@@ -100,7 +100,7 @@ void EditBoxImplAndroid::setFont(const char* pFontName, int fontSize)
 	}
 }
 
-void EditBoxImplAndroid::setFontColor(const ccColor3B& color)
+void EditBoxImplAndroid::setFontColor(const Color3B& color)
 {
     _colText = color;
     _label->setColor(color);
@@ -114,13 +114,13 @@ void EditBoxImplAndroid::setPlaceholderFont(const char* pFontName, int fontSize)
 	}
 }
 
-void EditBoxImplAndroid::setPlaceholderFontColor(const ccColor3B& color)
+void EditBoxImplAndroid::setPlaceholderFontColor(const Color3B& color)
 {
     _colPlaceHolder = color;
     _labelPlaceHolder->setColor(color);
 }
 
-void EditBoxImplAndroid::setInputMode(EditBoxInputMode inputMode)
+void EditBoxImplAndroid::setInputMode(EditBox::InputMode inputMode)
 {
     _editBoxInputMode = inputMode;
 }
@@ -135,12 +135,12 @@ int EditBoxImplAndroid::getMaxLength()
     return _maxLength;
 }
 
-void EditBoxImplAndroid::setInputFlag(EditBoxInputFlag inputFlag)
+void EditBoxImplAndroid::setInputFlag(EditBox::InputFlag inputFlag)
 {
     _editBoxInputFlag = inputFlag;
 }
 
-void EditBoxImplAndroid::setReturnType(KeyboardReturnType returnType)
+void EditBoxImplAndroid::setReturnType(EditBox::KeyboardReturnType returnType)
 {
     _keyboardReturnType = returnType;
 }
@@ -162,7 +162,7 @@ void EditBoxImplAndroid::setText(const char* pText)
 			
             std::string strToShow;
 			
-            if (kEditBoxInputFlagPassword == _editBoxInputFlag)
+            if (EditBox::InputFlag::PASSWORD == _editBoxInputFlag)
             {
                 long length = cc_utf8_strlen(_text.c_str(), -1);
                 for (long i = 0; i < length; i++)
@@ -261,15 +261,15 @@ static void editBoxCallbackFunc(const char* pText, void* ctx)
     {        
         CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "changed",pEditBox);
         ScriptEvent event(kCommonEvent,(void*)&data);
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"ended",64);
         event.data = (void*)&data;
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"return",64);
         event.data = (void*)&data;
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
 }
 
@@ -284,14 +284,14 @@ void EditBoxImplAndroid::openKeyboard()
     {        
         CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "began",pEditBox);
         ScriptEvent event(cocos2d::kCommonEvent,(void*)&data);
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
 	
     showEditTextDialogJNI(  _placeHolder.c_str(),
 						  _text.c_str(),
-						  _editBoxInputMode,
-						  _editBoxInputFlag,
-						  _keyboardReturnType,
+						  (int)_editBoxInputMode,
+						  (int)_editBoxInputFlag,
+						  (int)_keyboardReturnType,
 						  _maxLength,
 						  editBoxCallbackFunc,
 						  (void*)this  );

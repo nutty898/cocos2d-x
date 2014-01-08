@@ -24,10 +24,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
     // create the application instance
     AppDelegate app;
-    EGLView* eglView = EGLView::sharedOpenGLView();
-    eglView->setViewName("HelloLua");
-    eglView->setFrameSize(480, 320);
-    int ret = Application::sharedApplication()->run();
+    EGLView eglView;
+    eglView.init("HelloLua",900,640);
+    
+    int ret = Application::getInstance()->run();
 
 #ifdef USE_WIN32_CONSOLE
     FreeConsole();

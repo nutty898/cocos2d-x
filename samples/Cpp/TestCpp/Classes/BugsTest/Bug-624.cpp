@@ -10,16 +10,25 @@
 // Bug624Layer
 //
 ////////////////////////////////////////////////////////
+Bug624Layer::~Bug624Layer()
+{
+    Device::setAccelerometerEnabled(false);
+}
+
 bool Bug624Layer::init()
 {
     if(BugsTestBaseLayer::init())
     {
-        Size size = Director::sharedDirector()->getWinSize();
-        LabelTTF *label = LabelTTF::create("Layer1", "Marker Felt", 36);
+        auto size = Director::getInstance()->getWinSize();
+        auto label = LabelTTF::create("Layer1", "Marker Felt", 36);
 
-        label->setPosition(ccp(size.width/2, size.height/2));
+        label->setPosition(Point(size.width/2, size.height/2));
         addChild(label);
-        setAccelerometerEnabled(true);
+        
+        Device::setAccelerometerEnabled(true);
+        auto listener = EventListenerAcceleration::create(CC_CALLBACK_2(Bug624Layer::onAcceleration,  this));
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
         schedule(schedule_selector(Bug624Layer::switchLayer), 5.0f);
 
         return true;
@@ -32,14 +41,14 @@ void Bug624Layer::switchLayer(float dt)
 {
     unschedule(schedule_selector(Bug624Layer::switchLayer));
 
-    Scene *scene = Scene::create();    
+    auto scene = Scene::create();    
     scene->addChild(Bug624Layer2::create(), 0);
-    Director::sharedDirector()->replaceScene(TransitionFade::create(2.0f, scene, ccWHITE));
+    Director::getInstance()->replaceScene(TransitionFade::create(2.0f, scene, Color3B::WHITE));
 }
 
-void Bug624Layer::didAccelerate(Acceleration* acceleration)
+void Bug624Layer::onAcceleration(Acceleration* acc, Event* event)
 {    
-    CCLog("Layer1 accel");
+    log("Layer1 accel");
 }
 
 ////////////////////////////////////////////////////////
@@ -47,16 +56,26 @@ void Bug624Layer::didAccelerate(Acceleration* acceleration)
 // Bug624Layer2
 //
 ////////////////////////////////////////////////////////
+Bug624Layer2::~Bug624Layer2()
+{
+    Device::setAccelerometerEnabled(false);
+}
+
 bool Bug624Layer2::init()
 {
     if(BugsTestBaseLayer::init())
     {
-        Size size = Director::sharedDirector()->getWinSize();
-        LabelTTF *label = LabelTTF::create("Layer2", "Marker Felt", 36);
+        auto size = Director::getInstance()->getWinSize();
+        auto label = LabelTTF::create("Layer2", "Marker Felt", 36);
 
-        label->setPosition(ccp(size.width/2, size.height/2));
+        label->setPosition(Point(size.width/2, size.height/2));
         addChild(label);
-        setAccelerometerEnabled(true);
+        
+        Device::setAccelerometerEnabled(true);
+        auto listener = EventListenerAcceleration::create(CC_CALLBACK_2(Bug624Layer2::onAcceleration, this));
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+        
+        
         schedule(schedule_selector(Bug624Layer2::switchLayer), 5.0f);
 
         return true;
@@ -69,12 +88,12 @@ void Bug624Layer2::switchLayer(float dt)
 {
     unschedule(schedule_selector(Bug624Layer::switchLayer));
 
-    Scene *scene = Scene::create();    
+    auto scene = Scene::create();    
     scene->addChild(Bug624Layer::create(), 0);
-    Director::sharedDirector()->replaceScene(TransitionFade::create(2.0f, scene, ccRED));
+    Director::getInstance()->replaceScene(TransitionFade::create(2.0f, scene, Color3B::RED));
 }
 
-void Bug624Layer2::didAccelerate(Acceleration* acceleration)
+void Bug624Layer2::onAcceleration(Acceleration* acc, Event* event)
 {    
-    CCLog("Layer2 accel");
+    log("Layer2 accel");
 }

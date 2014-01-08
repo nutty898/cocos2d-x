@@ -44,11 +44,11 @@ EditBoxImplTizen::EditBoxImplTizen(EditBox* pEditText)
 : EditBoxImpl(pEditText)
 , _label(NULL)
 , _labelPlaceHolder(NULL)
-, _editBoxInputMode(kEditBoxInputModeSingleLine)
-, _editBoxInputFlag(kEditBoxInputFlagInitialCapsAllCharacters)
-, _keyboardReturnType(kKeyboardReturnTypeDefault)
-, _colText(ccWHITE)
-, _colPlaceHolder(ccGRAY)
+, _editBoxInputMode(EditBox::InputMode::SINGLE_LINE)
+, _editBoxInputFlag(EditBox::InputFlag::INTIAL_CAPS_ALL_CHARACTERS)
+, _keyboardReturnType(EditBox::KeyboardReturnType::DEFAULT)
+, _colText(Color3B::WHITE)
+, _colPlaceHolder(Color3B::GRAY)
 , _maxLength(-1)
 {
 }
@@ -65,18 +65,18 @@ static const int CC_EDIT_BOX_PADDING = 5;
 
 bool EditBoxImplTizen::initWithSize(const Size& size)
 {
-    int fontSize = (int)size.height-12;
+//    int fontSize = (int)size.height-12;
     _label = LabelTTF::create("", "", size.height-12);
     // align the text vertically center
-    _label->setAnchorPoint(ccp(0, 0.5f));
-    _label->setPosition(ccp(CC_EDIT_BOX_PADDING, size.height / 2.0f));
+    _label->setAnchorPoint(Point(0, 0.5f));
+    _label->setPosition(Point(CC_EDIT_BOX_PADDING, size.height / 2.0f));
     _label->setColor(_colText);
     _editBox->addChild(_label);
 
     _labelPlaceHolder = LabelTTF::create("", "", size.height-12);
     // align the text vertically center
-    _labelPlaceHolder->setAnchorPoint(ccp(0, 0.5f));
-    _labelPlaceHolder->setPosition(ccp(CC_EDIT_BOX_PADDING, size.height / 2.0f));
+    _labelPlaceHolder->setAnchorPoint(Point(0, 0.5f));
+    _labelPlaceHolder->setPosition(Point(CC_EDIT_BOX_PADDING, size.height / 2.0f));
     _labelPlaceHolder->setVisible(false);
     _labelPlaceHolder->setColor(_colPlaceHolder);
     _editBox->addChild(_labelPlaceHolder);
@@ -98,7 +98,7 @@ void EditBoxImplTizen::setFont(const char* pFontName, int fontSize)
     }
 }
 
-void EditBoxImplTizen::setFontColor(const ccColor3B& color)
+void EditBoxImplTizen::setFontColor(const Color3B& color)
 {
     _colText = color;
     _label->setColor(color);
@@ -112,13 +112,13 @@ void EditBoxImplTizen::setPlaceholderFont(const char* pFontName, int fontSize)
     }
 }
 
-void EditBoxImplTizen::setPlaceholderFontColor(const ccColor3B& color)
+void EditBoxImplTizen::setPlaceholderFontColor(const Color3B& color)
 {
     _colPlaceHolder = color;
     _labelPlaceHolder->setColor(color);
 }
 
-void EditBoxImplTizen::setInputMode(EditBoxInputMode inputMode)
+void EditBoxImplTizen::setInputMode(EditBox::InputMode inputMode)
 {
     _editBoxInputMode = inputMode;
 }
@@ -133,12 +133,12 @@ int EditBoxImplTizen::getMaxLength()
     return _maxLength;
 }
 
-void EditBoxImplTizen::setInputFlag(EditBoxInputFlag inputFlag)
+void EditBoxImplTizen::setInputFlag(EditBox::InputFlag inputFlag)
 {
     _editBoxInputFlag = inputFlag;
 }
 
-void EditBoxImplTizen::setReturnType(KeyboardReturnType returnType)
+void EditBoxImplTizen::setReturnType(EditBox::KeyboardReturnType returnType)
 {
     _keyboardReturnType = returnType;
 }
@@ -160,7 +160,7 @@ void EditBoxImplTizen::setText(const char* pText)
 
             std::string strToShow;
 
-            if (kEditBoxInputFlagPassword == _editBoxInputFlag)
+            if (EditBox::InputFlag::PASSWORD == _editBoxInputFlag)
             {
                 long length = cc_utf8_strlen(_text.c_str(), -1);
                 for (long i = 0; i < length; i++)
@@ -253,15 +253,15 @@ static void editBoxCallbackFunc(const char* pText, void* ctx)
     {       
         CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "changed",pEditBox);
         ScriptEvent event(kCommonEvent,(void*)&data);
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"ended",64);
         event.data = (void*)&data;
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
         memset(data.eventName,0,64*sizeof(char));
         strncpy(data.eventName,"return",64);
         event.data = (void*)&data;
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
 }
 
@@ -276,7 +276,7 @@ void EditBoxImplTizen::openKeyboard()
     {
         CommonScriptData data(pEditBox->getScriptEditBoxHandler(), "began",pEditBox);
         ScriptEvent event(kCommonEvent,(void*)&data);
-        ScriptEngineManager::sharedManager()->getScriptEngine()->sendEvent(&event);
+        ScriptEngineManager::getInstance()->getScriptEngine()->sendEvent(&event);
     }
 
     KeypadStyle keypadStyle = KEYPAD_STYLE_NORMAL;
@@ -284,24 +284,24 @@ void EditBoxImplTizen::openKeyboard()
     bool bSingleLineEnabled = false;
     switch (_editBoxInputMode)
     {
-    case kEditBoxInputModeAny:
+    case EditBox::InputMode::ANY:
         keypadStyle = KEYPAD_STYLE_NORMAL;
         break;
-    case kEditBoxInputModeEmailAddr:
+    case EditBox::InputMode::EMAIL_ADDRESS:
         keypadStyle = KEYPAD_STYLE_EMAIL;
         break;
-    case kEditBoxInputModeNumeric:
-    case kEditBoxInputModeDecimal:
+    case EditBox::InputMode::NUMERIC:
+    case EditBox::InputMode::DECIMAL:
         keypadStyle = KEYPAD_STYLE_NUMBER;
         keypadCategory = KEYPAD_MODE_NUMERIC;
         break;
-    case kEditBoxInputModePhoneNumber:
+    case EditBox::InputMode::PHONE_NUMBER:
         keypadStyle = KEYPAD_STYLE_PHONE_NUMBER;
         break;
-    case kEditBoxInputModeUrl:
+    case EditBox::InputMode::URL:
         keypadStyle = KEYPAD_STYLE_URL;
         break;
-    case kEditBoxInputModeSingleLine:
+    case EditBox::InputMode::SINGLE_LINE:
         bSingleLineEnabled = true;
         break;
     default:
@@ -312,10 +312,10 @@ void EditBoxImplTizen::openKeyboard()
     bool bTextPrediction = true;
     switch (_editBoxInputFlag)
     {
-    case kEditBoxInputFlagPassword:
+    case EditBox::InputFlag::PASSWORD:
         keypadStyle = KEYPAD_STYLE_PASSWORD;
         break;
-    case kEditBoxInputFlagSensitive:
+    case EditBox::InputFlag::SENSITIVE:
         bTextPrediction = false;
         break;
     default:

@@ -31,11 +31,11 @@
 NS_CC_EXT_BEGIN
 
 ControlPotentiometer::ControlPotentiometer()
-: _thumbSprite(NULL)
-, _progressTimer(NULL)
-, _value(0.0f)
+: _value(0.0f)
 , _minimumValue(0.0f)
 , _maximumValue(0.0f)
+, _thumbSprite(NULL)
+, _progressTimer(NULL)
 {
 
 }
@@ -59,7 +59,7 @@ ControlPotentiometer* ControlPotentiometer::create(const char* backgroundFile, c
 
         // Prepare progress for potentiometer
         ProgressTimer *progressTimer  = ProgressTimer::create(Sprite::create(progressFile));
-        //progressTimer.type              = kProgressTimerTypeRadialCW;
+        //progressTimer.type              = ProgressTimer::RADIALCW;
         if (pRet->initWithTrackSprite_ProgressTimer_ThumbSprite(backgroundSprite, progressTimer, thumbSprite))
         {
             pRet->autorelease();
@@ -76,8 +76,6 @@ bool ControlPotentiometer::initWithTrackSprite_ProgressTimer_ThumbSprite(Sprite*
 {
     if (Control::init())
     {
-        setTouchEnabled(true);
-
         setProgressTimer(progressTimer);
         setThumbSprite(thumbSprite);
         thumbSprite->setPosition(progressTimer->getPosition());
@@ -126,7 +124,7 @@ void ControlPotentiometer::setValue(float value)
     _progressTimer->setPercentage(percent * 100.0f);
     _thumbSprite->setRotation(percent * 360.0f);
     
-    sendActionsForControlEvents(ControlEventValueChanged);    
+    sendActionsForControlEvents(Control::EventType::VALUE_CHANGED);    
 }
 
 float ControlPotentiometer::getValue()
@@ -177,7 +175,7 @@ bool ControlPotentiometer::isTouchInside(Touch * touch)
     return distance < MIN(getContentSize().width / 2, getContentSize().height / 2);
 }
 
-bool ControlPotentiometer::ccTouchBegan(Touch *pTouch, Event *pEvent)
+bool ControlPotentiometer::onTouchBegan(Touch *pTouch, Event *pEvent)
 {
     if (!this->isTouchInside(pTouch) || !this->isEnabled() || !isVisible())
     {
@@ -191,16 +189,16 @@ bool ControlPotentiometer::ccTouchBegan(Touch *pTouch, Event *pEvent)
     return true;
 }
 
-void ControlPotentiometer::ccTouchMoved(Touch *pTouch, Event *pEvent)
+void ControlPotentiometer::onTouchMoved(Touch *pTouch, Event *pEvent)
 {
     Point location    = this->getTouchLocation(pTouch);
 
     this->potentiometerMoved(location);
 }
 
-void ControlPotentiometer::ccTouchEnded(Touch *pTouch, Event *pEvent)
+void ControlPotentiometer::onTouchEnded(Touch *pTouch, Event *pEvent)
 {
-    this->potentiometerEnded(PointZero);
+    this->potentiometerEnded(Point::ZERO);
 }
 
 float ControlPotentiometer::distanceBetweenPointAndPoint(Point point1, Point point2)
@@ -231,7 +229,7 @@ float ControlPotentiometer::angleInDegreesBetweenLineFromPoint_toPoint_toLineFro
 void ControlPotentiometer::potentiometerBegan(Point location)
 {
     setSelected(true);
-    getThumbSprite()->setColor(ccGRAY);
+    getThumbSprite()->setColor(Color3B::GRAY);
 }
 
 void ControlPotentiometer::potentiometerMoved(Point location)
@@ -259,7 +257,7 @@ void ControlPotentiometer::potentiometerMoved(Point location)
 
 void ControlPotentiometer::potentiometerEnded(Point location)
 {
-    getThumbSprite()->setColor(ccWHITE);
+    getThumbSprite()->setColor(Color3B::WHITE);
     setSelected(false);
 }
 

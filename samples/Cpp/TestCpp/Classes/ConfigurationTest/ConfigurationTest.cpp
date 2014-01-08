@@ -3,18 +3,12 @@
 #include "../testResource.h"
 #include "cocos2d.h"
 
-TESTLAYER_CREATE_FUNC(ConfigurationLoadConfig);
-TESTLAYER_CREATE_FUNC(ConfigurationQuery);
-TESTLAYER_CREATE_FUNC(ConfigurationInvalid);
-TESTLAYER_CREATE_FUNC(ConfigurationDefault);
-TESTLAYER_CREATE_FUNC(ConfigurationSet);
-
-static NEWTESTFUNC createFunctions[] = {
-    CF(ConfigurationLoadConfig),
-	CF(ConfigurationQuery),
-	CF(ConfigurationInvalid),
-	CF(ConfigurationDefault),
-	CF(ConfigurationSet)
+static std::function<Layer*()> createFunctions[] = {
+    CL(ConfigurationLoadConfig),
+	CL(ConfigurationQuery),
+	CL(ConfigurationInvalid),
+	CL(ConfigurationDefault),
+	CL(ConfigurationSet)
 };
 
 static int sceneIdx=-1;
@@ -25,11 +19,8 @@ static Layer* nextAction()
     sceneIdx++;
     sceneIdx = sceneIdx % MAX_LAYER;
     
-    Layer* pLayer = (createFunctions[sceneIdx])();
-    pLayer->init();
-    pLayer->autorelease();
-    
-    return pLayer;
+    auto layer = (createFunctions[sceneIdx])();
+    return layer;
 }
 
 static Layer* backAction()
@@ -39,20 +30,14 @@ static Layer* backAction()
     if( sceneIdx < 0 )
         sceneIdx += total;
     
-    Layer* pLayer = (createFunctions[sceneIdx])();
-    pLayer->init();
-    pLayer->autorelease();
-    
-    return pLayer;
+    auto layer = (createFunctions[sceneIdx])();
+    return layer;
 }
 
 static Layer* restartAction()
 {
-    Layer* pLayer = (createFunctions[sceneIdx])();
-    pLayer->init();
-    pLayer->autorelease();
-    
-    return pLayer;
+    auto layer = (createFunctions[sceneIdx])();    
+    return layer;
 }
 
 void ConfigurationTestScene::runThisTest()
@@ -60,16 +45,16 @@ void ConfigurationTestScene::runThisTest()
     sceneIdx = -1;
     addChild(nextAction());
 
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }
 
 
-std::string ConfigurationBase::title()
+std::string ConfigurationBase::title() const
 {
     return "Configuration Test";
 }
 
-std::string ConfigurationBase::subtitle()
+std::string ConfigurationBase::subtitle() const
 {
     return "";
 }
@@ -84,27 +69,27 @@ void ConfigurationBase::onExit()
     BaseTest::onExit();
 }
 
-void ConfigurationBase::restartCallback(Object* pSender)
+void ConfigurationBase::restartCallback(Object* sender)
 {
-    Scene* s = new ConfigurationTestScene();
+    auto s = new ConfigurationTestScene();
     s->addChild( restartAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
-void ConfigurationBase::nextCallback(Object* pSender)
+void ConfigurationBase::nextCallback(Object* sender)
 {
-    Scene* s = new ConfigurationTestScene();
+    auto s = new ConfigurationTestScene();
     s->addChild( nextAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
-void ConfigurationBase::backCallback(Object* pSender)
+void ConfigurationBase::backCallback(Object* sender)
 {
-    Scene* s = new ConfigurationTestScene();
+    auto s = new ConfigurationTestScene();
     s->addChild( backAction() );
-    Director::sharedDirector()->replaceScene(s);
+    Director::getInstance()->replaceScene(s);
     s->release();
 }
 
@@ -117,12 +102,12 @@ void ConfigurationLoadConfig::onEnter()
 {
     ConfigurationBase::onEnter();
 
-	Configuration::sharedConfiguration()->loadConfigFile("configs/config-test-ok.plist");
-	Configuration::sharedConfiguration()->dumpInfo();
+	Configuration::getInstance()->loadConfigFile("configs/config-test-ok.plist");
+	Configuration::getInstance()->dumpInfo();
 
 }
 
-std::string ConfigurationLoadConfig::subtitle()
+std::string ConfigurationLoadConfig::subtitle() const
 {
     return "Loading config file manually. See console";
 }
@@ -136,13 +121,13 @@ void ConfigurationQuery::onEnter()
 {
     ConfigurationBase::onEnter();
 
-	CCLOG("cocos2d version: %s", Configuration::sharedConfiguration()->getCString("cocos2d.version") );
-	CCLOG("OpenGL version: %s", Configuration::sharedConfiguration()->getCString("gl.version") );
+	CCLOG("cocos2d version: %s", Configuration::getInstance()->getValue("cocos2d.x.version").asString().c_str() );
+	CCLOG("OpenGL version: %s", Configuration::getInstance()->getValue("gl.version").asString().c_str() );
 }
 
-std::string ConfigurationQuery::subtitle()
+std::string ConfigurationQuery::subtitle() const
 {
-    return "Using getCString(). Check the console";
+    return "Check the console";
 }
 
 //------------------------------------------------------------------
@@ -154,10 +139,10 @@ void ConfigurationInvalid::onEnter()
 {
     ConfigurationBase::onEnter();
 
-	Configuration::sharedConfiguration()->loadConfigFile("configs/config-test-invalid.plist");
+	Configuration::getInstance()->loadConfigFile("configs/config-test-invalid.plist");
 }
 
-std::string ConfigurationInvalid::subtitle()
+std::string ConfigurationInvalid::subtitle() const
 {
     return "Loading an invalid config file";
 }
@@ -171,19 +156,19 @@ void ConfigurationDefault::onEnter()
 {
     ConfigurationBase::onEnter();
 
-	const char *c_value = Configuration::sharedConfiguration()->getCString("invalid.key", "no key");
-	if( strcmp(c_value, "no key") != 0 )
+    std::string c_value = Configuration::getInstance()->getValue("invalid.key", Value("no key")).asString();
+	if( c_value != "no key" )
 		CCLOG("1. Test failed!");
 	else
 		CCLOG("1. Test OK!");
 
-	bool b_value = Configuration::sharedConfiguration()->getBool("invalid.key", true);
+	bool b_value = Configuration::getInstance()->getValue("invalid.key", Value(true)).asBool();
 	if( ! b_value )
 		CCLOG("2. Test failed!");
 	else
 		CCLOG("2. Test OK!");
 
-	double d_value = Configuration::sharedConfiguration()->getNumber("invalid.key", 42.42);
+	double d_value = Configuration::getInstance()->getValue("invalid.key", Value(42.42)).asDouble();
 	if( d_value != 42.42 )
 		CCLOG("3. Test failed!");
 	else
@@ -191,7 +176,7 @@ void ConfigurationDefault::onEnter()
 
 }
 
-std::string ConfigurationDefault::subtitle()
+std::string ConfigurationDefault::subtitle() const
 {
     return "Tests defaults values";
 }
@@ -205,16 +190,16 @@ void ConfigurationSet::onEnter()
 {
     ConfigurationBase::onEnter();
 
-	Configuration *conf = Configuration::sharedConfiguration();
+	Configuration *conf = Configuration::getInstance();
 
-	conf->setObject("this.is.an.int.value", Integer::create(10) );
-	conf->setObject("this.is.a.bool.value", Bool::create(true) );
-	conf->setObject("this.is.a.string.value", String::create("hello world") );
+	conf->setValue("this.is.an.int.value", Value(10) );
+	conf->setValue("this.is.a.bool.value", Value(true) );
+	conf->setValue("this.is.a.string.value", Value("hello world") );
 
 	conf->dumpInfo();
 }
 
-std::string ConfigurationSet::subtitle()
+std::string ConfigurationSet::subtitle() const
 {
     return "Tests setting values manually";
 }

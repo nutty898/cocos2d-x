@@ -13,12 +13,12 @@ public:
     ParallaxDemo(void);
     ~ParallaxDemo(void);
 
-    virtual std::string title();
+    virtual std::string title() const override;
     virtual void onEnter();
 
-    void restartCallback(Object* pSender);
-    void nextCallback(Object* pSender);
-    void backCallback(Object* pSender);
+    void restartCallback(Object* sender);
+    void nextCallback(Object* sender);
+    void backCallback(Object* sender);
 };
 
 class Parallax1 : public ParallaxDemo
@@ -30,7 +30,7 @@ protected:
 
 public:
     Parallax1();
-    virtual std::string title();
+    virtual std::string title() const override;
 };
 
 class Parallax2 : public ParallaxDemo
@@ -43,9 +43,9 @@ protected:
 public:
     Parallax2();
     
-    virtual void ccTouchesMoved(Set *pTouches, Event *pEvent);
+    void onTouchesMoved(const std::vector<Touch*>& touches, Event  *event);
 
-    virtual std::string title();
+    virtual std::string title() const override;
 };
 
 class ParallaxTestScene : public TestScene

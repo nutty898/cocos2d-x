@@ -5,17 +5,6 @@
 #include "Box2D/Box2D.h"
 #include "../testBasic.h"
 
-class PhysicsSprite : public Sprite
-{
-public:
-    PhysicsSprite();
-    void setPhysicsBody(b2Body * body);
-    virtual bool isDirty(void);
-    virtual AffineTransform nodeToParentTransform(void);
-private:
-    b2Body* _body;    // strong ref
-};
-
 class Box2DTestLayer : public Layer
 {
     Texture2D* _spriteTexture;    // weak ref
@@ -32,9 +21,15 @@ public:
 
     void addNewSpriteAtPosition(Point p);
     void update(float dt);
-    virtual void ccTouchesEnded(Set* touches, Event* event);
+    void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
 
     //CREATE_NODE(Box2DTestLayer);
+#if CC_ENABLE_BOX2D_INTEGRATION
+protected:
+    kmMat4 _modelViewMV;
+    void onDraw();
+    CustomCommand _customCommand;
+#endif
 } ;
 
 class Box2DTestScene : public TestScene

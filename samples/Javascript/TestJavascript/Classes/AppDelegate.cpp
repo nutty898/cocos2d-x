@@ -3,15 +3,23 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 #include "ScriptingCore.h"
-#include "generated/jsb_cocos2dx_auto.hpp"
-#include "generated/jsb_cocos2dx_extension_auto.hpp"
-#include "jsb_cocos2dx_extension_manual.h"
+#include "jsb_cocos2dx_auto.hpp"
+#include "jsb_cocos2dx_extension_auto.hpp"
+#include "jsb_cocos2dx_builder_auto.hpp"
+#include "jsb_cocos2dx_studio_auto.hpp"
+#include "jsb_cocos2dx_gui_auto.hpp"
+#include "jsb_cocos2dx_spine_auto.hpp"
+#include "extension/jsb_cocos2dx_extension_manual.h"
+#include "cocostudio/jsb_cocos2dx_studio_manual.h"
+#include "gui/jsb_cocos2dx_gui_manual.h"
 #include "cocos2d_specifics.hpp"
-#include "js_bindings_chipmunk_registration.h"
-#include "js_bindings_system_registration.h"
+#include "cocosbuilder/cocosbuilder_specifics.hpp"
+#include "chipmunk/js_bindings_chipmunk_registration.h"
+#include "localstorage/js_bindings_system_registration.h"
 #include "jsb_opengl_registration.h"
-#include "XMLHTTPRequest.h"
-#include "jsb_websocket.h"
+#include "network/XMLHTTPRequest.h"
+#include "network/jsb_websocket.h"
+#include "cocosbuilder/js_bindings_ccbreader.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -23,22 +31,58 @@ AppDelegate::AppDelegate()
 
 AppDelegate::~AppDelegate()
 {
-    ScriptEngineManager::purgeSharedManager();
+    ScriptEngineManager::destroyInstance();
 }
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
     // initialize director
-    Director *pDirector = Director::sharedDirector();
-    pDirector->setOpenGLView(EGLView::sharedOpenGLView());
+    auto pDirector = Director::getInstance();
+    pDirector->setOpenGLView(EGLView::getInstance());
 
     // JS-Test in Html5 uses 800x450 as design resolution
-    EGLView::sharedOpenGLView()->setDesignResolutionSize(800, 450, kResolutionFixedHeight);
+    EGLView::getInstance()->setDesignResolutionSize(800, 450, ResolutionPolicy::FIXED_HEIGHT);
     // turn on display FPS
     pDirector->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
+
+    auto fileUtils = FileUtils::getInstance();
+    std::vector<std::string> searchPaths;
+    searchPaths.push_back("script");
+    
+    const char* paths[] = {
+        "res",
+        "res/scenetest",
+        "res/scenetest/ArmatureComponentTest",
+        "res/scenetest/AttributeComponentTest",
+        "res/scenetest/BackgroundComponentTest",
+        "res/scenetest/EffectComponentTest",
+        "res/scenetest/LoadSceneEdtiorFileTest",
+        "res/scenetest/ParticleComponentTest",
+        "res/scenetest/SpriteComponentTest",
+        "res/scenetest/TmxMapComponentTest",
+        "res/scenetest/UIComponentTest",
+        "res/scenetest/TriggerTest",
+    };
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    std::string testFolder = "tests/";
+    searchPaths.push_back(testFolder);
+    
+    for (const auto& path : paths)
+    {
+        searchPaths.push_back(testFolder + path);
+    }
+#else
+    for (const auto& path : paths)
+    {
+        searchPaths.push_back(path);
+    }
+#endif
+    
+    fileUtils->setSearchPaths(searchPaths);
 
     ScriptingCore* sc = ScriptingCore::getInstance();
     sc->addRegisterCallback(register_all_cocos2dx);
@@ -51,10 +95,24 @@ bool AppDelegate::applicationDidFinishLaunching()
     sc->addRegisterCallback(MinXmlHttpRequest::_js_register);
     sc->addRegisterCallback(register_jsb_websocket);
 
-    sc->start();
+    sc->addRegisterCallback(register_all_cocos2dx_builder);
+    sc->addRegisterCallback(register_CCBuilderReader);
 
-    ScriptEngineProtocol *pEngine = ScriptingCore::getInstance();
-    ScriptEngineManager::sharedManager()->setScriptEngine(pEngine);
+    sc->addRegisterCallback(register_all_cocos2dx_gui);
+    sc->addRegisterCallback(register_all_cocos2dx_gui_manual);
+    sc->addRegisterCallback(register_all_cocos2dx_studio);
+    sc->addRegisterCallback(register_all_cocos2dx_studio_manual);
+    
+    sc->addRegisterCallback(register_all_cocos2dx_spine);
+    
+    sc->start();
+    
+#if defined(COCOS2D_DEBUG) && (COCOS2D_DEBUG > 0)
+    sc->enableDebugger();
+#endif
+    
+    auto pEngine = ScriptingCore::getInstance();
+    ScriptEngineManager::getInstance()->setScriptEngine(pEngine);
 #ifdef JS_OBFUSCATED
     ScriptingCore::getInstance()->runScript("game.js");
 #else
@@ -67,7 +125,7 @@ void handle_signal(int signal) {
     static int internal_state = 0;
     ScriptingCore* sc = ScriptingCore::getInstance();
     // should start everything back
-    Director* director = Director::sharedDirector();
+    auto director = Director::getInstance();
     if (director->getRunningScene()) {
         director->popToRootScene();
     } else {
@@ -86,15 +144,15 @@ void handle_signal(int signal) {
 // This function will be called when the app is inactive. When comes a phone call,it's be invoked too
 void AppDelegate::applicationDidEnterBackground()
 {
-    Director::sharedDirector()->stopAnimation();
-    SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-    SimpleAudioEngine::sharedEngine()->pauseAllEffects();
+    Director::getInstance()->stopAnimation();
+    SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+    SimpleAudioEngine::getInstance()->pauseAllEffects();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground()
 {
-    Director::sharedDirector()->startAnimation();
-    SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
-    SimpleAudioEngine::sharedEngine()->resumeAllEffects();
+    Director::getInstance()->startAnimation();
+    SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+    SimpleAudioEngine::getInstance()->resumeAllEffects();
 }

@@ -1,18 +1,11 @@
 #include "FileUtilsTest.h"
 
-
-TESTLAYER_CREATE_FUNC(TestResolutionDirectories);
-TESTLAYER_CREATE_FUNC(TestSearchPath);
-TESTLAYER_CREATE_FUNC(TestFilenameLookup);
-TESTLAYER_CREATE_FUNC(TestIsFileExist);
-TESTLAYER_CREATE_FUNC(TextWritePlist);
-
-static NEWTESTFUNC createFunctions[] = {
-    CF(TestResolutionDirectories),
-    CF(TestSearchPath),
-    CF(TestFilenameLookup),
-    CF(TestIsFileExist),
-    CF(TextWritePlist),
+static std::function<Layer*()> createFunctions[] = {
+    CL(TestResolutionDirectories),
+    CL(TestSearchPath),
+    CL(TestFilenameLookup),
+    CL(TestIsFileExist),
+    CL(TextWritePlist),
 };
 
 static int sceneIdx=-1;
@@ -23,11 +16,8 @@ static Layer* nextAction()
     sceneIdx++;
     sceneIdx = sceneIdx % MAX_LAYER;
     
-    Layer* pLayer = (createFunctions[sceneIdx])();
-    pLayer->init();
-    pLayer->autorelease();
-    
-    return pLayer;
+    auto layer = (createFunctions[sceneIdx])();
+    return layer;
 }
 
 static Layer* backAction()
@@ -37,28 +27,22 @@ static Layer* backAction()
     if( sceneIdx < 0 )
         sceneIdx += total;
     
-    Layer* pLayer = (createFunctions[sceneIdx])();
-    pLayer->init();
-    pLayer->autorelease();
-    
-    return pLayer;
+    auto layer = (createFunctions[sceneIdx])();
+    return layer;
 }
 
 static Layer* restartAction()
 {
-    Layer* pLayer = (createFunctions[sceneIdx])();
-    pLayer->init();
-    pLayer->autorelease();
-    
-    return pLayer;
+    auto layer = (createFunctions[sceneIdx])();
+    return layer;
 }
 
 void FileUtilsTestScene::runThisTest()
 {
-    Layer* pLayer = nextAction();
-    addChild(pLayer);
+    auto layer = nextAction();
+    addChild(layer);
     
-    Director::sharedDirector()->replaceScene(this);
+    Director::getInstance()->replaceScene(this);
 }
 
 // #pragma mark - FileUtilsDemo
@@ -68,42 +52,42 @@ void FileUtilsDemo::onEnter()
     BaseTest::onEnter();    
 }
 
-void FileUtilsDemo::backCallback(Object* pSender)
+void FileUtilsDemo::backCallback(Object* sender)
 {
-    Scene* pScene = new FileUtilsTestScene();
-    Layer* pLayer = backAction();
+    auto scene = new FileUtilsTestScene();
+    auto layer = backAction();
     
-    pScene->addChild(pLayer);
-    Director::sharedDirector()->replaceScene(pScene);
-    pScene->release();
+    scene->addChild(layer);
+    Director::getInstance()->replaceScene(scene);
+    scene->release();
 }
 
-void FileUtilsDemo::nextCallback(Object* pSender)
+void FileUtilsDemo::nextCallback(Object* sender)
 {
-    Scene* pScene = new FileUtilsTestScene();
-    Layer* pLayer = nextAction();
+    auto scene = new FileUtilsTestScene();
+    auto layer = nextAction();
     
-    pScene->addChild(pLayer);
-    Director::sharedDirector()->replaceScene(pScene);
-    pScene->release();
+    scene->addChild(layer);
+    Director::getInstance()->replaceScene(scene);
+    scene->release();
 }
 
-void FileUtilsDemo::restartCallback(Object* pSender)
+void FileUtilsDemo::restartCallback(Object* sender)
 {
-    Scene* pScene = new FileUtilsTestScene();
-    Layer* pLayer = restartAction();
+    auto scene = new FileUtilsTestScene();
+    auto layer = restartAction();
     
-    pScene->addChild(pLayer);
-    Director::sharedDirector()->replaceScene(pScene);
-    pScene->release();
+    scene->addChild(layer);
+    Director::getInstance()->replaceScene(scene);
+    scene->release();
 }
 
-string FileUtilsDemo::title()
+std::string FileUtilsDemo::title() const
 {
     return "No title";
 }
 
-string FileUtilsDemo::subtitle()
+std::string FileUtilsDemo::subtitle() const
 {
     return "";
 }
@@ -113,18 +97,18 @@ string FileUtilsDemo::subtitle()
 void TestResolutionDirectories::onEnter()
 {
     FileUtilsDemo::onEnter();
-    FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+    auto sharedFileUtils = FileUtils::getInstance();
 
-    string ret;
+    std::string ret;
     
     sharedFileUtils->purgeCachedEntries();
     _defaultSearchPathArray = sharedFileUtils->getSearchPaths();
-    vector<string> searchPaths = _defaultSearchPathArray;
+    std::vector<std::string> searchPaths = _defaultSearchPathArray;
     searchPaths.insert(searchPaths.begin(),   "Misc");
     sharedFileUtils->setSearchPaths(searchPaths);
     
     _defaultResolutionsOrderArray = sharedFileUtils->getSearchResolutionsOrder();
-    vector<string> resolutionsOrder = _defaultResolutionsOrderArray;
+    std::vector<std::string> resolutionsOrder = _defaultResolutionsOrderArray;
 
     resolutionsOrder.insert(resolutionsOrder.begin(), "resources-ipadhd");
     resolutionsOrder.insert(resolutionsOrder.begin()+1, "resources-ipad");
@@ -136,15 +120,15 @@ void TestResolutionDirectories::onEnter()
     sharedFileUtils->setSearchResolutionsOrder(resolutionsOrder);
     
     for( int i=1; i<7; i++) {
-        String *filename = String::createWithFormat("test%d.txt", i);
+        auto filename = String::createWithFormat("test%d.txt", i);
         ret = sharedFileUtils->fullPathForFilename(filename->getCString());
-        CCLog("%s -> %s", filename->getCString(), ret.c_str());
+        log("%s -> %s", filename->getCString(), ret.c_str());
     }
 }
 
 void TestResolutionDirectories::onExit()
 {
-    FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+    auto sharedFileUtils = FileUtils::getInstance();
     
 	// reset search path
 	sharedFileUtils->setSearchPaths(_defaultSearchPathArray);
@@ -152,12 +136,12 @@ void TestResolutionDirectories::onExit()
     FileUtilsDemo::onExit();
 }
 
-string TestResolutionDirectories::title()
+std::string TestResolutionDirectories::title() const
 {
     return "FileUtils: resolutions in directories";
 }
 
-string TestResolutionDirectories::subtitle()
+std::string TestResolutionDirectories::subtitle() const
 {
     return "See the console";
 }
@@ -167,24 +151,24 @@ string TestResolutionDirectories::subtitle()
 void TestSearchPath::onEnter()
 {
     FileUtilsDemo::onEnter();
-    FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+    auto sharedFileUtils = FileUtils::getInstance();
     
-    string ret;
+    std::string ret;
     
     sharedFileUtils->purgeCachedEntries();
     _defaultSearchPathArray = sharedFileUtils->getSearchPaths();
-    vector<string> searchPaths = _defaultSearchPathArray;
-    string writablePath = sharedFileUtils->getWritablePath();
-    string fileName = writablePath+"external.txt";
+    std::vector<std::string> searchPaths = _defaultSearchPathArray;
+    std::string writablePath = sharedFileUtils->getWritablePath();
+    std::string fileName = writablePath+"external.txt";
     char szBuf[100] = "Hello Cocos2d-x!";
     FILE* fp = fopen(fileName.c_str(), "wb");
     if (fp)
     {
         size_t ret = fwrite(szBuf, 1, strlen(szBuf), fp);
-        CCAssert(ret == 0, "fwrite function returned nonzero value");
+        CCASSERT(ret != 0, "fwrite function returned zero value");
         fclose(fp);
-        if (ret == 0)
-            CCLog("Writing file to writable path succeed.");
+        if (ret != 0)
+            log("Writing file to writable path succeed.");
     }
     
     searchPaths.insert(searchPaths.begin(), writablePath);
@@ -193,20 +177,20 @@ void TestSearchPath::onEnter()
     sharedFileUtils->setSearchPaths(searchPaths);
     
     _defaultResolutionsOrderArray = sharedFileUtils->getSearchResolutionsOrder();
-    vector<string> resolutionsOrder = _defaultResolutionsOrderArray;
+    std::vector<std::string> resolutionsOrder = _defaultResolutionsOrderArray;
     
     resolutionsOrder.insert(resolutionsOrder.begin(), "resources-ipad");
     sharedFileUtils->setSearchResolutionsOrder(resolutionsOrder);
     
     for( int i=1; i<3; i++) {
-        String *filename = String::createWithFormat("file%d.txt", i);
+        auto filename = String::createWithFormat("file%d.txt", i);
         ret = sharedFileUtils->fullPathForFilename(filename->getCString());
-        CCLog("%s -> %s", filename->getCString(), ret.c_str());
+        log("%s -> %s", filename->getCString(), ret.c_str());
     }
     
     // Gets external.txt from writable path
-    string fullPath = sharedFileUtils->fullPathForFilename("external.txt");
-    CCLog("external file path = %s", fullPath.c_str());
+    std::string fullPath = sharedFileUtils->fullPathForFilename("external.txt");
+    log("external file path = %s", fullPath.c_str());
     if (fullPath.length() > 0)
     {
         fp = fopen(fullPath.c_str(), "rb");
@@ -215,7 +199,7 @@ void TestSearchPath::onEnter()
             char szReadBuf[100] = {0};
             int read = fread(szReadBuf, 1, strlen(szBuf), fp);
             if (read > 0)
-                CCLog("The content of file from writable path: %s", szReadBuf);
+                log("The content of file from writable path: %s", szReadBuf);
             fclose(fp);
         }
     }
@@ -223,7 +207,7 @@ void TestSearchPath::onEnter()
 
 void TestSearchPath::onExit()
 {
-	FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+	FileUtils *sharedFileUtils = FileUtils::getInstance();
 
 	// reset search path
 	sharedFileUtils->setSearchPaths(_defaultSearchPathArray);
@@ -231,12 +215,12 @@ void TestSearchPath::onExit()
     FileUtilsDemo::onExit();
 }
 
-string TestSearchPath::title()
+std::string TestSearchPath::title() const
 {
     return "FileUtils: search path";
 }
 
-string TestSearchPath::subtitle()
+std::string TestSearchPath::subtitle() const
 {
     return "See the console";
 }
@@ -247,40 +231,39 @@ void TestFilenameLookup::onEnter()
 {
     FileUtilsDemo::onEnter();
 		
-    FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+    auto sharedFileUtils = FileUtils::getInstance();
 
-    Dictionary *dict = Dictionary::create();
-    dict->setObject(String::create("Images/grossini.png"), "grossini.bmp");
-    dict->setObject(String::create("Images/grossini.png"), "grossini.xcf");
+    ValueMap dict;
+    dict["grossini.bmp"] = Value("Images/grossini.png");
+    dict["grossini.xcf"] = Value("Images/grossini.png");
     
     sharedFileUtils->setFilenameLookupDictionary(dict);
     
-    
     // Instead of loading carlitos.xcf, it will load grossini.png
-    Sprite *sprite = Sprite::create("grossini.xcf");
+    auto sprite = Sprite::create("grossini.xcf");
     this->addChild(sprite);
     
-    Size s = Director::sharedDirector()->getWinSize();
-    sprite->setPosition(ccp(s.width/2, s.height/2));
+    auto s = Director::getInstance()->getWinSize();
+    sprite->setPosition(Point(s.width/2, s.height/2));
 }
 
 void TestFilenameLookup::onExit()
 {
 	
-	FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+	FileUtils *sharedFileUtils = FileUtils::getInstance();
 	
 	// reset filename lookup
-    sharedFileUtils->setFilenameLookupDictionary(Dictionary::create());
+    sharedFileUtils->setFilenameLookupDictionary(ValueMap());
 	
     FileUtilsDemo::onExit();
 }
 
-string TestFilenameLookup::title()
+std::string TestFilenameLookup::title() const
 {
     return "FileUtils: filename lookup";
 }
 
-string TestFilenameLookup::subtitle()
+std::string TestFilenameLookup::subtitle() const
 {
     return "See the console";
 }
@@ -290,8 +273,8 @@ string TestFilenameLookup::subtitle()
 void TestIsFileExist::onEnter()
 {
     FileUtilsDemo::onEnter();
-    Size s = Director::sharedDirector()->getWinSize();
-    FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+    auto s = Director::getInstance()->getWinSize();
+    auto sharedFileUtils = FileUtils::getInstance();
     
     LabelTTF* pTTF = NULL;
     bool isExist = false;
@@ -299,32 +282,32 @@ void TestIsFileExist::onEnter()
     isExist = sharedFileUtils->isFileExist("Images/grossini.png");
     
     pTTF = LabelTTF::create(isExist ? "Images/grossini.png exists" : "Images/grossini.png doesn't exist", "", 20);
-    pTTF->setPosition(ccp(s.width/2, s.height/3));
+    pTTF->setPosition(Point(s.width/2, s.height/3));
     this->addChild(pTTF);
     
     isExist = sharedFileUtils->isFileExist("Images/grossini.xcf");
     pTTF = LabelTTF::create(isExist ? "Images/grossini.xcf exists" : "Images/grossini.xcf doesn't exist", "", 20);
-    pTTF->setPosition(ccp(s.width/2, s.height/3*2));
+    pTTF->setPosition(Point(s.width/2, s.height/3*2));
     this->addChild(pTTF);
 }
 
 void TestIsFileExist::onExit()
 {
 	
-	FileUtils *sharedFileUtils = FileUtils::sharedFileUtils();
+	FileUtils *sharedFileUtils = FileUtils::getInstance();
 	
 	// reset filename lookup
-    sharedFileUtils->setFilenameLookupDictionary(Dictionary::create());
+    sharedFileUtils->setFilenameLookupDictionary(ValueMap());
 	
     FileUtilsDemo::onExit();
 }
 
-string TestIsFileExist::title()
+std::string TestIsFileExist::title() const
 {
     return "FileUtils: check whether the file exists";
 }
 
-string TestIsFileExist::subtitle()
+std::string TestIsFileExist::subtitle() const
 {
     return "";
 }
@@ -334,43 +317,43 @@ string TestIsFileExist::subtitle()
 void TextWritePlist::onEnter()
 {
     FileUtilsDemo::onEnter();
-    Dictionary *root = Dictionary::create();
-    String *string = String::create("string element value");
+    auto root = Dictionary::create();
+    auto string = String::create("string element value");
     root->setObject(string, "string element key");
     
-    Array *array = Array::create();
+    auto array = Array::create();
     
-    Dictionary *dictInArray = Dictionary::create();
+    auto dictInArray = Dictionary::create();
     dictInArray->setObject(String::create("string in dictInArray value 0"), "string in dictInArray key 0");
     dictInArray->setObject(String::create("string in dictInArray value 1"), "string in dictInArray key 1");
     array->addObject(dictInArray);
     
     array->addObject(String::create("string in array"));
     
-    Array *arrayInArray = Array::create();
+    auto arrayInArray = Array::create();
     arrayInArray->addObject(String::create("string 0 in arrayInArray"));
     arrayInArray->addObject(String::create("string 1 in arrayInArray"));
     array->addObject(arrayInArray);
     
     root->setObject(array, "array");
     
-    Dictionary *dictInDict = Dictionary::create();
+    auto dictInDict = Dictionary::create();
     dictInDict->setObject(String::create("string in dictInDict value"), "string in dictInDict key");
     
     root->setObject(dictInDict, "dictInDict");
     
     // end with /
-    std::string writablePath = FileUtils::sharedFileUtils()->getWritablePath();
+    std::string writablePath = FileUtils::getInstance()->getWritablePath();
     std::string fullPath = writablePath + "text.plist";
     if(root->writeToFile(fullPath.c_str()))
-        CCLog("see the plist file at %s", fullPath.c_str());
+        log("see the plist file at %s", fullPath.c_str());
     else
-        CCLog("write plist file failed");
+        log("write plist file failed");
     
-    LabelTTF *label = LabelTTF::create(fullPath.c_str(), "Thonburi", 6);
+    auto label = LabelTTF::create(fullPath.c_str(), "Thonburi", 6);
     this->addChild(label);
-    Size winSize = Director::sharedDirector()->getWinSize();
-    label->setPosition(ccp(winSize.width/2, winSize.height/3));
+    auto winSize = Director::getInstance()->getWinSize();
+    label->setPosition(Point(winSize.width/2, winSize.height/3));
 }
 
 void TextWritePlist::onExit()
@@ -378,13 +361,13 @@ void TextWritePlist::onExit()
     FileUtilsDemo::onExit();
 }
 
-string TextWritePlist::title()
+std::string TextWritePlist::title() const
 {
     return "FileUtils: Dictionary to plist";
 }
 
-string TextWritePlist::subtitle()
+std::string TextWritePlist::subtitle() const
 {
-    std::string writablePath = FileUtils::sharedFileUtils()->getWritablePath().c_str();
+    std::string writablePath = FileUtils::getInstance()->getWritablePath().c_str();
     return ("See plist file at your writablePath");
 }

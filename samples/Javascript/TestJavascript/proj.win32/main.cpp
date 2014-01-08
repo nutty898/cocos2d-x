@@ -24,11 +24,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
     // create the application instance
     AppDelegate app;
-    EGLView* eglView = EGLView::sharedOpenGLView();
-    eglView->setViewName("TestJavascript");
-    eglView->setFrameSize(800, 450);
+    EGLView eglView;
+    eglView.init("TestJavascript",900,640);
 
-    int ret = Application::sharedApplication()->run();
+    int ret = Application::getInstance()->run();
 
 #ifdef USE_WIN32_CONSOLE
     FreeConsole();

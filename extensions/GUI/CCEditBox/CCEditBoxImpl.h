@@ -27,7 +27,7 @@
 #define __CCEditBoxIMPL_H__
 
 #include "cocos2d.h"
-#include "ExtensionMacros.h"
+#include "extensions/ExtensionMacros.h"
 #include "CCEditBox.h"
 
 NS_CC_EXT_BEGIN
@@ -36,19 +36,26 @@ NS_CC_EXT_BEGIN
 class EditBoxImpl
 {
 public:
+    /**
+     * @js NA
+     */
     EditBoxImpl(EditBox* pEditBox) : _delegate(NULL),_editBox(pEditBox) {}
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual ~EditBoxImpl() {}
     
     virtual bool initWithSize(const Size& size) = 0;
     virtual void setFont(const char* pFontName, int fontSize) = 0;
-    virtual void setFontColor(const ccColor3B& color) = 0;
+    virtual void setFontColor(const Color3B& color) = 0;
     virtual void setPlaceholderFont(const char* pFontName, int fontSize) = 0;
-    virtual void setPlaceholderFontColor(const ccColor3B& color) = 0;
-    virtual void setInputMode(EditBoxInputMode inputMode) = 0;
-    virtual void setInputFlag(EditBoxInputFlag inputFlag) = 0;
+    virtual void setPlaceholderFontColor(const Color3B& color) = 0;
+    virtual void setInputMode(EditBox::InputMode inputMode) = 0;
+    virtual void setInputFlag(EditBox::InputFlag inputFlag) = 0;
     virtual void setMaxLength(int maxLength) = 0;
     virtual int  getMaxLength() = 0;
-    virtual void setReturnType(KeyboardReturnType returnType) = 0;
+    virtual void setReturnType(EditBox::KeyboardReturnType returnType) = 0;
     virtual bool isEditing() = 0;
     
     virtual void setText(const char* pText) = 0;
@@ -63,7 +70,15 @@ public:
     virtual void setVisible(bool visible) = 0;
     virtual void setContentSize(const Size& size) = 0;
 	virtual void setAnchorPoint(const Point& anchorPoint) = 0;
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual void visit(void) = 0;
+    /**
+     * @js NA
+     * @lua NA
+     */
     virtual void onEnter(void) = 0;
     
     
