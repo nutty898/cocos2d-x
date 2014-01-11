@@ -1678,7 +1678,7 @@
 		46A1705B1807CC1C005B8026 /* CCPlatformDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A16AD41807B038005B8026 /* CCPlatformDefine.h */; };
 		46A1705C1807CC1C005B8026 /* CCStdC.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A16AD51807B038005B8026 /* CCStdC.h */; };
 		46A1705D1807CC1C005B8026 /* CCWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A16AD61807B038005B8026 /* CCWindow.h */; };
-		46A1705E1807CC1C005B8026 /* CCWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 46A16AD71807B038005B8026 /* CCWindow.m */; };
+		46A1705E1807CC1C005B8026 /* CCWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 46A16AD71807B038005B8026 /* CCWindow.mm */; };
 		46A170601807CC1C005B8026 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 46A16AD91807B038005B8026 /* EAGLView.mm */; };
 		46A170A91807CE9D005B8026 /* aabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A170891807CE87005B8026 /* aabb.h */; };
 		46A170AA1807CE9E005B8026 /* aabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A170891807CE87005B8026 /* aabb.h */; };
@@ -3003,7 +3003,7 @@
 		46A16AD41807B038005B8026 /* CCPlatformDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCPlatformDefine.h; sourceTree = "<group>"; };
 		46A16AD51807B038005B8026 /* CCStdC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCStdC.h; sourceTree = "<group>"; };
 		46A16AD61807B038005B8026 /* CCWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCWindow.h; sourceTree = "<group>"; };
-		46A16AD71807B038005B8026 /* CCWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCWindow.m; sourceTree = "<group>"; };
+		46A16AD71807B038005B8026 /* CCWindow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCWindow.mm; sourceTree = "<group>"; };
 		46A16AD91807B038005B8026 /* EAGLView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
 		46A16E1B1807C948005B8026 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../cocos/2d/platform/third_party/ios/libraries/libcurl.a; sourceTree = "<group>"; };
 		46A16E1C1807C948005B8026 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../cocos/2d/platform/third_party/ios/libraries/libfreetype.a; sourceTree = "<group>"; };
@@ -5240,7 +5240,7 @@
 				46A16AD41807B038005B8026 /* CCPlatformDefine.h */,
 				46A16AD51807B038005B8026 /* CCStdC.h */,
 				46A16AD61807B038005B8026 /* CCWindow.h */,
-				46A16AD71807B038005B8026 /* CCWindow.m */,
+				46A16AD71807B038005B8026 /* CCWindow.mm */,
 				1A0DB7361823828F0025743D /* EAGLView.h */,
 				46A16AD91807B038005B8026 /* EAGLView.mm */,
 			);
@@ -6830,7 +6830,7 @@
 				46A170231807CBFC005B8026 /* CCSAXParser.cpp in Sources */,
 				46A170ED1807CECA005B8026 /* CCPhysicsShape.cpp in Sources */,
 				46A170C51807CEB0005B8026 /* aabb.c in Sources */,
-				46A1705E1807CC1C005B8026 /* CCWindow.m in Sources */,
+				46A1705E1807CC1C005B8026 /* CCWindow.mm in Sources */,
 				46A170171807CBFC005B8026 /* CCThread.mm in Sources */,
 				46A170C81807CEBB005B8026 /* mat4.c in Sources */,
 				46A170CB1807CEBB005B8026 /* quaternion.c in Sources */,

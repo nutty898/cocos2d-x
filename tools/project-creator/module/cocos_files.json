@@ -370,7 +370,7 @@
 "cocos/2d/platform/mac/CCPlatformDefine.h",
 "cocos/2d/platform/mac/CCStdC.h",
 "cocos/2d/platform/mac/CCWindow.h",
-"cocos/2d/platform/mac/CCWindow.m",
+"cocos/2d/platform/mac/CCWindow.mm",
 "cocos/2d/platform/mac/EAGLView.h",
 "cocos/2d/platform/mac/EAGLView.mm",
 "cocos/2d/platform/win32/CCApplication.cpp",
