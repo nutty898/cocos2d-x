@@ -172,7 +172,6 @@ set(COCOS_LINK
   opengl32
   iconv
   freetype
-  bz2
   )
 
 else()

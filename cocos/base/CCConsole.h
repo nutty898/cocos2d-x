@@ -32,6 +32,8 @@
 // ssize_t was redefined as int in libwebsockets.h.
 // Therefore, to avoid conflict, we needs the same definition.
 typedef int ssize_t;
+#elif defined(__MINGW32__)
+#include <winsock2.h>
 #else
 #include <sys/select.h>
 #endif
