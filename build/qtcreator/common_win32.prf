@@ -33,7 +33,7 @@ win32 {
     } else {
         DEFINES += GLEW_STATIC
         CC_EXTERNAL_LIBS += \
-            -lopengl32 -lglu32 -lwinmm -luser32 -lgdi32 -ladvapi32 \
+            -lopengl32 -lglu32 -lwinmm -luser32 -lgdi32 -ladvapi32 -lwsock32 -lws2_32 \
             -L$$clean_path($${CC_ROOT}external/win32-specific/gles/prebuilt) -lglew32 -lopengl32 \
             -L$$clean_path($${CC_ROOT}external/win32-specific/zlib/prebuilt) -lz \
             $$cc_prebuilt_library(png, png) \

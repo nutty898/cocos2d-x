@@ -20,6 +20,7 @@ MOC_DIR = obj/cocos2dx/$${BUILD_TYPE}
 SOURCES += \
     $$cc_files(cocos/2d/*.cpp) \
     $$cc_files(cocos/2d/*.c) \
+    $$cc_files(cocos/2d/renderer/*.cpp) \
     $$cc_files(cocos/base/*.cpp) \
     $$cc_files(cocos/network/*.cpp) \
     $$cc_files(cocos/physics/*.cpp) \
@@ -42,6 +43,7 @@ SOURCES += \
     ../../external/tinyxml2/tinyxml2.cpp \
     $$cc_files(external/unzip/*.cpp) \
     $$cc_files(external/json/*.cpp) \
+    $$cc_files(external/edtaa3func/*.cpp) \
     $$cc_files(extensions/proj.win32/*.cpp) \
     $$cc_files(extensions/assets-manager/*.cpp) \
     $$cc_files(extensions/physics-nodes/*.cpp) \
@@ -73,6 +75,7 @@ win32 {
 
 HEADERS += \
     $$cc_files(cocos/2d/*.h) \
+    $$cc_files(cocos/2d/renderer/*.h) \
     $$cc_files(cocos/base/*.h) \
     $$cc_files(cocos/network/*.h) \
     $$cc_files(cocos/physics/*.h) \
@@ -97,6 +100,7 @@ HEADERS += \
     ../../external/tinyxml2/tinyxml2.h \
     $$cc_files(external/unzip/*.h) \
     $$cc_files(external/json/*.h) \
+    $$cc_files(external/edtaa3func/*.h) \
     $$cc_files(extensions/assets-manager/*.h) \
     $$cc_files(extensions/physics-nodes/*.h) \
     $$cc_files(extensions/GUI/CCControlExtension/*.h) \

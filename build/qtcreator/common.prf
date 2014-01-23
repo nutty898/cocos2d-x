@@ -71,6 +71,7 @@ INCLUDEPATH += \
     $${CC_ROOT}/cocos \
     $${CC_ROOT}/cocos/base \
     $${CC_ROOT}/cocos/2d \
+    $${CC_ROOT}/cocos/2d/renderer \
     $${CC_ROOT}/cocos/physics \
     $${CC_ROOT}/cocos/gui \
     $${CC_ROOT}/cocos/editor-support \
@@ -82,6 +83,7 @@ INCLUDEPATH += \
     $${CC_ROOT}/external/tinyxml2 \
     $${CC_ROOT}/external/unzip \
     $${CC_ROOT}/external/Box2D \
+    $${CC_ROOT}/external/edtaa3func \
     $$cc_include_library(webp) \
     $$cc_include_library(freetype2) \
     $$cc_include_library(curl) \
