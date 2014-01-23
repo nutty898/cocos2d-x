@@ -19,9 +19,9 @@ MciPlayer::MciPlayer()
 {
     if (! s_hInstance)
     {
-        s_hInstance = GetModuleHandle( NULL );            // Grab An Instance For Our Window
+        s_hInstance = GetModuleHandleA( NULL );            // Grab An Instance For Our Window
 
-        WNDCLASS  wc;        // Windows Class Structure
+        WNDCLASSA  wc;        // Windows Class Structure
 
         // Redraw On Size, And Own DC For Window.
         wc.style          = 0;  
@@ -35,14 +35,14 @@ MciPlayer::MciPlayer()
         wc.lpszMenuName   = NULL;                           // We Don't Want A Menu
         wc.lpszClassName  = WIN_CLASS_NAME;                 // Set The Class Name
 
-        if (! RegisterClass(&wc)
+        if (! RegisterClassA(&wc)
             && 1410 != GetLastError())
         {
             return;
         }
     }
 
-    _wnd = CreateWindowEx(
+    _wnd = CreateWindowExA(
         WS_EX_APPWINDOW,                                    // Extended Style For The Window
         WIN_CLASS_NAME,                                        // Class Name
         NULL,                                        // Window Title
@@ -56,7 +56,7 @@ MciPlayer::MciPlayer()
         NULL );
     if (_wnd)
     {
-        SetWindowLongPtr(_wnd, GWLP_USERDATA, (LONG_PTR)this);
+        SetWindowLongA(_wnd, GWL_USERDATA, (LONG)this);
     }
 }
 
@@ -80,12 +80,12 @@ void MciPlayer::Open(const char* pFileName, UINT uId)
 
         Close();
 
-        MCI_OPEN_PARMS mciOpen = {0};
+        MCI_OPEN_PARMSA mciOpen = {0};
         MCIERROR mciError;
-        mciOpen.lpstrDeviceType = (LPCTSTR)MCI_ALL_DEVICE_ID;
+        mciOpen.lpstrDeviceType = (LPCSTR)MCI_ALL_DEVICE_ID;
         mciOpen.lpstrElementName = pFileName;
 
-        mciError = mciSendCommand(0,MCI_OPEN, MCI_OPEN_ELEMENT, reinterpret_cast<DWORD_PTR>(&mciOpen));
+        mciError = mciSendCommandA(0,MCI_OPEN, MCI_OPEN_ELEMENT, (DWORD)&mciOpen);
         BREAK_IF(mciError);
 
         _dev = mciOpen.wDeviceID;
@@ -101,8 +101,8 @@ void MciPlayer::Play(UINT uTimes /* = 1 */)
         return;
     }
     MCI_PLAY_PARMS mciPlay = {0};
-    mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(_wnd);
-    s_mciError = mciSendCommand(_dev,MCI_PLAY, MCI_FROM|MCI_NOTIFY,reinterpret_cast<DWORD_PTR>(&mciPlay));
+    mciPlay.dwCallback = (DWORD_PTR)_wnd;
+    s_mciError = mciSendCommandA(_dev,MCI_PLAY, MCI_FROM|MCI_NOTIFY,(DWORD)&mciPlay);
     if (! s_mciError)
     {
         _playing = true;
@@ -146,11 +146,11 @@ void MciPlayer::Rewind()
     {
         return;
     }
-    mciSendCommand(_dev, MCI_SEEK, MCI_SEEK_TO_START, 0);
+    mciSendCommandA(_dev, MCI_SEEK, MCI_SEEK_TO_START, 0);
 
     MCI_PLAY_PARMS mciPlay = {0};
-    mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(_wnd);
-    _playing = mciSendCommand(_dev, MCI_PLAY, MCI_NOTIFY,reinterpret_cast<DWORD_PTR>(&mciPlay)) ? false : true;
+    mciPlay.dwCallback = (DWORD)_wnd;
+    _playing = mciSendCommandA(_dev, MCI_PLAY, MCI_NOTIFY,(DWORD)&mciPlay) ? false : true;
 }
 
 bool MciPlayer::IsPlaying()
@@ -173,7 +173,7 @@ void MciPlayer::_SendGenericCommand(int nCommand)
     {
         return;
     }
-    mciSendCommand(_dev, nCommand, 0, 0);
+    mciSendCommandA(_dev, nCommand, 0, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -185,7 +185,7 @@ LRESULT WINAPI _SoundPlayProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     MciPlayer * pPlayer = NULL;
     if (MM_MCINOTIFY == Msg 
         && MCI_NOTIFY_SUCCESSFUL == wParam
-        &&(pPlayer = (MciPlayer *)GetWindowLongPtr(hWnd, GWLP_USERDATA)))
+        &&(pPlayer = (MciPlayer *)GetWindowLongA(hWnd, GWL_USERDATA)))
     {
         if (pPlayer->_times)
         {
@@ -194,11 +194,11 @@ LRESULT WINAPI _SoundPlayProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 
         if (pPlayer->_times)
         {
-            mciSendCommand(lParam, MCI_SEEK, MCI_SEEK_TO_START, 0);
+            mciSendCommandA(lParam, MCI_SEEK, MCI_SEEK_TO_START, 0);
 
             MCI_PLAY_PARMS mciPlay = {0};
-            mciPlay.dwCallback = reinterpret_cast<DWORD_PTR>(hWnd);
-            mciSendCommand(lParam, MCI_PLAY, MCI_NOTIFY,reinterpret_cast<DWORD_PTR>(&mciPlay));
+            mciPlay.dwCallback = (DWORD)hWnd;
+            mciSendCommandA(lParam, MCI_PLAY, MCI_NOTIFY,(DWORD)&mciPlay);
         }
         else
         {
@@ -206,7 +206,7 @@ LRESULT WINAPI _SoundPlayProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         }
         return 0;
     }
-    return DefWindowProc(hWnd, Msg, wParam, lParam);
+    return DefWindowProcA(hWnd, Msg, wParam, lParam);
 }
 
 } // end of namespace CocosDenshion

@@ -64,6 +64,7 @@ typedef int ssize_t;
 #ifndef M_PI_2
   #define M_PI_2    1.57079632679
 #endif
+
 // for MIN MAX and sys/time.h on win32 platform
 #ifdef __MINGW32__
 #include <sys/time.h>
@@ -110,6 +111,8 @@ NS_CC_END
 #else
 
 #include <winsock.h>
+#include <winsock2.h>
+#include <windows.h>
 
 #endif // __MINGW32__
 
