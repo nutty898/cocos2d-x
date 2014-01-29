@@ -132,11 +132,13 @@ THE SOFTWARE.
 #include "renderer/CCRenderer.h"
 
 // physics
+#if CC_USE_PHYSICS
 #include "CCPhysicsBody.h"
 #include "CCPhysicsContact.h"
 #include "CCPhysicsShape.h"
 #include "CCPhysicsJoint.h"
 #include "CCPhysicsWorld.h"
+#endif
 
 // kazmath
 #include "kazmath/kazmath.h"

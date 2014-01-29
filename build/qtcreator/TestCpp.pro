@@ -24,6 +24,7 @@ TESTCPP_FOLDERS = \
     ClippingNodeTest \
     CocosDenshionTest \
     ConfigurationTest \
+    ConsoleTest \
     CurlTest \
     CurrentLanguageTest \
     DataVisitorTest \
@@ -43,6 +44,7 @@ TESTCPP_FOLDERS = \
     MotionStreakTest \
     MutiTouchTest \
     NewEventDispatcherTest \
+    NewRendererTest \
     NodeTest \
     ParallaxTest \
     ParticleTest \
@@ -62,6 +64,7 @@ TESTCPP_FOLDERS = \
     TileMapTest \
     TouchesTest \
     TransitionsTest \
+    UnitTest \
     UserDefaultTest \
     ZwoptexTest \
     AccelerometerTest \
@@ -83,6 +86,7 @@ TESTCPP_FOLDERS = \
     ExtensionsTest/ControlExtensionTest/CCControlButtonTest \
     ExtensionsTest/ControlExtensionTest/CCControlColourPicker \
     ExtensionsTest/ControlExtensionTest/CCControlPotentiometerTest \
+    ExtensionsTest/CocoStudioGUITest/UIWidgetAddNodeTest \
     ExtensionsTest/CocoStudioGUITest/UIScrollViewTest \
     ExtensionsTest/CocoStudioGUITest/UISliderTest \
     ExtensionsTest/CocoStudioGUITest/UITextAreaTest \
@@ -95,6 +99,7 @@ TESTCPP_FOLDERS = \
     ExtensionsTest/CocoStudioGUITest/UILabelAtlasTest \
     ExtensionsTest/CocoStudioGUITest/UILabelBMFontTest \
     ExtensionsTest/CocoStudioGUITest/UILabelTest \
+    ExtensionsTest/CocoStudioGUITest/UILayoutTest \
     ExtensionsTest/CocoStudioGUITest/UIListViewTest \
     ExtensionsTest/CocoStudioGUITest/UILoadingBarTest \
     ExtensionsTest/CocoStudioGUITest/UINodeContainerTest \

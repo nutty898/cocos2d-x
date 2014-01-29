@@ -29,7 +29,10 @@ THE SOFTWARE.
 #define __CCSCENE_H__
 
 #include "CCNode.h"
+
+#if CC_USE_PHYSICS
 #include "CCPhysicsWorld.h"
+#endif
 
 NS_CC_BEGIN
 
