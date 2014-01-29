@@ -416,7 +416,11 @@ EGLView::EGLView()
     }
     _viewName = "Cocos2dxWin32";
     glfwSetErrorCallback(EGLViewEventHandler::OnGLFWError);
-    glfwInit();
+    GLenum GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult)
+    {
+        log((char *)glewGetErrorString(GlewInitResult), "OpenGL error");
+    }
 }
 
 EGLView::~EGLView()
