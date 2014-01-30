@@ -360,12 +360,8 @@ EGLView::EGLView()
         g_keyCodeMap[item.glfwKeyCode] = item.keyCode;
     }
 
-    glfwSetErrorCallback(EGLViewEventHandler::OnGLFWError);
-    GLenum GlewInitResult = glewInit();
-    if (GLEW_OK != GlewInitResult)
-    {
-        log((char *)glewGetErrorString(GlewInitResult), "OpenGL error");
-    }
+    glfwSetErrorCallback(EGLViewEventHandler::onGLFWError);
+    glfwInit();
 }
 
 EGLView::~EGLView()
