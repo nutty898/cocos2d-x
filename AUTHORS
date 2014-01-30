@@ -94,6 +94,8 @@ Developers:
         use tinyxml2 to replace libxml2
         Added Mingw-crt Support without breaking VS SDK
         CMake support for windows.
+        Added support for x64 target of windows.
+        Added Dutch Language support.
 
     mchinen
         fix emulator issue for OpenGL ES 2.0 on Android
@@ -356,6 +358,7 @@ Developers:
 
     ThePickleMan
         Adding 'rotationIsDir' property to ParticleSystem.
+        DrawNode supports to draw triangle, quad bezier, cubic bezier.
 
     Jianghua (jxhgzs)
         Adding an additional transform for CCNode.
@@ -508,6 +511,8 @@ Developers:
         
     Lee, Jae-Hong (pyrasis)
         Maintainer of tizen port.
+        localStorageGetItem crashes when column text is NULL.
+        fix image bug on Android
 
     lumendes
         Updating spine-runtime to EsotericSoftware/spine-runtimes@5f90386.
@@ -519,6 +524,7 @@ Developers:
         Correcting the type detecting order for Lua CCBProxy::getNodeTypeName.
         Casting variables to their own type, and print warning info if no corresponding lua callback function instead of crash.
         fix of WebSocket url parse error for 'ws://domain.com/websocket' pattern.
+        Fixed a bug that Websocket doesn't support send/receive data which larger than 4096 bytes.
 
     musikov
         Fixing a bug that missing precision when getting strokeColor and fontFillColor
@@ -657,6 +663,7 @@ Developers:
         
     xhcnb
         Device::setAccelerometerEnabled needs to be invoked before adding ACC listener.
+        Fixed a bug that it will get wrong custom properties when use different count custom properties in CocosBuilder.
         
     bopohaa
         Fixed a bug that Webp test crashes.
@@ -704,6 +711,29 @@ Developers:
     daltomi
         Fixed a typo in Director class.
         Removed an unnecessary boolean flag in CCFontAtlasCache.cpp.
+        
+    v1ctor
+        ControlSlider supports to set selected thumb sprite.
+        ControlButton supports to set scale ratio of touchdown state
+        
+    akof1314
+        TestCpp works by using CMake and mingw on Windows.
+        
+    Pisces000221
+        Corrected a few mistakes in the README file of project-creator.
+        Corrected a mistake in README.
+        
+    hbbalfred
+        Fixed a bug that crash if file doesn't exist when using FileUtils::getStringFromFile.
+        
+    liang8305
+        Use multiple processes according the number of cores to build android project
+        
+    pandamicro
+        Exposed SAXParser to JS, it is used for parsing XML in JS.
+        
+    hanjukim
+        Fixed a bug that color and opacity settings were not applied when invoking Label::alignText.
     
 Retired Core Developers:
     WenSheng Yang
