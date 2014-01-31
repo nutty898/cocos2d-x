@@ -361,6 +361,9 @@ EGLView::EGLView()
     }
 
     glfwSetErrorCallback(EGLViewEventHandler::onGLFWError);
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+    glewInit();
+#endif
     glfwInit();
 }
 
