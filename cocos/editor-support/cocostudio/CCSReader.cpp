@@ -64,26 +64,48 @@ namespace cocostudio {
     Node* CCSReader::createObject(const rapidjson::Value &dict, cocos2d::Node *parent)
     {
         //
+        Node* newNode = nullptr;
         const char *className = DICTOOL->getStringValue_json(dict, "classname");
         if(strcmp(className, "Node") == 0)
         {
-            Node* gb = nullptr;
-            if (parent == nullptr)
+            newNode = Node::create();
+        }
+        else if(strcmp(className, "Sprite") == 0)
+        {
+            const char* fileName = DICTOOL->getStringValue_json(dict, "filename");
+            
+            if (fileName)
             {
-                gb = Node::create();
+                newNode = Sprite::create(fileName);
             }
             else
             {
-                gb = Node::create();
-                parent->addChild(gb);
+                newNode = Sprite::create();
             }
-            
-            setPropertyFromJsonDict(dict, gb);
-            
-            return gb;
         }
         
-        return nullptr;
+        //Add to parent
+        if (parent != nullptr)
+        {
+            parent->addChild(newNode);
+        }
+        
+        //Set properties
+        setPropertyFromJsonDict(dict, newNode);
+        
+        //Get children
+        int length = DICTOOL->getArrayCount_json(dict, "Children");
+        for (int i = 0; i < length; ++i)
+        {
+            const rapidjson::Value &subDict = DICTOOL->getSubDictionary_json(dict, "Children", i);
+            if (!DICTOOL->checkObjectExist_json(subDict))
+            {
+                break;
+            }
+            createObject(subDict, newNode);
+        }
+        
+        return newNode;
     }
     
     void CCSReader::setPropertyFromJsonDict(const rapidjson::Value &root, cocos2d::Node *node)
@@ -95,16 +117,21 @@ namespace cocostudio {
         const bool bVisible = (DICTOOL->getIntValue_json(root, "visible", 1) != 0);
         node->setVisible(bVisible);
         
-        int nTag = DICTOOL->getIntValue_json(root, "objecttag", -1);
+        int nTag = DICTOOL->getIntValue_json(root, "tag", -1);
         node->setTag(nTag);
         
-        int nZorder = DICTOOL->getIntValue_json(root, "zorder");
-        node->setLocalZOrder(nZorder);
+//        int nZorder = DICTOOL->getIntValue_json(root, "zorder");
+//        node->setLocalZOrder(nZorder);
         
         float fScaleX = DICTOOL->getFloatValue_json(root, "scalex", 1.0);
         float fScaleY = DICTOOL->getFloatValue_json(root, "scaley", 1.0);
         node->setScaleX(fScaleX);
         node->setScaleY(fScaleY);
+        
+        float fSkewX = DICTOOL->getFloatValue_json(root, "skewx", 0.0);
+        float fSkewY = DICTOOL->getFloatValue_json(root, "skewy", 0.0);
+        node->setSkewX(fSkewX);
+        node->setSkewY(fSkewY);
         
         float fRotationZ = DICTOOL->getFloatValue_json(root, "rotation");
         node->setRotation(fRotationZ);
