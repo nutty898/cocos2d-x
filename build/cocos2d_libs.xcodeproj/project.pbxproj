@@ -1932,6 +1932,10 @@
 		593BDCF7184D0A6E00C21E48 /* CCGroupCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 593BDCDA184D0A6E00C21E48 /* CCGroupCommand.cpp */; };
 		593BDCF8184D0A6E00C21E48 /* CCGroupCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 593BDCDB184D0A6E00C21E48 /* CCGroupCommand.h */; };
 		593BDCF9184D0A6E00C21E48 /* CCGroupCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 593BDCDB184D0A6E00C21E48 /* CCGroupCommand.h */; };
+		595D090718CDCF5C0036A338 /* CCSReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 595D090518CDCF5C0036A338 /* CCSReader.cpp */; };
+		595D090818CDCF5C0036A338 /* CCSReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 595D090518CDCF5C0036A338 /* CCSReader.cpp */; };
+		595D090918CDCF5C0036A338 /* CCSReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 595D090618CDCF5C0036A338 /* CCSReader.h */; };
+		595D090A18CDCF5C0036A338 /* CCSReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 595D090618CDCF5C0036A338 /* CCSReader.h */; };
 		59A79D511821E26E00F19697 /* CCEventListenerMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59A79D4D1821E26E00F19697 /* CCEventListenerMouse.cpp */; };
 		59A79D521821E26E00F19697 /* CCEventListenerMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59A79D4D1821E26E00F19697 /* CCEventListenerMouse.cpp */; };
 		59A79D531821E26E00F19697 /* CCEventListenerMouse.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A79D4E1821E26E00F19697 /* CCEventListenerMouse.h */; };
@@ -3149,6 +3153,8 @@
 		593BDCD9184D0A6E00C21E48 /* CCCustomCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCustomCommand.h; sourceTree = "<group>"; };
 		593BDCDA184D0A6E00C21E48 /* CCGroupCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGroupCommand.cpp; sourceTree = "<group>"; };
 		593BDCDB184D0A6E00C21E48 /* CCGroupCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGroupCommand.h; sourceTree = "<group>"; };
+		595D090518CDCF5C0036A338 /* CCSReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCSReader.cpp; sourceTree = "<group>"; };
+		595D090618CDCF5C0036A338 /* CCSReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSReader.h; sourceTree = "<group>"; };
 		59A79D4D1821E26E00F19697 /* CCEventListenerMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCEventListenerMouse.cpp; sourceTree = "<group>"; };
 		59A79D4E1821E26E00F19697 /* CCEventListenerMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEventListenerMouse.h; sourceTree = "<group>"; };
 		59A79D4F1821E26E00F19697 /* CCEventMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCEventMouse.cpp; sourceTree = "<group>"; };
@@ -4484,6 +4490,8 @@
 				1A8C5986180E930E00EF57C3 /* CocoStudio.h */,
 				1A8C5989180E930E00EF57C3 /* DictionaryHelper.cpp */,
 				1A8C598A180E930E00EF57C3 /* DictionaryHelper.h */,
+				595D090518CDCF5C0036A338 /* CCSReader.cpp */,
+				595D090618CDCF5C0036A338 /* CCSReader.h */,
 			);
 			path = cocostudio;
 			sourceTree = "<group>";
@@ -5566,6 +5574,7 @@
 				46A170E71807CECA005B8026 /* CCPhysicsBody.h in Headers */,
 				46A170EB1807CECA005B8026 /* CCPhysicsJoint.h in Headers */,
 				46A170531807CC1C005B8026 /* CCDirectorCaller.h in Headers */,
+				595D090918CDCF5C0036A338 /* CCSReader.h in Headers */,
 				46A170B71807CEA3005B8026 /* vec4.h in Headers */,
 				46A170B61807CEA3005B8026 /* vec3.h in Headers */,
 				50AE5EA5188749250007CFE3 /* CCBatchCommand.h in Headers */,
@@ -6392,6 +6401,7 @@
 				59A79D541821E26E00F19697 /* CCEventListenerMouse.h in Headers */,
 				1AD71E9C180E26E600808F54 /* AnimationState.h in Headers */,
 				1AD71EA0180E26E600808F54 /* AnimationStateData.h in Headers */,
+				595D090A18CDCF5C0036A338 /* CCSReader.h in Headers */,
 				1AD71EA4180E26E600808F54 /* Atlas.h in Headers */,
 				1AD71EA8180E26E600808F54 /* AtlasAttachmentLoader.h in Headers */,
 				1ABA68B11888D700007D1BB4 /* CCFontCharMap.h in Headers */,
@@ -7023,6 +7033,7 @@
 				1A57009E180BC5D20088DEC7 /* CCNode.cpp in Sources */,
 				1A5700C5180BC6060088DEC7 /* atitc.cpp in Sources */,
 				B37510781823AC9F00B3BA6A /* CCPhysicsShapeInfo_chipmunk.cpp in Sources */,
+				595D090718CDCF5C0036A338 /* CCSReader.cpp in Sources */,
 				1A5700C9180BC6060088DEC7 /* CCAffineTransform.cpp in Sources */,
 				1A5700CD180BC6060088DEC7 /* CCArray.cpp in Sources */,
 				1A5700D1180BC6060088DEC7 /* CCAutoreleasePool.cpp in Sources */,
@@ -7754,6 +7765,7 @@
 				1A8C58ED180E92CC00EF57C3 /* CocosGUI.cpp in Sources */,
 				1A8C58F1180E92CC00EF57C3 /* UILayout.cpp in Sources */,
 				1A8C58F5180E92CC00EF57C3 /* UILayoutParameter.cpp in Sources */,
+				595D090818CDCF5C0036A338 /* CCSReader.cpp in Sources */,
 				1A8C58F9180E92CC00EF57C3 /* UIButton.cpp in Sources */,
 				1A8C58FD180E92CC00EF57C3 /* UICheckBox.cpp in Sources */,
 				1A8C5905180E92CC00EF57C3 /* UIHelper.cpp in Sources */,
