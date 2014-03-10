@@ -211,6 +211,9 @@ void PhysicsWorld::debugDraw()
                 {
                     PhysicsBody* body = dynamic_cast<PhysicsBody*>(obj);
                     
+                    if(!body->isEnabled())
+                        continue;
+
                     for (auto& shape : body->getShapes())
                     {
                         _debugDraw->drawShape(*dynamic_cast<PhysicsShape*>(shape));
