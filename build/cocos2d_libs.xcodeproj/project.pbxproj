@@ -3085,12 +3085,6 @@
 		46A16AD31807B038005B8026 /* CCImage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CCImage.mm; sourceTree = "<group>"; };
 		46A16AD41807B038005B8026 /* CCPlatformDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCPlatformDefine.h; sourceTree = "<group>"; };
 		46A16AD51807B038005B8026 /* CCStdC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCStdC.h; sourceTree = "<group>"; };
-<<<<<<< HEAD
-		46A16AD61807B038005B8026 /* CCWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCWindow.h; sourceTree = "<group>"; };
-		46A16AD71807B038005B8026 /* CCWindow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCWindow.mm; sourceTree = "<group>"; };
-		46A16AD91807B038005B8026 /* EAGLView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
-=======
->>>>>>> up/develop
 		46A16E1B1807C948005B8026 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../cocos/2d/platform/third_party/ios/libraries/libcurl.a; sourceTree = "<group>"; };
 		46A16E1C1807C948005B8026 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../cocos/2d/platform/third_party/ios/libraries/libfreetype.a; sourceTree = "<group>"; };
 		46A16E1D1807C948005B8026 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../cocos/2d/platform/third_party/ios/libraries/libjpeg.a; sourceTree = "<group>"; };
@@ -5364,13 +5358,6 @@
 				46A16AD31807B038005B8026 /* CCImage.mm */,
 				46A16AD41807B038005B8026 /* CCPlatformDefine.h */,
 				46A16AD51807B038005B8026 /* CCStdC.h */,
-<<<<<<< HEAD
-				46A16AD61807B038005B8026 /* CCWindow.h */,
-				46A16AD71807B038005B8026 /* CCWindow.mm */,
-				1A0DB7361823828F0025743D /* EAGLView.h */,
-				46A16AD91807B038005B8026 /* EAGLView.mm */,
-=======
->>>>>>> up/develop
 			);
 			path = mac;
 			sourceTree = "<group>";
@@ -6997,10 +6984,6 @@
 				46A170231807CBFC005B8026 /* CCSAXParser.cpp in Sources */,
 				46A170ED1807CECA005B8026 /* CCPhysicsShape.cpp in Sources */,
 				46A170C51807CEB0005B8026 /* aabb.c in Sources */,
-<<<<<<< HEAD
-				46A1705E1807CC1C005B8026 /* CCWindow.mm in Sources */,
-=======
->>>>>>> up/develop
 				46A170171807CBFC005B8026 /* CCThread.mm in Sources */,
 				46A170C81807CEBB005B8026 /* mat4.c in Sources */,
 				46A170CB1807CEBB005B8026 /* quaternion.c in Sources */,
