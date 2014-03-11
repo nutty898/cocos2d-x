@@ -43,6 +43,7 @@ private:
     cocos2d::Node* createObject(const rapidjson::Value& dict, cocos2d::Node* parent);
     void setPropertyFromJsonDict(const rapidjson::Value& dict, cocos2d::Node *node);
     bool readJson(const std::string& fileName, rapidjson::Document& doc);
+    cocos2d::Node* nodeByTag(cocos2d::Node *parent, int tag);
     
 private:
     static CCSReader* s_sharedReader;

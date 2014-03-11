@@ -52,21 +52,76 @@ namespace cocostudio {
     Node* CCSReader::loadSceneFile(const std::string &fileName)
     {
         rapidjson::Document jsonDict;
+        bool result;
         do
         {
             CC_BREAK_IF(!readJson(fileName, jsonDict));
             _node = createObject(jsonDict, nullptr);
         } while (0);
-        
+
+        if(jsonDict.HasParseError())
+        {
+            CCLOG("Json Parse Error: %s", jsonDict.GetParseError());
+        }
+
         return _node;
     }
-    
+
+    Node *CCSReader::getNodeByTag(int nTag)
+    {
+        if (_node == nullptr)
+        {
+            return nullptr;
+        }
+        if (_node->getTag() == nTag)
+        {
+            return _node;
+        }
+        return nodeByTag(_node, nTag);
+    }
+
+
+    cocos2d::Node *CCSReader::nodeByTag(cocos2d::Node *parent, int tag)
+    {
+        if (parent == nullptr)
+        {
+            return nullptr;
+        }
+        Node *_retNode = nullptr;
+        Vector<Node*>& Children = parent->getChildren();
+        Vector<Node*>::iterator iter = Children.begin();
+        while (iter != Children.end())
+        {
+            Node* pNode = *iter;
+            if(pNode != nullptr && pNode->getTag() == tag)
+            {
+                _retNode =  pNode;
+                break;
+            }
+            else
+            {
+                _retNode = nodeByTag(pNode, tag);
+                if (_retNode != nullptr)
+                {
+                    break;
+                }
+
+            }
+            ++iter;
+        }
+        return _retNode;
+    }
+
     Node* CCSReader::createObject(const rapidjson::Value &dict, cocos2d::Node *parent)
     {
         //
         Node* newNode = nullptr;
         const char *className = DICTOOL->getStringValue_json(dict, "classname");
         if(strcmp(className, "Node") == 0)
+        {
+            newNode = Node::create();
+        }
+        else if(strcmp(className, "Scene") == 0)
         {
             newNode = Node::create();
         }
