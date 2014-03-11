@@ -625,6 +625,8 @@
 "cocos/editor-support/cocostudio/TriggerMng.h",
 "cocos/editor-support/cocostudio/TriggerObj.cpp",
 "cocos/editor-support/cocostudio/TriggerObj.h",
+"cocos/editor-support/cocostudio/CCSReader.h",
+"cocos/editor-support/cocostudio/CCSReader.cpp",
 "cocos/editor-support/spine/Android.mk",
 "cocos/editor-support/spine/Animation.cpp",
 "cocos/editor-support/spine/Animation.h",
