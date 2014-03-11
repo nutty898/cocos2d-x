@@ -165,11 +165,13 @@ namespace cocostudio {
     
     void CCSReader::setPropertyFromJsonDict(const rapidjson::Value &root, cocos2d::Node *node)
     {
-        float x = DICTOOL->getFloatValue_json(root, "x");
-        float y = DICTOOL->getFloatValue_json(root, "y");
+        const char* cx = DICTOOL->getStringValue_json(root, "x");
+        const char* cy = DICTOOL->getStringValue_json(root, "y");
+        float x = atof(cx);
+        float y = atof(cy);
         node->setPosition(Point(x, y));
         
-        const bool bVisible = (DICTOOL->getIntValue_json(root, "visible", 1) != 0);
+        const bool bVisible = DICTOOL->getBooleanValue_json(root, "visible");
         node->setVisible(bVisible);
         
         int nTag = DICTOOL->getIntValue_json(root, "tag", -1);
@@ -178,17 +180,22 @@ namespace cocostudio {
 //        int nZorder = DICTOOL->getIntValue_json(root, "zorder");
 //        node->setLocalZOrder(nZorder);
         
-        float fScaleX = DICTOOL->getFloatValue_json(root, "scalex", 1.0);
-        float fScaleY = DICTOOL->getFloatValue_json(root, "scaley", 1.0);
+        const char* cScaleX = DICTOOL->getStringValue_json(root, "scalex");
+        const char* cScaleY = DICTOOL->getStringValue_json(root, "scaley");
+        float fScaleX = atof(cScaleX);
+        float fScaleY = atof(cScaleY);
         node->setScaleX(fScaleX);
         node->setScaleY(fScaleY);
         
-        float fSkewX = DICTOOL->getFloatValue_json(root, "skewx", 0.0);
-        float fSkewY = DICTOOL->getFloatValue_json(root, "skewy", 0.0);
+        const char* cSkewX = DICTOOL->getStringValue_json(root, "skewx");
+        const char* cSkewY = DICTOOL->getStringValue_json(root, "skewy");
+        float fSkewX = atof(cSkewX);
+        float fSkewY = atof(cSkewY);
         node->setSkewX(fSkewX);
         node->setSkewY(fSkewY);
         
-        float fRotationZ = DICTOOL->getFloatValue_json(root, "rotation");
+        const char* cRotation = DICTOOL->getStringValue_json(root, "rotation");
+        float fRotationZ = atof(cRotation);
         node->setRotation(fRotationZ);
     }
     
