@@ -269,6 +269,9 @@ void Renderer::render()
 
     if (_glViewAssigned)
     {
+        // cleanup
+        _drawnBatches = _drawnVertices = 0;
+
         //Process render commands
         //1. Sort render commands based on ID
         for (auto &renderqueue : _renderGroups)
@@ -356,6 +359,12 @@ void Renderer::render()
         }
     }
 
+    clean();
+}
+
+void Renderer::clean()
+{
+    // Clear render group
     for (size_t j = 0 ; j < _renderGroups.size(); j++)
     {
         //commands are owned by nodes
@@ -365,12 +374,18 @@ void Renderer::render()
         // }
         _renderGroups[j].clear();
     }
-    
-    //Clear the stack incase gl view hasn't been initialized yet
+
+    // Clear batch quad commands
+    _batchedQuadCommands.clear();
+    _numQuads = 0;
+
+    // Clear the stack incase gl view hasn't been initialized yet
     while(!_renderStack.empty())
     {
         _renderStack.pop();
     }
+
+    // Reset render stack
     RenderStackElement element = {DEFAULT_RENDER_QUEUE, 0};
     _renderStack.push(element);
     _lastMaterialID = 0;
@@ -465,7 +480,8 @@ void Renderer::drawBatchedQuads()
             if(quadsToDraw > 0)
             {
                 glDrawElements(GL_TRIANGLES, (GLsizei) quadsToDraw*6, GL_UNSIGNED_SHORT, (GLvoid*) (startQuad*6*sizeof(_indices[0])) );
-                CC_INCREMENT_GL_DRAWS(1);
+                _drawnBatches++;
+                _drawnVertices += quadsToDraw*6;
 
                 startQuad += quadsToDraw;
                 quadsToDraw = 0;
@@ -483,7 +499,8 @@ void Renderer::drawBatchedQuads()
     if(quadsToDraw > 0)
     {
         glDrawElements(GL_TRIANGLES, (GLsizei) quadsToDraw*6, GL_UNSIGNED_SHORT, (GLvoid*) (startQuad*6*sizeof(_indices[0])) );
-        CC_INCREMENT_GL_DRAWS(1);
+        _drawnBatches++;
+        _drawnVertices += quadsToDraw*6;
     }
 
     if (Configuration::getInstance()->supportsShareableVAO())

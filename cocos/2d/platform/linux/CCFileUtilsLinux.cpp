@@ -22,6 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
+
+#include "CCPlatformConfig.h"
+#if CC_TARGET_PLATFORM == CC_PLATFORM_LINUX
+
 #include "CCFileUtilsLinux.h"
 #include "platform/CCCommon.h"
 #include "ccMacros.h"
@@ -96,9 +100,9 @@ string FileUtilsLinux::getWritablePath() const
     return _writablePath;
 }
 
-bool FileUtilsLinux::isFileExist(const std::string& strFilePath) const
+bool FileUtilsLinux::isFileExistInternal(const std::string& strFilePath) const
 {
-    if (0 == strFilePath.length())
+    if (strFilePath.empty())
     {
         return false;
     }
@@ -114,3 +118,5 @@ bool FileUtilsLinux::isFileExist(const std::string& strFilePath) const
 }
 
 NS_CC_END
+
+#endif CC_TARGET_PLATFORM == CC_PLATFORM_LINUX
