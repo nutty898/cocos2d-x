@@ -452,7 +452,7 @@ float GLView::getFrameZoomFactor()
 
 void GLView::updateFrameSize()
 {
-    if (_screenSize.width > 0 && _screenSize.height > 0)
+    if (_mainWindow && _screenSize.width > 0 && _screenSize.height > 0)
     {
         int w = 0, h = 0;
         glfwGetWindowSize(_mainWindow, &w, &h);
