@@ -18,6 +18,10 @@ MciPlayer::MciPlayer()
 , _playing(false)
 , strExt("")
 {
+    //FIXME: hack to make it compile for windows mingw
+    wchar_t wtext[64];
+    mbstowcs(wtext, WIN_CLASS_NAME, strlen(WIN_CLASS_NAME)+1);//Plus null
+
     if (! s_hInstance)
     {
         s_hInstance = GetModuleHandle( NULL );            // Grab An Instance For Our Window
@@ -34,7 +38,7 @@ MciPlayer::MciPlayer()
         wc.hCursor        = LoadCursor( NULL, IDC_ARROW );    // Load The Arrow Pointer
         wc.hbrBackground  = NULL;                           // No Background Required For GL
         wc.lpszMenuName   = NULL;                           // We Don't Want A Menu
-        wc.lpszClassName  = WIN_CLASS_NAME;                 // Set The Class Name
+        wc.lpszClassName  = wtext;                 // Set The Class Name
 
         if (! RegisterClass(&wc)
             && 1410 != GetLastError())
@@ -45,7 +49,7 @@ MciPlayer::MciPlayer()
 
     _wnd = CreateWindowEx(
         WS_EX_APPWINDOW,                                    // Extended Style For The Window
-        WIN_CLASS_NAME,                                        // Class Name
+        wtext,                                        // Class Name
         NULL,                                        // Window Title
         WS_POPUPWINDOW,/*WS_OVERLAPPEDWINDOW*/               // Defined Window Style
         0, 0,                                                // Window Position
@@ -88,7 +92,11 @@ void MciPlayer::Open(const char* pFileName, UINT uId)
         MCI_OPEN_PARMS mciOpen = {0};
         MCIERROR mciError;
         mciOpen.lpstrDeviceType = (LPCTSTR)MCI_ALL_DEVICE_ID;
-        mciOpen.lpstrElementName = pFileName;
+
+        //FIXME: hack to make it compile for windows mingw
+        wchar_t wtext[64];
+        mbstowcs(wtext, pFileName, strlen(pFileName)+1);//Plus null
+        mciOpen.lpstrElementName = wtext;
 
         mciError = mciSendCommand(0,MCI_OPEN, MCI_OPEN_ELEMENT, reinterpret_cast<DWORD_PTR>(&mciOpen));
         BREAK_IF(mciError);
