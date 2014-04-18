@@ -35,7 +35,6 @@ THE SOFTWARE.
 #include "CCDrawingPrimitives.h"
 #include "CCNS.h"
 #include "CCScene.h"
-#include "CCArray.h"
 #include "CCScheduler.h"
 #include "ccMacros.h"
 #include "CCTransition.h"
@@ -177,7 +176,7 @@ Director::~Director(void)
     CC_SAFE_RELEASE(_notificationNode);
     CC_SAFE_RELEASE(_scheduler);
     CC_SAFE_RELEASE(_actionManager);
-    CC_SAFE_RELEASE(_eventDispatcher);
+    
 
     delete _eventAfterUpdate;
     delete _eventAfterDraw;
@@ -190,6 +189,8 @@ Director::~Director(void)
     delete _console;
 #endif
 
+    CC_SAFE_RELEASE(_eventDispatcher);
+    
     // clean auto release pool
     PoolManager::destroyInstance();
 

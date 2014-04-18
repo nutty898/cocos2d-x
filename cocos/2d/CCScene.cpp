@@ -30,9 +30,9 @@ THE SOFTWARE.
 #include "CCLayer.h"
 #include "CCSprite.h"
 #include "CCSpriteBatchNode.h"
-#if CC_USE_PHYSICS
 #include "CCPhysicsWorld.h"
-#endif
+#include "deprecated/CCString.h"
+
 NS_CC_BEGIN
 
 Scene::Scene()
