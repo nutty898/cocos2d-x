@@ -32,7 +32,12 @@
 
 #ifndef __SSIZE_T
 #define __SSIZE_T
+
+#ifndef _SSIZE_T_DEFINED
+#define _SSIZE_T_DEFINED
 typedef SSIZE_T ssize_t;
+#endif
+
 #endif // __SSIZE_T
 
 #else
