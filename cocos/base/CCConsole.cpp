@@ -257,7 +257,7 @@ static void _log(const char *format, va_list args)
     fflush(stdout);
 #endif
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT) && (CC_TARGET_PLATFORM != CC_PLATFORM_WP8)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT) && (CC_TARGET_PLATFORM != CC_PLATFORM_WP8) && (!__MINGW32__)
     Director::getInstance()->getConsole()->log(buf);
 #endif
 
