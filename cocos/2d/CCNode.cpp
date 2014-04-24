@@ -448,6 +448,23 @@ void Node::setPosition(float x, float y)
     setPosition(Point(x, y));
 }
 
+void Node::setPositionNormalized(float x, float y)
+{
+    _positionNormalized = Point(x,y);
+    if (_parent)
+    {
+        const Size& s = _parent->getContentSize();
+        setPosition(s.width * x, s.height * y);
+        printf("setPositionNormalized %.2f, %.2f\n", x, y);
+    }
+}
+
+void Node::getPositionNormalized(float* x, float* y) const
+{
+    *x = _positionNormalized.x;
+    *y = _positionNormalized.y;
+}
+
 void Node::setPosition3D(const Vertex3F& position)
 {
     _positionZ = position.z;
