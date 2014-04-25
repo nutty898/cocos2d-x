@@ -44,6 +44,8 @@ static const char* NODETYPE    = "classname";
 static const char* FILE_PATH   = "filePath";
 static const char* ACTION_TAG  = "actionTag";
 
+static const char* OPTIONS      = "options";
+
 static const char* X                = "x";
 static const char* Y                = "y";
 static const char* SCALE_X          = "scaleX";
@@ -139,7 +141,8 @@ cocos2d::Node* NodeCache::loadNode(const rapidjson::Value& json)
     NodeCreateFunc func = _funcs.at(nodeType);
     if (func != nullptr)
     {
-        node = func(json);
+        const rapidjson::Value &options = DICTOOL->getSubDictionary_json(json, OPTIONS);
+        node = func(options);
     }
 
     int tag = DICTOOL->getIntValue_json(json, ACTION_TAG);
