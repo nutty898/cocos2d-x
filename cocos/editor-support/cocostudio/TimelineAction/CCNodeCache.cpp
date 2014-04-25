@@ -37,27 +37,27 @@ static const char* NodeType_Sprite   = "Sprite";
 static const char* NodeType_Particle = "Particle";
 
 
-static const char* NODE        = "node";
+static const char* NODE        = "nodeTree";
 static const char* CHILDREN    = "children";
-static const char* NODETYPE    = "nodeType";
+static const char* NODETYPE    = "classname";
 static const char* FILE_PATH   = "filePath";
 static const char* ACTION_TAG  = "actionTag";
 
 static const char* X                = "x";
 static const char* Y                = "y";
-static const char* SCALE_X          = "scalex";
-static const char* SCALE_Y          = "scaley";
-static const char* SKEW_X           = "skewx";
-static const char* SKEW_Y           = "skewy";
+static const char* SCALE_X          = "scaleX";
+static const char* SCALE_Y          = "scaleY";
+static const char* SKEW_X           = "skewX";
+static const char* SKEW_Y           = "skewY";
 static const char* ROTATION         = "rotation";
 static const char* ROTATION_SKEW_X  = "rotationSkewX";
 static const char* ROTATION_SKEW_Y  = "rotationSkewY";
-static const char* ANCHOR_X         = "anchorx";
-static const char* ANCHOR_Y         = "anchory";
-static const char* ALPHA            = "alpha";
-static const char* RED              = "red";
-static const char* GREEN            = "green";
-static const char* BLUE             = "blue";
+static const char* ANCHOR_X         = "anchorPointX";
+static const char* ANCHOR_Y         = "anchorPointY";
+static const char* ALPHA            = "opacity";
+static const char* RED              = "colorR";
+static const char* GREEN            = "colorG";
+static const char* BLUE             = "colorB";
 
 static NodeCache* _sharedNodeCache = nullptr;
 
@@ -123,7 +123,7 @@ cocos2d::Node* NodeCache::loadNodeWithContent(const std::string& content)
     if (doc.HasParseError()) {
         CCLOG("GetParseError %s\n", doc.GetParseError());
     }
-    
+
     const rapidjson::Value& subJson = DICTOOL->getSubDictionary_json(doc, NODE);
     return loadNode(subJson);
 }
