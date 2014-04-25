@@ -33,6 +33,7 @@ namespace timeline{
 
 
 static const char* NodeType_Node     = "Node";
+static const char* NodeType_SubGraph = "SubGraph";
 static const char* NodeType_Sprite   = "Sprite";
 static const char* NodeType_Particle = "Particle";
 
@@ -86,6 +87,7 @@ void NodeCache::init()
 {
     using namespace std::placeholders;
     _funcs.insert(Pair(NodeType_Node,       std::bind(&NodeCache::loadSimpleNode, this, _1)));
+    _funcs.insert(Pair(NodeType_SubGraph,   std::bind(&NodeCache::loadSubGraph,   this, _1)));
     _funcs.insert(Pair(NodeType_Sprite,     std::bind(&NodeCache::loadSprite,     this, _1)));
     _funcs.insert(Pair(NodeType_Particle,   std::bind(&NodeCache::loadParticle,   this, _1)));
 }
@@ -198,6 +200,14 @@ void NodeCache::initNode(cocos2d::Node* node, const rapidjson::Value& json)
 
 
 Node* NodeCache::loadSimpleNode(const rapidjson::Value& json)
+{
+    Node* node = Node::create();
+    initNode(node, json);
+
+    return node;
+}
+
+cocos2d::Node* NodeCache::loadSubGraph(const rapidjson::Value& json)
 {
     const char* filePath = DICTOOL->getStringValue_json(json, FILE_PATH);
 
