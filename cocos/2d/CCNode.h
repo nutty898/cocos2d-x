@@ -1400,7 +1400,7 @@ protected:
 
     Vector2 _position;                ///< position of the node
     float _positionZ;               ///< OpenGL real Z position
-    Point _positionNormalized;      ///< normalized position of the node relative to parent content size
+    Vector2 _positionNormalized;      ///< normalized position of the node relative to parent content size
     float _skewX;                   ///< skew angle on x-axis
     float _skewY;                   ///< skew angle on y-axis
 
