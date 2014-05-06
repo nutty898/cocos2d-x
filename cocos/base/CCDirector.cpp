@@ -156,7 +156,7 @@ bool Director::init(void)
 
     _renderer = new Renderer;
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT) && (!__MINGW32__)
     _console = new Console;
 #endif
     return true;

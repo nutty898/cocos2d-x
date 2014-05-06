@@ -35,6 +35,10 @@ _ReSharper*/
 ipch/
 *.opensdf
 
+# Ignore files build by Qt
+*.user
+build-*
+
 # Ignore files build by ndk and eclipse
 libs/
 bin/

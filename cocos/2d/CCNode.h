@@ -327,7 +327,23 @@ public:
     virtual float getPositionX(void) const;
     virtual void  setPositionY(float y);
     virtual float getPositionY(void) const;
+    
+    /**
+     * Sets the position (x,y) of the node in its parent's coordinate system
+     * using normalized coordinates, i.e. 0-1, where 0 means 0 in the parent
+     * space, and 1 means the extent of the parent content size in each direction.
+     *
+     * @see setPositionNormalized(float, float)
+     */
+    virtual void setPositionNormalized(float x, float y);
 
+    /**
+     * Gets the normalized position
+     *
+     * @see `getPositionNormalized(float, float)`
+     */
+    virtual void getPositionNormalized(float* x, float* y) const;
+    
     /**
      * Sets the position (X, Y, and Z) in its parent's coordinate system
      */
@@ -1384,7 +1400,7 @@ protected:
 
     Vector2 _position;                ///< position of the node
     float _positionZ;               ///< OpenGL real Z position
-
+    Point _positionNormalized;      ///< normalized position of the node relative to parent content size
     float _skewX;                   ///< skew angle on x-axis
     float _skewY;                   ///< skew angle on y-axis
 

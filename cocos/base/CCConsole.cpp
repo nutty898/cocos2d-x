@@ -40,10 +40,42 @@
 #include <WS2tcpip.h>
 #include <Winsock2.h>
 #define bzero(a, b) memset(a, 0, b);
+
+#elif defined(__MINGW32__)
+#include <io.h>
+#include <WS2tcpip.h>
+#define bzero(a, b) memset(a, 0, b);
+
+const char *inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
+{
+        if (af == AF_INET)
+        {
+                struct sockaddr_in in;
+                memset(&in, 0, sizeof(in));
+                in.sin_family = AF_INET;
+                memcpy(&in.sin_addr, src, sizeof(struct in_addr));
+                getnameinfo((struct sockaddr *)&in, sizeof(struct
+sockaddr_in), dst, cnt, NULL, 0, NI_NUMERICHOST);
+                return dst;
+        }
+        else if (af == AF_INET6)
+        {
+                struct sockaddr_in6 in;
+                memset(&in, 0, sizeof(in));
+                in.sin6_family = AF_INET6;
+                memcpy(&in.sin6_addr, src, sizeof(struct in_addr6));
+                getnameinfo((struct sockaddr *)&in, sizeof(struct
+sockaddr_in6), dst, cnt, NULL, 0, NI_NUMERICHOST);
+                return dst;
+        }
+        return NULL;
+}
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
 #include "inet_ntop_winrt.h"
 #include "CCWinRTUtils.h"
 #endif
+
 #else
 #include <netdb.h>
 #include <unistd.h>
@@ -194,7 +226,7 @@ static const char* inet_ntop(int af, const void* src, char* dst, int cnt)
     memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
 
     srcaddr.sin_family = af;
-    if (WSAAddressToString((struct sockaddr*) &srcaddr, sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0)
+    if (WSAAddressToStringA((struct sockaddr*) &srcaddr, sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0)
     {
         return nullptr;
     }
@@ -230,7 +262,7 @@ static void _log(const char *format, va_list args)
     fflush(stdout);
 #endif
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT) && (!__MINGW32__)
     Director::getInstance()->getConsole()->log(buf);
 #endif
 

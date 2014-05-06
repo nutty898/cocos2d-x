@@ -36,6 +36,7 @@ NS_CC_BEGIN
 class CC_DLL GLView : public GLViewProtocol, public Ref
 {
 public:
+    static GLView* create();
     static GLView* create(const std::string& viewName);
     static GLView* createWithRect(const std::string& viewName, Rect size, float frameZoomFactor = 1.0f);
     static GLView* createWithFullScreen(const std::string& viewName);
@@ -75,12 +76,14 @@ public:
      */
     void enableRetina(bool enabled);
     /** Check whether retina display is enabled. */
-    bool isRetinaEnabled() { return _isRetinaEnabled; };
+    bool isRetinaEnabled() { return _isRetinaEnabled; }
 
-protected:
     GLView();
     virtual ~GLView();
 
+protected:
+    // Just init a GLView without create a window.
+    bool init();
     bool initWithRect(const std::string& viewName, Rect rect, float frameZoomFactor);
     bool initWithFullScreen(const std::string& viewName);
     bool initWithFullscreen(const std::string& viewname, const GLFWvidmode &videoMode, GLFWmonitor *monitor);

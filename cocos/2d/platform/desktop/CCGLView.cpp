@@ -282,6 +282,18 @@ GLView::~GLView()
     glfwTerminate();
 }
 
+GLView* GLView::create()
+{
+    GLView* ret = new GLView;
+    if(ret && ret->init())
+    {
+        ret->autorelease();
+        return ret;
+    }
+
+    return nullptr;
+}
+
 GLView* GLView::create(const std::string& viewName)
 {
     auto ret = new GLView;
@@ -326,6 +338,28 @@ GLView* GLView::createWithFullScreen(const std::string& viewName, const GLFWvidm
     return nullptr;
 }
 
+bool GLView::init()
+{
+    // check OpenGL version at first
+    const GLubyte* glVersion = glGetString(GL_VERSION);
+
+    if ( atof((const char*)glVersion) < 1.5 )
+    {
+        char strComplain[256] = {0};
+        sprintf(strComplain,
+                "OpenGL 1.5 or higher is required (your version is %s). Please upgrade the driver of your video card.",
+                glVersion);
+        MessageBox(strComplain, "OpenGL version too old");
+        return false;
+    }
+
+    initGlew();
+
+    // Enable point size by default.
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    return true;
+}
 
 bool GLView::initWithRect(const std::string& viewName, Rect rect, float frameZoomFactor)
 {
@@ -479,7 +513,7 @@ float GLView::getFrameZoomFactor()
 
 void GLView::updateFrameSize()
 {
-    if (_screenSize.width > 0 && _screenSize.height > 0)
+    if (_mainWindow && _screenSize.width > 0 && _screenSize.height > 0)
     {
         int w = 0, h = 0;
         glfwGetWindowSize(_mainWindow, &w, &h);

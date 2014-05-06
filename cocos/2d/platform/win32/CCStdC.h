@@ -32,7 +32,12 @@ THE SOFTWARE.
 #include <BaseTsd.h>
 #ifndef __SSIZE_T
 #define __SSIZE_T
+
+#ifndef _SSIZE_T_DEFINED
+#define _SSIZE_T_DEFINED
 typedef SSIZE_T ssize_t;
+#endif
+
 #endif // __SSIZE_T
 
 #include "base/CCPlatformMacros.h"
@@ -68,6 +73,7 @@ typedef SSIZE_T ssize_t;
 #ifndef M_PI_2
   #define M_PI_2    1.57079632679
 #endif
+
 // for MIN MAX and sys/time.h on win32 platform
 #ifdef __MINGW32__
 #include <sys/time.h>

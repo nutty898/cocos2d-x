@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __DICTIONARYHELPER_H__
 
 #include "json/document.h"
+#include "cocos2d.h"
 
 #define DICTOOL DictionaryHelper::getInstance()
 
@@ -50,6 +51,7 @@ public:
 	float getFloatValue_json(const rapidjson::Value& root,const char* key, float def = 0.0f);
     bool  getBooleanValue_json(const rapidjson::Value& root,const char* key, bool def = false);
     const char* getStringValue_json(const rapidjson::Value& root,const char* key, const char *def = NULL);
+    cocos2d::Point getPointValue_json(const rapidjson::Value& root,const char* key, const cocos2d::Point& def);
     int   getArrayCount_json(const rapidjson::Value& root,const char* key, int def = 0);
 	
     int   getIntValueFromArray_json(const rapidjson::Value& root,const char* arrayKey,int idx, int def = 0);

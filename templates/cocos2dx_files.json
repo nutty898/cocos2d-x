@@ -736,6 +736,18 @@
         "cocos/editor-support/cocostudio/WidgetReader/WidgetReader.cpp", 
         "cocos/editor-support/cocostudio/WidgetReader/WidgetReader.h", 
         "cocos/editor-support/cocostudio/WidgetReader/WidgetReaderProtocol.h", 
+
+        "cocos/editor-support/cocostudio/TimelineAction/CCFrame.cpp",
+        "cocos/editor-support/cocostudio/TimelineAction/CCFrame.h",
+        "cocos/editor-support/cocostudio/TimelineAction/CCNodeCache.cpp",
+        "cocos/editor-support/cocostudio/TimelineAction/CCNodeCache.h",
+        "cocos/editor-support/cocostudio/TimelineAction/CCTimeLine.cpp",
+        "cocos/editor-support/cocostudio/TimelineAction/CCTimeLine.h",
+        "cocos/editor-support/cocostudio/TimelineAction/CCTimelineAction.cpp",
+        "cocos/editor-support/cocostudio/TimelineAction/CCTimelineAction.h",
+        "cocos/editor-support/cocostudio/TimelineAction/CCTimelineActionCache.cpp",
+        "cocos/editor-support/cocostudio/TimelineAction/CCTimelineActionCache.h",
+
         "cocos/editor-support/cocostudio/proj.win32/libCocosStudio.vcxproj", 
         "cocos/editor-support/cocostudio/proj.win32/libCocosStudio.vcxproj.filters", 
         "cocos/editor-support/cocostudio/proj.win32/libCocosStudio.vcxproj.user", 
