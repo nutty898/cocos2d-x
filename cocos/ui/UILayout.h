@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 #include "ui/UIWidget.h"
 
+#include "layout/CCLayoutProtocol.h"
+
 NS_CC_BEGIN
 
 namespace ui {
@@ -38,26 +40,13 @@ typedef enum
     LAYOUT_COLOR_GRADIENT
 }LayoutBackGroundColorType;
 
-typedef enum
-{
-    LAYOUT_ABSOLUTE,
-    LAYOUT_LINEAR_VERTICAL,
-    LAYOUT_LINEAR_HORIZONTAL,
-    LAYOUT_RELATIVE
-}LayoutType;
-
 typedef enum {
     LAYOUT_CLIPPING_STENCIL,
     LAYOUT_CLIPPING_SCISSOR
 }LayoutClippingType;
 
-/**
- *  @js NA
- *  @lua NA
- */
-class LayoutExecutant;
     
-class Layout : public Widget
+class Layout : public Widget, public layout::LayoutProtocol
 {
     
     DECLARE_CLASS_GUI_INFO
@@ -208,7 +197,7 @@ public:
      *
      * @param LayoutType
      */
-    virtual void setLayoutType(LayoutType type);
+    virtual void setLayoutType(layout::LayoutType type) override;
     
     /**
      * Gets LayoutType.
@@ -217,7 +206,7 @@ public:
      *
      * @return LayoutType
      */
-    virtual LayoutType getLayoutType() const;
+    virtual layout::LayoutType getLayoutType() const override;
 
     virtual void addChild(Node * child) override;
     /**
@@ -277,7 +266,7 @@ protected:
     //init background image renderer.
     void addBackGroundImage();
     
-    void supplyTheLayoutParameterLackToChild(Widget* child);
+    void supplyTheLayoutParameterLackToChild(LayoutParameterProtocol* child);
     virtual Widget* createCloneInstance() override;
     virtual void copySpecialProperties(Widget* model) override;
     virtual void copyClonedWidgetChildren(Widget* model) override;
@@ -287,6 +276,7 @@ protected:
     
     void setStencilClippingSize(const Size& size);
     const Rect& getClippingRect();
+    
     virtual void doLayout();
     
     //clipping
@@ -299,7 +289,6 @@ protected:
     void updateBackGroundImageColor();
     void updateBackGroundImageOpacity();
     void updateBackGroundImageRGBA();
-    LayoutExecutant* createCurrentLayoutExecutant();
 protected:
     bool _clippingEnabled;
     
@@ -318,7 +307,6 @@ protected:
     Vector2 _alongVector;
     GLubyte _cOpacity;
     Size _backGroundImageTextureSize;
-    LayoutType _layoutType;
     LayoutClippingType _clippingType;
     DrawNode* _clippingStencil;
     bool _scissorRectDirty;
@@ -346,8 +334,6 @@ protected:
     
     Color3B _backGroundImageColor;
     GLubyte _backGroundImageOpacity;
-    
-    LayoutExecutant* _curLayoutExecutant;
     
     GLint _mask_layer_le;
     GroupCommand _groupCommand;

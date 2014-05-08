@@ -1179,14 +1179,6 @@
 		2905FA5718CF08D100240AA3 /* UILayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9F818CF08D000240AA3 /* UILayout.cpp */; };
 		2905FA5818CF08D100240AA3 /* UILayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9F918CF08D000240AA3 /* UILayout.h */; };
 		2905FA5918CF08D100240AA3 /* UILayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9F918CF08D000240AA3 /* UILayout.h */; };
-		2905FA5A18CF08D100240AA3 /* UILayoutDefine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9FA18CF08D000240AA3 /* UILayoutDefine.cpp */; };
-		2905FA5B18CF08D100240AA3 /* UILayoutDefine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9FA18CF08D000240AA3 /* UILayoutDefine.cpp */; };
-		2905FA5C18CF08D100240AA3 /* UILayoutDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9FB18CF08D000240AA3 /* UILayoutDefine.h */; };
-		2905FA5D18CF08D100240AA3 /* UILayoutDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9FB18CF08D000240AA3 /* UILayoutDefine.h */; };
-		2905FA5E18CF08D100240AA3 /* UILayoutParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9FC18CF08D000240AA3 /* UILayoutParameter.cpp */; };
-		2905FA5F18CF08D100240AA3 /* UILayoutParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9FC18CF08D000240AA3 /* UILayoutParameter.cpp */; };
-		2905FA6018CF08D100240AA3 /* UILayoutParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9FD18CF08D000240AA3 /* UILayoutParameter.h */; };
-		2905FA6118CF08D100240AA3 /* UILayoutParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9FD18CF08D000240AA3 /* UILayoutParameter.h */; };
 		2905FA6218CF08D100240AA3 /* UIListView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9FE18CF08D000240AA3 /* UIListView.cpp */; };
 		2905FA6318CF08D100240AA3 /* UIListView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2905F9FE18CF08D000240AA3 /* UIListView.cpp */; };
 		2905FA6418CF08D100240AA3 /* UIListView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2905F9FF18CF08D000240AA3 /* UIListView.h */; };
@@ -1560,6 +1552,14 @@
 		46C02E0818E91123004B7456 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 46C02E0518E91123004B7456 /* xxhash.c */; };
 		46C02E0918E91123004B7456 /* xxhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 46C02E0618E91123004B7456 /* xxhash.h */; };
 		46C02E0A18E91123004B7456 /* xxhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 46C02E0618E91123004B7456 /* xxhash.h */; };
+		50045DD0191B213500AD1537 /* CCLayoutParameterProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50045DCC191B213500AD1537 /* CCLayoutParameterProtocol.cpp */; };
+		50045DD1191B213500AD1537 /* CCLayoutParameterProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50045DCC191B213500AD1537 /* CCLayoutParameterProtocol.cpp */; };
+		50045DD2191B213500AD1537 /* CCLayoutParameterProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 50045DCD191B213500AD1537 /* CCLayoutParameterProtocol.h */; };
+		50045DD3191B213500AD1537 /* CCLayoutParameterProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 50045DCD191B213500AD1537 /* CCLayoutParameterProtocol.h */; };
+		50045DD4191B213500AD1537 /* CCLayoutProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50045DCE191B213500AD1537 /* CCLayoutProtocol.cpp */; };
+		50045DD5191B213500AD1537 /* CCLayoutProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50045DCE191B213500AD1537 /* CCLayoutProtocol.cpp */; };
+		50045DD6191B213500AD1537 /* CCLayoutProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 50045DCF191B213500AD1537 /* CCLayoutProtocol.h */; };
+		50045DD7191B213500AD1537 /* CCLayoutProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 50045DCF191B213500AD1537 /* CCLayoutProtocol.h */; };
 		5027253A190BF1B900AAF4ED /* cocos2d.h in Headers */ = {isa = PBXBuildFile; fileRef = 50272538190BF1B900AAF4ED /* cocos2d.h */; };
 		5027253B190BF1B900AAF4ED /* cocos2d.h in Headers */ = {isa = PBXBuildFile; fileRef = 50272538190BF1B900AAF4ED /* cocos2d.h */; };
 		5027253C190BF1B900AAF4ED /* cocos2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50272539190BF1B900AAF4ED /* cocos2d.cpp */; };
@@ -2328,10 +2328,6 @@
 		2905F9F718CF08D000240AA3 /* UIImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageView.h; sourceTree = "<group>"; };
 		2905F9F818CF08D000240AA3 /* UILayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UILayout.cpp; sourceTree = "<group>"; };
 		2905F9F918CF08D000240AA3 /* UILayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UILayout.h; sourceTree = "<group>"; };
-		2905F9FA18CF08D000240AA3 /* UILayoutDefine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UILayoutDefine.cpp; sourceTree = "<group>"; };
-		2905F9FB18CF08D000240AA3 /* UILayoutDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UILayoutDefine.h; sourceTree = "<group>"; };
-		2905F9FC18CF08D000240AA3 /* UILayoutParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UILayoutParameter.cpp; sourceTree = "<group>"; };
-		2905F9FD18CF08D000240AA3 /* UILayoutParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UILayoutParameter.h; sourceTree = "<group>"; };
 		2905F9FE18CF08D000240AA3 /* UIListView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIListView.cpp; sourceTree = "<group>"; };
 		2905F9FF18CF08D000240AA3 /* UIListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIListView.h; sourceTree = "<group>"; };
 		2905FA0018CF08D000240AA3 /* UILoadingBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UILoadingBar.cpp; sourceTree = "<group>"; };
@@ -2661,6 +2657,10 @@
 		46A170781807CE7A005B8026 /* CCPhysicsWorld.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCPhysicsWorld.h; sourceTree = "<group>"; };
 		46C02E0518E91123004B7456 /* xxhash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xxhash.c; sourceTree = "<group>"; };
 		46C02E0618E91123004B7456 /* xxhash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xxhash.h; sourceTree = "<group>"; };
+		50045DCC191B213500AD1537 /* CCLayoutParameterProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLayoutParameterProtocol.cpp; sourceTree = "<group>"; };
+		50045DCD191B213500AD1537 /* CCLayoutParameterProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayoutParameterProtocol.h; sourceTree = "<group>"; };
+		50045DCE191B213500AD1537 /* CCLayoutProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLayoutProtocol.cpp; sourceTree = "<group>"; };
+		50045DCF191B213500AD1537 /* CCLayoutProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayoutProtocol.h; sourceTree = "<group>"; };
 		50272538190BF1B900AAF4ED /* cocos2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cocos2d.h; path = ../cocos/cocos2d.h; sourceTree = "<group>"; };
 		50272539190BF1B900AAF4ED /* cocos2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cocos2d.cpp; path = ../cocos/cocos2d.cpp; sourceTree = "<group>"; };
 		5069133C185016C1009BBDD7 /* CCConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCConsole.cpp; path = ../base/CCConsole.cpp; sourceTree = "<group>"; };
@@ -2919,8 +2919,9 @@
 				1551A340158F2AB200E66CFE /* Products */,
 				1AAF5849180E40B8000584C8 /* storage */,
 				2905F9E618CF08D000240AA3 /* ui */,
-				50272538190BF1B900AAF4ED /* cocos2d.h */,
+				50045DCB191B20CF00AD1537 /* layout */,
 				50272539190BF1B900AAF4ED /* cocos2d.cpp */,
+				50272538190BF1B900AAF4ED /* cocos2d.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -3984,10 +3985,6 @@
 				2905F9F718CF08D000240AA3 /* UIImageView.h */,
 				2905F9F818CF08D000240AA3 /* UILayout.cpp */,
 				2905F9F918CF08D000240AA3 /* UILayout.h */,
-				2905F9FA18CF08D000240AA3 /* UILayoutDefine.cpp */,
-				2905F9FB18CF08D000240AA3 /* UILayoutDefine.h */,
-				2905F9FC18CF08D000240AA3 /* UILayoutParameter.cpp */,
-				2905F9FD18CF08D000240AA3 /* UILayoutParameter.h */,
 				2905F9FE18CF08D000240AA3 /* UIListView.cpp */,
 				2905F9FF18CF08D000240AA3 /* UIListView.h */,
 				2905FA0018CF08D000240AA3 /* UILoadingBar.cpp */,
@@ -4638,6 +4635,18 @@
 			path = ../external/xxhash;
 			sourceTree = "<group>";
 		};
+		50045DCB191B20CF00AD1537 /* layout */ = {
+			isa = PBXGroup;
+			children = (
+				50045DCC191B213500AD1537 /* CCLayoutParameterProtocol.cpp */,
+				50045DCD191B213500AD1537 /* CCLayoutParameterProtocol.h */,
+				50045DCE191B213500AD1537 /* CCLayoutProtocol.cpp */,
+				50045DCF191B213500AD1537 /* CCLayoutProtocol.h */,
+			);
+			name = layout;
+			path = ../cocos/layout;
+			sourceTree = "<group>";
+		};
 		50FCEB6818C72017004AD434 /* WidgetReader */ = {
 			isa = PBXGroup;
 			children = (
@@ -4905,7 +4914,6 @@
 				50E6D33618E174130051CA34 /* UIHBox.h in Headers */,
 				2AC795E218628723005EC8E1 /* BoundingBoxAttachment.h in Headers */,
 				06CAAAC9186AD7EE0012A414 /* TriggerMng.h in Headers */,
-				2905FA6018CF08D100240AA3 /* UILayoutParameter.h in Headers */,
 				1ABA68B01888D700007D1BB4 /* CCFontCharMap.h in Headers */,
 				1AA2063F1848437900053418 /* CCMap.h in Headers */,
 				46A170191807CBFC005B8026 /* CCCommon.h in Headers */,
@@ -5103,6 +5111,7 @@
 				1A570356180BD0B00088DEC7 /* ioapi.h in Headers */,
 				1A57035A180BD0B00088DEC7 /* unzip.h in Headers */,
 				1A570535180BD9500088DEC7 /* CCGLProgram.h in Headers */,
+				50045DD2191B213500AD1537 /* CCLayoutParameterProtocol.h in Headers */,
 				1AA95FE018EBB8EF00AE7485 /* ccShader_Label_frag_df.h in Headers */,
 				1A570539180BD9500088DEC7 /* ccGLStateCache.h in Headers */,
 				1A570548180BD9C40088DEC7 /* CCTouch.h in Headers */,
@@ -5129,7 +5138,6 @@
 				1AD71DEB180E26E600808F54 /* CCMenuItemLoader.h in Headers */,
 				1AD71DED180E26E600808F54 /* CCMenuLoader.h in Headers */,
 				1AD71DF1180E26E600808F54 /* CCNode+CCBRelativePositioning.h in Headers */,
-				2905FA5C18CF08D100240AA3 /* UILayoutDefine.h in Headers */,
 				2905FA7218CF08D100240AA3 /* UIScrollInterface.h in Headers */,
 				B2AF2F9B18EBAEAE00C5807C /* Matrix.h in Headers */,
 				1AD71DF5180E26E600808F54 /* CCNodeLoader.h in Headers */,
@@ -5174,6 +5182,7 @@
 				1AD71EE9180E26E600808F54 /* spine.h in Headers */,
 				1A85BA0D1845F31700260FC0 /* CCVector.h in Headers */,
 				1AAF536C180E3374000584C8 /* HttpClient.h in Headers */,
+				50045DD6191B213500AD1537 /* CCLayoutProtocol.h in Headers */,
 				1AAF536E180E3374000584C8 /* HttpRequest.h in Headers */,
 				1AAF5370180E3374000584C8 /* HttpResponse.h in Headers */,
 				1AAF5374180E3374000584C8 /* SocketIO.h in Headers */,
@@ -5408,7 +5417,6 @@
 				46A170321807CBFE005B8026 /* CCFileUtils.h in Headers */,
 				46A1703A1807CBFE005B8026 /* CCThread.h in Headers */,
 				46A170FD1807CECB005B8026 /* CCPhysicsBody.h in Headers */,
-				2905FA6118CF08D100240AA3 /* UILayoutParameter.h in Headers */,
 				46A171061807CECB005B8026 /* CCPhysicsWorld.h in Headers */,
 				46A170491807CC07005B8026 /* CCStdC.h in Headers */,
 				46A1703B1807CC07005B8026 /* CCApplication.h in Headers */,
@@ -5442,6 +5450,7 @@
 				1A57009B180BC5C10088DEC7 /* CCAtlasNode.h in Headers */,
 				2905FA5118CF08D100240AA3 /* UIHelper.h in Headers */,
 				1A5700A1180BC5D20088DEC7 /* CCNode.h in Headers */,
+				50045DD7191B213500AD1537 /* CCLayoutProtocol.h in Headers */,
 				1A5700C8180BC6060088DEC7 /* atitc.h in Headers */,
 				1A5700CC180BC6060088DEC7 /* CCAffineTransform.h in Headers */,
 				50FCEB9618C72017004AD434 /* ButtonReader.h in Headers */,
@@ -5466,7 +5475,6 @@
 				50E6D33F18E174130051CA34 /* UIVBox.h in Headers */,
 				1A570115180BC8EE0088DEC7 /* CCDrawNode.h in Headers */,
 				06CAAAC5186AD7E50012A414 /* TriggerObj.h in Headers */,
-				2905FA5D18CF08D100240AA3 /* UILayoutDefine.h in Headers */,
 				1A57011E180BC90D0088DEC7 /* CCGrabber.h in Headers */,
 				1A570122180BC90D0088DEC7 /* CCGrid.h in Headers */,
 				1A57013D180BC9460088DEC7 /* CCEvent.h in Headers */,
@@ -5528,6 +5536,7 @@
 				1A57025C180BCC6F0088DEC7 /* ccShader_PositionTexture_uColor_frag.h in Headers */,
 				1A57025E180BCC6F0088DEC7 /* ccShader_PositionTexture_uColor_vert.h in Headers */,
 				1A570260180BCC6F0088DEC7 /* ccShader_PositionTexture_vert.h in Headers */,
+				50045DD3191B213500AD1537 /* CCLayoutParameterProtocol.h in Headers */,
 				1A570262180BCC6F0088DEC7 /* ccShader_PositionTextureA8Color_frag.h in Headers */,
 				1F33634818E379670074764D /* CCRefPtr.h in Headers */,
 				1A570264180BCC6F0088DEC7 /* ccShader_PositionTextureA8Color_vert.h in Headers */,
@@ -6133,7 +6142,6 @@
 				1A57008D180BC5A10088DEC7 /* CCActionTiledGrid.cpp in Sources */,
 				1A570091180BC5A10088DEC7 /* CCActionTween.cpp in Sources */,
 				B2AF2F9918EBAEAE00C5807C /* Matrix.cpp in Sources */,
-				2905FA5A18CF08D100240AA3 /* UILayoutDefine.cpp in Sources */,
 				1A570098180BC5C10088DEC7 /* CCAtlasNode.cpp in Sources */,
 				1A57009E180BC5D20088DEC7 /* CCNode.cpp in Sources */,
 				1A5700C5180BC6060088DEC7 /* atitc.cpp in Sources */,
@@ -6178,6 +6186,7 @@
 				1A5701BD180BCB5A0088DEC7 /* CCLabelAtlas.cpp in Sources */,
 				1A5701C1180BCB5A0088DEC7 /* CCLabelBMFont.cpp in Sources */,
 				1A087AE81860400400196EF5 /* edtaa3func.cpp in Sources */,
+				50045DD0191B213500AD1537 /* CCLayoutParameterProtocol.cpp in Sources */,
 				B37510731823AC9F00B3BA6A /* CCPhysicsContactInfo_chipmunk.cpp in Sources */,
 				1A5701C7180BCB5A0088DEC7 /* CCLabelTextFormatter.cpp in Sources */,
 				1A5701CB180BCB5A0088DEC7 /* CCLabelTTF.cpp in Sources */,
@@ -6242,6 +6251,7 @@
 				1A57032F180BCFD50088DEC7 /* CCUserDefault.cpp in Sources */,
 				1A570333180BCFD50088DEC7 /* CCUserDefault.mm in Sources */,
 				1A570335180BCFD50088DEC7 /* CCUserDefaultAndroid.cpp in Sources */,
+				50045DD4191B213500AD1537 /* CCLayoutProtocol.cpp in Sources */,
 				50E6D30E18DADB5D0051CA34 /* CCProtectedNode.cpp in Sources */,
 				1A57033A180BCFFA0088DEC7 /* ZipUtils.cpp in Sources */,
 				1A57034B180BD09B0088DEC7 /* tinyxml2.cpp in Sources */,
@@ -6320,7 +6330,6 @@
 				1A9DCA23180E6955007A3AD4 /* ccFPSImages.c in Sources */,
 				1A9DCA27180E6955007A3AD4 /* CCGLBufferedNode.cpp in Sources */,
 				1A9DCA2F180E6955007A3AD4 /* CCScheduler.cpp in Sources */,
-				2905FA5E18CF08D100240AA3 /* UILayoutParameter.cpp in Sources */,
 				1A9DCA3D180E6955007A3AD4 /* TransformUtils.cpp in Sources */,
 				1A9DCA49180E6DE3007A3AD4 /* ccTypes.cpp in Sources */,
 				59A79D511821E26E00F19697 /* CCEventListenerMouse.cpp in Sources */,
@@ -6654,7 +6663,6 @@
 				1A5702EB180BCE750088DEC7 /* CCTileMapAtlas.cpp in Sources */,
 				1A5702EF180BCE750088DEC7 /* CCTMXLayer.cpp in Sources */,
 				1A5702F3180BCE750088DEC7 /* CCTMXObjectGroup.cpp in Sources */,
-				2905FA5B18CF08D100240AA3 /* UILayoutDefine.cpp in Sources */,
 				50E6D31018DAF01A0051CA34 /* CCProtectedNode.cpp in Sources */,
 				1A5702F7180BCE750088DEC7 /* CCTMXTiledMap.cpp in Sources */,
 				1A5702FB180BCE750088DEC7 /* CCTMXXMLParser.cpp in Sources */,
@@ -6662,6 +6670,7 @@
 				1A570301180BCE890088DEC7 /* CCParallaxNode.cpp in Sources */,
 				1A570306180BCED90088DEC7 /* ccUtils.cpp in Sources */,
 				1A57030D180BCF190088DEC7 /* CCComponent.cpp in Sources */,
+				50045DD5191B213500AD1537 /* CCLayoutProtocol.cpp in Sources */,
 				1A570311180BCF190088DEC7 /* CCComponentContainer.cpp in Sources */,
 				1A57031A180BCF430088DEC7 /* ccCArray.cpp in Sources */,
 				B375107C1823ACA100B3BA6A /* CCPhysicsBodyInfo_chipmunk.cpp in Sources */,
@@ -6727,9 +6736,9 @@
 				1AD71ECA180E26E600808F54 /* RegionAttachment.cpp in Sources */,
 				1AD71ECE180E26E600808F54 /* Skeleton.cpp in Sources */,
 				1AD71ED2180E26E600808F54 /* SkeletonData.cpp in Sources */,
+				50045DD1191B213500AD1537 /* CCLayoutParameterProtocol.cpp in Sources */,
 				1AD71ED6180E26E600808F54 /* SkeletonJson.cpp in Sources */,
 				2905FA6718CF08D100240AA3 /* UILoadingBar.cpp in Sources */,
-				2905FA5F18CF08D100240AA3 /* UILayoutParameter.cpp in Sources */,
 				1AD71EDA180E26E600808F54 /* Skin.cpp in Sources */,
 				1AD71EDE180E26E600808F54 /* Slot.cpp in Sources */,
 				1AD71EE2180E26E600808F54 /* SlotData.cpp in Sources */,

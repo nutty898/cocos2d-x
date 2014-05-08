@@ -1180,28 +1180,28 @@ void WidgetPropertiesReader0300::setPropsForWidgetFromJsonDictionary(Widget*widg
 	{
 		const rapidjson::Value& layoutParameterDic = DICTOOL->getSubDictionary_json(options, "layoutParameter");
 		int paramType = DICTOOL->getIntValue_json(layoutParameterDic, "type");
-        LayoutParameter* parameter = nullptr;
+        layout::LayoutParameter* parameter = nullptr;
         switch (paramType)
         {
             case 0:
                 break;
             case 1:
             {
-                parameter = LinearLayoutParameter::create();
+                parameter = layout::LinearLayoutParameter::create();
 				int gravity = DICTOOL->getIntValue_json(layoutParameterDic, "gravity");
-                ((LinearLayoutParameter*)parameter)->setGravity((LinearGravity)gravity);
+                ((layout::LinearLayoutParameter*)parameter)->setGravity((layout::LinearGravity)gravity);
                 break;
             }
             case 2:
             {
-                parameter = RelativeLayoutParameter::create();
-                RelativeLayoutParameter* rParameter = (RelativeLayoutParameter*)parameter;
+                parameter = layout::RelativeLayoutParameter::create();
+                layout::RelativeLayoutParameter* rParameter = (layout::RelativeLayoutParameter*)parameter;
 				const char* relativeName = DICTOOL->getStringValue_json(layoutParameterDic, "relativeName");
                 rParameter->setRelativeName(relativeName);
 				const char* relativeToName = DICTOOL->getStringValue_json(layoutParameterDic, "relativeToName");
                 rParameter->setRelativeToWidgetName(relativeToName);
 				int align = DICTOOL->getIntValue_json(layoutParameterDic, "align");
-                rParameter->setAlign((RelativeAlign)align);
+                rParameter->setAlign((layout::RelativeAlign)align);
                 break;
             }
             default:
@@ -1213,7 +1213,7 @@ void WidgetPropertiesReader0300::setPropsForWidgetFromJsonDictionary(Widget*widg
 			float mgt = DICTOOL->getFloatValue_json(layoutParameterDic, "marginTop");
 			float mgr = DICTOOL->getFloatValue_json(layoutParameterDic, "marginRight");
 			float mgb = DICTOOL->getFloatValue_json(layoutParameterDic, "marginDown");
-            parameter->setMargin(Margin(mgl, mgt, mgr, mgb));
+            parameter->setMargin(layout::Margin(mgl, mgt, mgr, mgb));
             widget->setLayoutParameter(parameter);
         }
     }
@@ -1694,7 +1694,7 @@ void WidgetPropertiesReader0300::setPropsForLayoutFromJsonDictionary(Widget*widg
         float ch = DICTOOL->getFloatValue_json(options, "capInsetsHeight");
         panel->setBackGroundImageCapInsets(Rect(cx, cy, cw, ch));
     }
-    panel->setLayoutType((LayoutType)DICTOOL->getIntValue_json(options, "layoutType"));
+    panel->setLayoutType((layout::LayoutType)DICTOOL->getIntValue_json(options, "layoutType"));
     setColorPropsForWidgetFromJsonDictionary(widget,options);
 }
 
