@@ -44,10 +44,10 @@ CC_DEPRECATED_ATTRIBUTE const Widget::BrightStyle BRIGHT_NORMAL = Widget::Bright
 CC_DEPRECATED_ATTRIBUTE const Widget::BrightStyle BRIGHT_HIGHLIGHT = Widget::BrightStyle::HIGHLIGHT;
 CC_DEPRECATED_ATTRIBUTE const Layout::ClippingType LAYOUT_CLIPPING_STENCIL = Layout::ClippingType::STENCIL;
 CC_DEPRECATED_ATTRIBUTE const Layout::ClippingType LAYOUT_CLIPPING_SCISSOR = Layout::ClippingType::SCISSOR;
-CC_DEPRECATED_ATTRIBUTE const Layout::LayoutType LAYOUT_ABSOLUTE = Layout::LayoutType::ABSOLUTE;
-CC_DEPRECATED_ATTRIBUTE const Layout::LayoutType LAYOUT_LINEAR_VERTICAL = Layout::LayoutType::VERTICAL;
-CC_DEPRECATED_ATTRIBUTE const Layout::LayoutType LAYOUT_LINEAR_HORIZONTAL = Layout::LayoutType::HORIZONTAL;
-CC_DEPRECATED_ATTRIBUTE const Layout::LayoutType LAYOUT_RELATIVE = Layout::LayoutType::VERTICAL;
+CC_DEPRECATED_ATTRIBUTE const LayoutType LAYOUT_ABSOLUTE = LayoutType::ABSOLUTE;
+CC_DEPRECATED_ATTRIBUTE const LayoutType LAYOUT_LINEAR_VERTICAL = LayoutType::VERTICAL;
+CC_DEPRECATED_ATTRIBUTE const LayoutType LAYOUT_LINEAR_HORIZONTAL = LayoutType::HORIZONTAL;
+CC_DEPRECATED_ATTRIBUTE const LayoutType LAYOUT_RELATIVE = LayoutType::VERTICAL;
 CC_DEPRECATED_ATTRIBUTE const Layout::BackGroundColorType LAYOUT_COLOR_NONE = Layout::BackGroundColorType::NONE;
 CC_DEPRECATED_ATTRIBUTE const Layout::BackGroundColorType LAYOUT_COLOR_SOLID = Layout::BackGroundColorType::SOLID;
 CC_DEPRECATED_ATTRIBUTE const Layout::BackGroundColorType LAYOUT_COLOR_GRADIENT
@@ -140,7 +140,7 @@ CC_DEPRECATED_ATTRIBUTE typedef Widget::SizeType SizeType;
 CC_DEPRECATED_ATTRIBUTE typedef Widget::Type WidgetType;
 CC_DEPRECATED_ATTRIBUTE typedef Widget::BrightStyle BrightStyle;
 CC_DEPRECATED_ATTRIBUTE typedef Layout::ClippingType LayoutClippingType;
-CC_DEPRECATED_ATTRIBUTE typedef Layout::LayoutType LayoutType;
+//CC_DEPRECATED_ATTRIBUTE typedef Layout::LayoutType LayoutType;
 CC_DEPRECATED_ATTRIBUTE typedef Layout::BackGroundColorType LayoutBackGroundColorType;
 CC_DEPRECATED_ATTRIBUTE typedef LayoutParameter::Type LayoutParameterType;
 CC_DEPRECATED_ATTRIBUTE typedef LinearLayoutParameter::LinearGravity LinearGravity;

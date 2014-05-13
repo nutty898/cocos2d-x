@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __LAYOUT_H__
 
 #include "ui/UIWidget.h"
+#include "ui/CCLayoutProtocol.h"
 
 NS_CC_BEGIN
 
@@ -37,7 +38,7 @@ namespace ui {
  */
 class LayoutExecutant;
     
-class Layout : public Widget
+class Layout : public Widget, public LayoutProtocol
 {
     
     DECLARE_CLASS_GUI_INFO
@@ -47,14 +48,6 @@ public:
     {
         STENCIL,
         SCISSOR
-    };
-    
-    enum class LayoutType
-    {
-        ABSOLUTE,
-        VERTICAL,
-        HORIZONTAL,
-        RELATIVE
     };
     
     enum class BackGroundColorType
@@ -315,7 +308,7 @@ protected:
     //init background image renderer.
     void addBackGroundImage();
     
-    void supplyTheLayoutParameterLackToChild(Widget* child);
+    void supplyTheLayoutParameterLackToChild(LayoutParameterProtocol* child);
     virtual Widget* createCloneInstance() override;
     virtual void copySpecialProperties(Widget* model) override;
     virtual void copyClonedWidgetChildren(Widget* model) override;
@@ -337,7 +330,6 @@ protected:
     void updateBackGroundImageColor();
     void updateBackGroundImageOpacity();
     void updateBackGroundImageRGBA();
-    LayoutExecutant* createCurrentLayoutExecutant();
     
     /**
      *get the content size of the layout, it will accumulate all its children's content size
@@ -460,7 +452,6 @@ protected:
     Vector2 _alongVector;
     GLubyte _cOpacity;
     Size _backGroundImageTextureSize;
-    LayoutType _layoutType;
     ClippingType _clippingType;
     DrawNode* _clippingStencil;
     bool _scissorRectDirty;
@@ -488,9 +479,7 @@ protected:
     
     Color3B _backGroundImageColor;
     GLubyte _backGroundImageOpacity;
-    
-    LayoutExecutant* _curLayoutExecutant;
-    
+        
     GLint _mask_layer_le;
     GroupCommand _groupCommand;
     CustomCommand _beforeVisitCmdStencil;

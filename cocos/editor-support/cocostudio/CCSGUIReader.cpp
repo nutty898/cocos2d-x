@@ -1694,7 +1694,7 @@ void WidgetPropertiesReader0300::setPropsForLayoutFromJsonDictionary(Widget*widg
         float ch = DICTOOL->getFloatValue_json(options, "capInsetsHeight");
         panel->setBackGroundImageCapInsets(Rect(cx, cy, cw, ch));
     }
-    panel->setLayoutType((Layout::LayoutType)DICTOOL->getIntValue_json(options, "layoutType"));
+    panel->setLayoutType((LayoutType)DICTOOL->getIntValue_json(options, "layoutType"));
     setColorPropsForWidgetFromJsonDictionary(widget,options);
 }
 
