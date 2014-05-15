@@ -82,6 +82,21 @@ static const char* ALPHA            = "opacity";
 static const char* RED              = "colorR";
 static const char* GREEN            = "colorG";
 static const char* BLUE             = "colorB";
+    
+static const char* MULRESPOSITION              = "mulResPosition";
+static const char* POSITIONTYPE                = "positionType";
+static const char* MUL_POSITIONX               = "x";
+static const char* MUL_POSITIONY               = "y";
+static const char* MUL_POSITIONPERCENTAGE      = "percentagepos";
+static const char* MUL_POSITIONPERCENTAGEX     = "x";
+static const char* MUL_POSITIONPERCENTAGEY     = "y";
+static const char* MUL_RELATIVEALIGN           = "mulpositionpercentage";
+static const char* MUL_MARGIN                  = "margin";
+static const char* MUL_MARGIN_LEFT             = "left";
+static const char* MUL_MARGIN_TOP              = "top";
+static const char* MUL_MARGIN_RIGHT            = "right";
+static const char* MUL_MARGIN_BOTTOM           = "bottom";
+
 
 static NodeCache* _sharedNodeCache = nullptr;
 
@@ -193,6 +208,7 @@ cocos2d::Node* NodeCache::loadNode(const rapidjson::Value& json)
         const rapidjson::Value &dic = DICTOOL->getSubDictionary_json(json, CHILDREN, i);
         cocos2d::Node* child = loadNode(dic);
         node->addChild(child);
+        locateNodeWithMulresPosition(child, dic);
     }
 
     return node;
@@ -200,7 +216,7 @@ cocos2d::Node* NodeCache::loadNode(const rapidjson::Value& json)
 
 void NodeCache::initNode(cocos2d::Node* node, const rapidjson::Value& json)
 {
-    Point position      = DICTOOL->getPointValue_json(json, POSITION, Point());
+    Vector2 position      = DICTOOL->getPointValue_json(json, POSITION, Vector2());
     float scalex        = DICTOOL->getFloatValue_json(json, SCALE_X, 1);
     float scaley        = DICTOOL->getFloatValue_json(json, SCALE_Y, 1);
     float rotation      = DICTOOL->getFloatValue_json(json, ROTATION);
@@ -232,13 +248,125 @@ void NodeCache::initNode(cocos2d::Node* node, const rapidjson::Value& json)
     if(skewy != 0)
         node->setSkewY(skewy);
     if(anchorx != 0.5f || anchory != 0.5f)
-        node->setAnchorPoint(Point(anchorx, anchory));
+        node->setAnchorPoint(Vector2(anchorx, anchory));
     if(alpha != 255)
         node->setOpacity(alpha); node->setCascadeOpacityEnabled(true);
     if(red != 255 || green != 255 || blue != 255)
         node->setColor(Color3B(red, green, blue));
 }
-
+    
+void NodeCache::locateNodeWithMulresPosition(cocos2d::Node *node, const rapidjson::Value &json)
+{
+    const rapidjson::Value& mulInfo = DICTOOL->getSubDictionary_json(json, MULRESPOSITION);
+    int positionType = DICTOOL->getIntValue_json(mulInfo, POSITIONTYPE);
+    
+    Vector2 absPos;
+    switch (positionType)
+    {
+        case 0: //absolute
+        {
+            float x = DICTOOL->getFloatValue_json(mulInfo, MUL_POSITIONX);
+            float y = DICTOOL->getFloatValue_json(mulInfo, MUL_POSITIONY);
+            node->setPosition(Vector2(x, y));
+            break;
+        }
+        case 1: //relative
+        {
+            Node* parent = node->getParent();
+            if (!parent)
+            {
+                CCLOG("Cannot do layout because Object has no parent!");
+                return;
+            }
+            
+            Size layoutSize = parent->getContentSize();
+            Size cs = node->getContentSize();
+            Vector2 ap = node->getAnchorPoint();
+            float finalPosX = 0.0f;
+            float finalPosY = 0.0f;
+            cocos2d::ui::RelativeLayoutParameter::RelativeAlign align = (cocos2d::ui::RelativeLayoutParameter::RelativeAlign)DICTOOL->getIntValue_json(mulInfo, MUL_RELATIVEALIGN);
+            const rapidjson::Value& marginDic = DICTOOL->getSubDictionary_json(mulInfo, MUL_MARGIN);
+            cocos2d::ui::Margin mg = cocos2d::ui::Margin(DICTOOL->getFloatValue_json(marginDic, MUL_MARGIN_LEFT),
+                                                         DICTOOL->getFloatValue_json(marginDic, MUL_MARGIN_TOP),
+                                                         DICTOOL->getFloatValue_json(marginDic, MUL_MARGIN_RIGHT),
+                                                         DICTOOL->getFloatValue_json(marginDic, MUL_MARGIN_BOTTOM));
+            switch (align)
+            {
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::NONE:
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_TOP_LEFT:
+                    finalPosX = ap.x * cs.width;
+                    finalPosY = layoutSize.height - ((1.0f - ap.y) * cs.height);
+                    finalPosX += mg.left;
+                    finalPosY -= mg.top;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_TOP_CENTER_HORIZONTAL:
+                    finalPosX = layoutSize.width * 0.5f - cs.width * (0.5f - ap.x);
+                    finalPosY = layoutSize.height - ((1.0f - ap.y) * cs.height);
+                    finalPosY -= mg.top;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_TOP_RIGHT:
+                    finalPosX = layoutSize.width - ((1.0f - ap.x) * cs.width);
+                    finalPosY = layoutSize.height - ((1.0f - ap.y) * cs.height);
+                    finalPosX -= mg.right;
+                    finalPosY -= mg.top;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_LEFT_CENTER_VERTICAL:
+                    finalPosX = ap.x * cs.width;
+                    finalPosY = layoutSize.height * 0.5f - cs.height * (0.5f - ap.y);
+                    finalPosX += mg.left;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::CENTER_IN_PARENT:
+                    finalPosX = layoutSize.width * 0.5f - cs.width * (0.5f - ap.x);
+                    finalPosY = layoutSize.height * 0.5f - cs.height * (0.5f - ap.y);
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_RIGHT_CENTER_VERTICAL:
+                    finalPosX = layoutSize.width - ((1.0f - ap.x) * cs.width);
+                    finalPosY = layoutSize.height * 0.5f - cs.height * (0.5f - ap.y);
+                    finalPosX -= mg.right;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_LEFT_BOTTOM:
+                    finalPosX = ap.x * cs.width;
+                    finalPosY = ap.y * cs.height;
+                    finalPosX += mg.left;
+                    finalPosY += mg.bottom;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_BOTTOM_CENTER_HORIZONTAL:
+                    finalPosX = layoutSize.width * 0.5f - cs.width * (0.5f - ap.x);
+                    finalPosY = ap.y * cs.height;
+                    finalPosY += mg.bottom;
+                    break;
+                case cocos2d::ui::RelativeLayoutParameter::RelativeAlign::PARENT_RIGHT_BOTTOM:
+                    finalPosX = layoutSize.width - ((1.0f - ap.x) * cs.width);
+                    finalPosY = ap.y * cs.height;
+                    finalPosX -= mg.right;
+                    finalPosY += mg.bottom;
+                    break;
+                default:
+                    break;
+            }
+            node->setPosition(Vector2(finalPosX, finalPosY));
+            break;
+        }
+        case 2: //percentage
+        {
+            Node* parent = node->getParent();
+            if (!parent)
+            {
+                CCLOG("Cannot do layout because Object has no parent!");
+                return;
+            }
+            const rapidjson::Value& percentage = DICTOOL->getSubDictionary_json(mulInfo, MUL_POSITIONPERCENTAGE);
+            float percentageX = DICTOOL->getFloatValue_json(percentage, MUL_POSITIONPERCENTAGEX);
+            float percentageY = DICTOOL->getFloatValue_json(percentage, MUL_POSITIONPERCENTAGEY);
+            Size pSize = parent->getContentSize();
+            node->setPosition(Vector2(pSize.width * percentageX, pSize.height * percentageY));
+            break;
+        }
+        default:
+            break;
+    }
+    node->setPosition(absPos);
+}
 
 Node* NodeCache::loadSimpleNode(const rapidjson::Value& json)
 {

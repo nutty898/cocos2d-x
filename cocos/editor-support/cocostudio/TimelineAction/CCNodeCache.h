@@ -52,6 +52,8 @@ public:
 protected:
 
     cocos2d::Node* loadNode(const rapidjson::Value& json);
+    
+    void locateNodeWithMulresPosition(cocos2d::Node* node, const rapidjson::Value& json);
 
     void initNode(cocos2d::Node* node, const rapidjson::Value& json);
 
